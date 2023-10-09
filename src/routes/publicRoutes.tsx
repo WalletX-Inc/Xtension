@@ -8,9 +8,9 @@ function PublicRoutes() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route index element={<LandingPage />} />
+        <Route index element={<Login />} />
+        <Route element={<LandingPage />} path="/landing" />
         <Route element={<Registration />} path="register" />
-        <Route element={<Login />} path="login" />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import icon128 from "../../assets/icons/walletximage.png";
+
 function Login() {
   const [deviceName, setDeviceName] = useState<string | null>(null);
 
@@ -40,9 +40,21 @@ function Login() {
           >
             Login
           </Button>
-          <Link className="mt-3 text-sm" to={"/register"}>
+          <div
+            className="mt-3 text-sm cursor-pointer"
+            onClick={() => {
+              /* global chrome */
+              chrome.tabs.query(
+                { active: true, currentWindow: true },
+                function (tabs) {
+                  window.open(`http://localhost:3000/register`);
+                }
+              );
+             
+            }}
+          >
             Don't have an account ? Register
-          </Link>
+          </div>
         </div>
 
         <div className="absolute bottom-2">
