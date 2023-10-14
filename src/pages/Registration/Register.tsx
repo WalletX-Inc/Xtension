@@ -7,7 +7,7 @@ import Input from "../../components/common/Input";
 
 const Register = () => {
   const [deviceName, setDeviceName] = useState<string | null>(null);
-console.log('in register')
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDeviceName(event.target.value);
   };
