@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import "./index.css";
 
 function PublicLayout() {
+
   return (
     <div className="landing_wrapper w-screen h-screen relative text-white overflow-hidden">
       <div

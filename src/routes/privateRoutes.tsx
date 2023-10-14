@@ -1,13 +1,17 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
+import ConfigProvider from "../context/ConfigProvider";
 
 function PrivateRoutes() {
-  return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-    </Routes>
+  return (
+    <ConfigProvider>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </ConfigProvider>
   );
 }
 

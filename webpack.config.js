@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
@@ -45,6 +46,12 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
+    new webpack.ProvidePlugin({
+      process: "process",
+    }),
     new CopyPlugin({
       patterns: [{ from: "./public/manifest.json", to: "../manifest.json" }],
     }),
@@ -68,6 +75,10 @@ module.exports = {
       zlib: false,
       http: false,
       https: false,
+      stream: require.resolve('stream-browserify'),
+      assert: require.resolve('assert/'),
+      crypto: false,
+      'crypto-browserify': require.resolve('crypto-browserify'),
     },
   },
   output: {

@@ -24,8 +24,6 @@ function LandingPage() {
     beforeChange: (current: number) => setCurrentSlide(current),
   };
 
-  console.log(LandingTagLines, currentSlide);
-
   return (
     <div className="text-center">
       <Slider {...settings}>

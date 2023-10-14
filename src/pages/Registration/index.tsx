@@ -6,7 +6,7 @@ import Register from "./Register";
 
 function Registration() {
   const [showRegister, setShowRegister] = useState(false);
-  console.log('Register')
+
   return (
     <div>
       <img src={icon128} alt="logo" className="w-40  h-36 m-auto mt-12" />
