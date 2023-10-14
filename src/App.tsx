@@ -9,7 +9,15 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <AppRoutes />
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            style: {
+              border: "1px solid white",
+              color: "white",
+              background: "#030712",
+            },
+          }}
+        />
       </AuthProvider>
     </BrowserRouter>
   );

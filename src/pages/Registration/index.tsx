@@ -1,11 +1,12 @@
 import { useState } from "react";
 import Button from "../../components/common/Button";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import icon128 from "../../assets/icons/walletximage.png";
+import icon128 from "../../assets/icons/mainLogo.png";
 import Register from "./Register";
 
 function Registration() {
   const [showRegister, setShowRegister] = useState(false);
+  console.log('Register')
   return (
     <div>
       <img src={icon128} alt="logo" className="w-40  h-36 m-auto mt-12" />
@@ -15,13 +16,13 @@ function Registration() {
         <Register />
       ) : (
         <Button
-          className="min-w-[300px] mt-[160px] bg-blue-600 rounded-full flex justify-center m-auto
-        transition duration-500 hover:scale-110 "
+          className="min-w-[300px] mt-[150px] text-white bg-gray-900 border hover:bg-gray-950 rounded-3xl flex justify-center m-auto
+        transition duration-500 hover:scale-110 p-2"
           onClick={() => {
             setShowRegister(true);
           }}
         >
-          <div className="p-3 flex justify-between items-center gap-5 font-bold">
+          <div className="p-2 flex justify-between items-center gap-5 font-bold">
             Create new wallet <AiOutlineArrowRight />{" "}
           </div>
         </Button>

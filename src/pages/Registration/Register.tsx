@@ -7,16 +7,16 @@ import Input from "../../components/common/Input";
 
 const Register = () => {
   const [deviceName, setDeviceName] = useState<string | null>(null);
-
+console.log('in register')
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDeviceName(event.target.value);
   };
   return (
     <>
       <div className="min-h-screen flex flex-col items-center justify-top gap-10">
-        <div className="h-1/2 min-w-[75%]  flex flex-col items-center justify-center text-lg mt-12">
+        <div className="h-1/2 min-w-[75%]  flex flex-col items-center justify-center text-lg mt-[60px]">
           <Input
-            className="w-screen placeholder:text-sm placeholder:italic placeholder:text-slate-400 max-w-xs text-center text-black rounded-lg py-2 px-3 mb-4 outline-none"
+            className="min-w-[300px] placeholder:text-sm placeholder:italic placeholder:text-slate-400 max-w-xs text-center rounded-lg mb-4 outline-none"
             type="text"
             id="name"
             name="name"
@@ -24,15 +24,13 @@ const Register = () => {
             onChange={(e) => handleInputChange(e)}
           />
           <Button
-            className="min-w-[300px] mt-[70px] bg-blue-600 rounded-full flex justify-center m-auto
-        transition duration-500 hover:scale-110 p-3 "
+            className="min-w-[300px] mt-[70px] text-white bg-gray-900 border hover:bg-gray-950 rounded-lg flex justify-center m-auto
+        transition duration-500 hover:scale-110 p-2 "
             onClick={() => {
               toast.success("Account Created Successfully !", {
                 icon: "🚀", // Custom icon
                 duration: 3000, // Duration in milliseconds
-                style: {
-                  marginTop: "70px",
-                },
+                
               });
             }}
           >
@@ -43,7 +41,7 @@ const Register = () => {
           </Link>
         </div>
 
-        <div className="absolute bottom-2">
+        <div className="absolute bottom-2 underline underline-offset-4 decoration-sky-600/30">
           <p>Non-custodial biometric wallet</p>
         </div>
       </div>

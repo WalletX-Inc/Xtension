@@ -37,8 +37,8 @@ function LandingPage() {
             <p className="p-8 ">{details.description}</p>
             {currentSlide === 1 && (
               <Button
-                className="rounded p-2 bg-white hover:bg-white-500 text-blue-700 font-semibold
-              border border-blue-500 hover:border-transparent"
+                className="min-w-[300px] mt-[70px] text-white bg-gray-900 border hover:bg-gray-950 rounded-lg flex justify-center m-auto
+        transition duration-500 hover:scale-110 p-3"
                 onClick={() => {
                   navigate("/register", { replace: true });
                 }}

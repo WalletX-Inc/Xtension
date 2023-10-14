@@ -9,10 +9,15 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["tabs"],
+  "permissions": ["activeTab"],
+ 
   "action": {
     "default_popup": "js/index.html",
     "default_title": "WalletX | Smart Wallet",
     "default_icon": "icons/icon16.png"
-  }
+  },
+  "web_accessible_resources": [{
+    "resources": ["js/images/*"],
+    "matches": ["*://*/*"]
+  }]
 }

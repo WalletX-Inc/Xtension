@@ -30,7 +30,7 @@ function Input({
         </label>
       )}
       <input
-        className={`block w-full p-2 placeholder:text-sm placeholder:italic placeholder:text-slate-400  ${className}`}
+        className={`block w-full bg-neutral-900 border border-white p-2 placeholder:text-sm placeholder:italic placeholder:text-slate-400  ${className}`}
         onChange={onChange}
         name={name}
         placeholder={placeholder}

@@ -31,7 +31,7 @@ html {
     background-color: #f5f5f5;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #0ae;
+    background-color: rgb(26, 30, 31);
 
     background-image: -webkit-gradient(
       linear,
