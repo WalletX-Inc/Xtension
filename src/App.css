@@ -16,7 +16,8 @@ html {
 }
 
 * {
-  font-family:"monospace", "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
+  font-family: monospace, "Euclid Circular B", Roboto, Helvetica, Arial,
+    sans-serif;
   font-style: normal;
   font-weight: normal;
   color: var(--color-text-default);
@@ -30,7 +31,7 @@ html {
     background-color: #f5f5f5;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: #0ae;
+    background-color: rgb(26, 30, 31);
 
     background-image: -webkit-gradient(
       linear,
@@ -49,7 +50,6 @@ html {
 .h_100 {
   height: 100%;
 }
-
 
 /* Flex */
 .d_flex {
