@@ -9,7 +9,7 @@ function PrivateRoutes() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
 
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </ConfigProvider>
   );

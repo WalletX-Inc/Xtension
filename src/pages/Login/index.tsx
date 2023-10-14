@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { client } from "@passwordless-id/webauthn";
 import { v4 } from "uuid";
 
