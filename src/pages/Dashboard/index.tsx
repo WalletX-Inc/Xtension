@@ -1,18 +1,24 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
+import send from "../../assets/arrow-up.png";
+import receive from "../../assets/arrow-down.png";
 import logoIcon from "../../assets/icons/icon16.png";
 import { getItemFromStorage, getShortDisplayString } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
-  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
+  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
 
   const item = getItemFromStorage("smartAccount");
   const [SCW] = useState(item || null);
 
   const { smartAccountAddress, provider, init } = useConfig();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function initializeSmartWallet() {
@@ -29,7 +35,16 @@ function Dashboard() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
-  },[smartAccountAddress, smartWalletAddress]);
+  }, [smartAccountAddress, smartWalletAddress]);
+
+  async function sendTx() {
+    console.log("sendTx");
+    toast.success("Transaction Sent Successfully !", {
+      icon: "🚀",
+      duration: 3000,
+    });
+    navigate(`/dashboard/transaction/add-address`);
+  }
 
   return (
     <>
@@ -41,6 +56,29 @@ function Dashboard() {
           </h2>
         </div>
         <h3 className="text-center text-3xl font-extrabold">{balance} ETH</h3>
+
+        <div className="flex gap-5 justify-center item-center mt-5 text-center">
+          <div
+            // onClick={openQrModal}
+            className="flex flex-col justify-center item-center gap-2"
+          >
+            <img
+              className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={receive}
+              alt="receiveButton"
+            />
+            <h1 className="text-base font-medium">Recieve</h1>
+          </div>
+          <div className="flex flex-col justify-center item-center gap-2">
+            <img
+              onClick={() => sendTx()}
+              className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={send}
+              alt="sendButton"
+            />
+            <h1 className="text-base font-medium">Send</h1>
+          </div>
+        </div>
       </div>
     </>
   );
