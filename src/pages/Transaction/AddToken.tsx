@@ -64,7 +64,7 @@ const AddTokens = () => {
     ); // this array method is to check if the property tokenSymbol has truthy value or not
     // console.log(tokenIsAddedForAll)
     if (transferData.length > 0 && isTokenAddedForAddresses) {
-      navigate("/dashboard/send/approvetransaction");
+      navigate("/dashboard/transaction/approve-transactions");
     }
     // console.log("it passed")
   };
@@ -166,12 +166,7 @@ const AddTokens = () => {
                         </button>
                       </div>
                     </div>
-                    <h1 className="inline text-xl text-center p-2  font-semibold tracking-wider">
-                      Total:{" "}
-                      <span>
-                        <span>Rs </span>calculate
-                      </span>
-                    </h1>
+                    
                   </>
                 ) : (
                   <>
