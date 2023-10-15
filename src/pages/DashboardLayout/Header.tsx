@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import logoIcon from "../../assets/icons/icon16.png";
-import menuIcon from "../../assets/icons/menu.png";
+import { IoIosArrowDropdown } from "react-icons/io";
 import { useAuth } from "../../hooks/useAuth";
 import { setItemInStorage } from "../../utils/helper";
 import Modal from "../../components/common/Modal";
-import { IoIosArrowDropdown } from "react-icons/io";
+import logoIcon from "../../assets/icons/icon16.png";
+import menuIcon from "../../assets/icons/menu.png";
+import ethIcon from "../../assets/icons/eth_logo.png";
+import Button from "../../components/common/Button";
+import {  AiOutlinePlus } from "react-icons/ai";
+
 const navbarData = [
   {
     title: "Setup Recovery",
@@ -32,6 +35,8 @@ const navbarData = [
 export default function Header() {
   const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
+    const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const { logout } = useAuth();
@@ -49,9 +54,18 @@ export default function Header() {
   return (
     <nav className="text-white fixed top-0 w-full bg-gray-700 items-center flex p-4">
       <div className="flex justify-between items-center w-full flex-wrap md:flex-nowrap">
-        <h1 className="text-xl font-bold cursor-pointer  hover:opacity-70">
-          {" "}
-          <img className="w-8" src={logoIcon} alt="X" />
+        <h1
+          className="flex align-center justify-center rounded text-xl font-bold cursor-pointer  hover:opacity-70 bg-black p-[5px]"
+          onClick={() => {
+            setOpenNetworkModal(true);
+          }}
+        >
+          <img
+            className="w-4 h-4 m-auto rounded-full"
+            src={ethIcon}
+            alt="ETH"
+          />
+          <IoIosArrowDropdown className="ml-2" />
         </h1>
         <h1
           className="text-xl font-bold flex items-center cursor-pointer hover:opacity-70  hover:border-1 hover:border-gray-600 hover:shadow-lg rounded p-[3px]"
@@ -60,7 +74,7 @@ export default function Header() {
           }}
         >
           Account 1
-          <IoIosArrowDropdown className="mx-3 " />
+          <IoIosArrowDropdown className="mx-3" />
         </h1>
 
         <button
@@ -88,8 +102,7 @@ export default function Header() {
                     to={link.href}
                     onClick={() => showNav(link.href)}
                   >
-                    {link.title}{" "}
-                  
+                    {link.title}
                   </Link>
                 </li>
               );
@@ -103,9 +116,12 @@ export default function Header() {
         }}
         headerText="Select an Account"
       >
-        <div className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer" onClick={()=>{
-          setOpenAccountModal(false);
-        }}>
+        <div
+          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer"
+          onClick={() => {
+            setOpenAccountModal(false);
+          }}
+        >
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
               <img
@@ -128,6 +144,42 @@ export default function Header() {
             </div>
           </div>
         </div>
+      </Modal>
+      <Modal
+        isOpen={openNetworkModal}
+        onClose={() => {
+          setOpenNetworkModal(false);
+        }}
+        headerText="Select an Network"
+      >
+        <div
+          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer"
+          onClick={() => {
+            setOpenNetworkModal(false);
+          }}
+        >
+          <div className="flex items-center space-x-4">
+            <div className="flex-shrink-0">
+              <img className="w-8 h-8 rounded-full" src={ethIcon} alt="ETH" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate dark:text-white">
+                Ethereum Mainnet
+              </p>
+            </div>
+          </div>
+        </div>
+        <Button
+          className="text-white bg-gray-900 border hover:bg-gray-950 rounded-3xl flex justify-center m-auto
+        transition duration-500 hover:scale-110 mt-24"
+          onClick={() => {
+            setOpenNetworkModal(true);
+          }}
+        >
+          <div className="p-2 flex justify-between items-center gap-5 font-bold">
+            <AiOutlinePlus /> Add Network
+          </div>
+        </Button>
       </Modal>
     </nav>
   );
