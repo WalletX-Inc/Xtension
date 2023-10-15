@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 function AppRoutes() {
   const { isLoggedIn } = useAuth();
 
-  return !isLoggedIn ? <PrivateRoutes /> : <PublicRoutes />;
+  return isLoggedIn ? <PrivateRoutes /> : <PublicRoutes />;
 }
 
 export default AppRoutes;
