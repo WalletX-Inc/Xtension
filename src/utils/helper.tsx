@@ -29,3 +29,14 @@ export const removeItemFromStorage: any = (
   let _window = window as any;
   _window[storage].removeItem(name);
 };
+
+export const getShortDisplayString: any = (address: string) => {
+  const firstFourDigit = address.slice(0, 4);
+  const lastFourDigit = address.slice(address.length - 4);
+
+  return (
+    <>
+      {firstFourDigit}...{lastFourDigit}
+    </>
+  );
+};

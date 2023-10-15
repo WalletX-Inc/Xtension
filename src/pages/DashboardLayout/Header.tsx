@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { setItemInStorage } from "../../utils/helper";
 import Modal from "../../components/common/Modal";
 import { IoIosArrowDropdown } from "react-icons/io";
+
 const navbarData = [
   {
     title: "Setup Recovery",
@@ -16,7 +17,7 @@ const navbarData = [
       "font-medium opacity-60 w-full flex justify-center p-2.5 md:border-none md:p-0 md:w-auto pointer-events-none",
   },
   {
-    title: "Setup Multi Sync",
+    title: "Setup MultiSig",
     subTitle: "coming soon",
     href: "/",
     cname:
@@ -29,11 +30,11 @@ const navbarData = [
       "font-medium w-full flex justify-center p-2.5 md:border-none md:p-0 md:w-auto",
   },
 ];
+
 export default function Header() {
   const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
   const navigate = useNavigate();
-
   const { logout } = useAuth();
 
   const showNav = (key?: string) => {

@@ -35,7 +35,6 @@ const TabHandler = () => {
                 </li>
               ))}
             </ul>
-            <p className="">Wallet X Tab 1 data</p>
           </div>
         </Tab>
         <Tab label="NFTs">
