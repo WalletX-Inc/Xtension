@@ -1,17 +1,23 @@
 {
-    "version": "1.0.0",
-    "manifest_version": 3,
-    "name": "WalletX | Smart Wallet",
-    "description": "Smart Wallet powered by WalletX",
-    "icons": {
-        "16": "icons/icon16.png",
-        "32": "icons/icon32.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-    },
-    "action": {
-        "default_popup": "js/index.html",
-        "default_title": "WalletX | Smart Wallet",
-        "default_icon": "icons/icon16.png"
-    }
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "name": "WalletX | Smart Wallet",
+  "description": "Smart Wallet powered by WalletX",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["activeTab"],
+ 
+  "action": {
+    "default_popup": "js/index.html",
+    "default_title": "WalletX | Smart Wallet",
+    "default_icon": "icons/icon16.png"
+  },
+  "web_accessible_resources": [{
+    "resources": ["js/images/*"],
+    "matches": ["*://*/*"]
+  }]
 }
