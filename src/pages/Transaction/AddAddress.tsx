@@ -121,7 +121,7 @@ const AddAddresses = () => {
       },
     ]);
     console.log(transferData);
-    navigate("/dashboard/send/add-tokens");
+    navigate("/dashboard/transaction/add-tokens");
   };
 
   useEffect(() => {
