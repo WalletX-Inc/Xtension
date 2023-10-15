@@ -7,6 +7,8 @@ body {
   font-family: "monospace","Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: black;
+  overflow-x: hidden;
 }
 
 code {
