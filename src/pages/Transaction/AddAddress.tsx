@@ -7,7 +7,7 @@ import add from "../../assets/add.png";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 
 const AddAddresses = () => {
