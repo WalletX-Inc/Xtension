@@ -9,15 +9,35 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["activeTab"],
- 
+  "permissions": ["activeTab", "tabs", "bookmarks"],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["content-script.js"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["eth-provider.js"],
+      "matches": ["<all_urls>"],
+      "use_dynamic_url": true
+    },
+    {
+      "resources": ["js/images/*"],
+      "matches": ["*://*/*"]
+    }
+  ],
   "action": {
     "default_popup": "js/index.html",
     "default_title": "WalletX | Smart Wallet",
     "default_icon": "icons/icon16.png"
   },
-  "web_accessible_resources": [{
-    "resources": ["js/images/*"],
-    "matches": ["*://*/*"]
-  }]
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/contentScript.js"]
+    }
+  ]
 }
