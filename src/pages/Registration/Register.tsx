@@ -73,7 +73,7 @@ const Register = () => {
   async function registerDevice() {
     const device = deviceName ? getItemFromStorage('device') : null;
 
-    if (device.name) {
+    if (device?.name === deviceName) {
       alert(`${deviceName} is already registered. Please choose another name`);
       return;
     }
