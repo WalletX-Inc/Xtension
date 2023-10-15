@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { getShortDisplayString } from "../../utils/helper";

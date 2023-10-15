@@ -5,7 +5,7 @@ import remove from "../../assets/x.png";
 import del from "../../assets/delete.png";
 import edit from "../../assets/edit.png";
 import addMoreAddress from "../../assets/add-user.svg";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
 import {  useRecoilState } from "recoil";
