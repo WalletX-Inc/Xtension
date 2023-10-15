@@ -40,7 +40,7 @@ function Login() {
     if(authentication.credentialId){
       login()
       setItemInStorage("isLoggedIn", true);
-      toast.success("Login Successfully !", {
+      toast.success("Login Successful !", {
         icon: "🚀",
         duration: 3000,
       });
