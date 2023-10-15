@@ -10,15 +10,14 @@ function Dashboard() {
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
 
   const item = getItemFromStorage("smartAccount");
-  const [SCW, setSCW] = useState(item || null);
+  const [SCW] = useState(item || null);
 
-  const { getSmartWalletHandler, smartAccountAddress, provider } = useConfig();
+  const { smartAccountAddress, provider, init } = useConfig();
 
   useEffect(() => {
     async function initializeSmartWallet() {
-      if (!SCW||!smartAccountAddress) {
-        await getSmartWalletHandler();
-        setSCW(smartAccountAddress);
+      if (!smartAccountAddress) {
+        init();
       } else {
         let balance = await provider.getBalance(SCW || smartAccountAddress);
         balance = ethers.utils.formatEther(balance);
@@ -27,10 +26,10 @@ function Dashboard() {
       }
     }
 
-    setSmartWalletAddress(SCW || smartAccountAddress)
+    setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
-  }, [SCW, getSmartWalletHandler, provider, smartAccountAddress]);
+  },[smartAccountAddress, smartWalletAddress]);
 
   return (
     <>

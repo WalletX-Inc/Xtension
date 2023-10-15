@@ -12,6 +12,7 @@ const ConfigProvider = ({ children }) => {
     getSmartWalletHandler: initParams.getSmartWalletHandler,
     getEOA: initParams.getEOA,
     isLoggedIn: initParams.isLoggedIn,
+    init: initParams.init,
   };
 
   console.log("Context : ", { providerValues });

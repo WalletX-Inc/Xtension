@@ -16,23 +16,34 @@ export default function useInit() {
 
   const auth = useAuth();
 
-  const device = getItemFromStorage('device');
-
   const isLoggedIn = auth.isLoggedIn;
   
   useEffect(() => {
-    if (!deviceId) {
-      setDeviceId(device.id);
+    if (deviceId) {
       getEOA();
     }
   }, [deviceId]);
+
+  useEffect(() => {
+    if (provider) {
+      getSmartWalletHandler();
+    }
+  }, [provider]);
 
   const rpcUrl = Config.RPC_MUMBAI;
   const bundlerUrl = Config.BUNDLER_MUMBAI;
   const chainId = Config.CHAINID_MUMBAI;
   const paymasterUrl = Config.PAYMASTER_MUMBAI;
 
-  const getEOA = initiateEOA(device.id, setSigner, rpcUrl, setProvider);
+  function init() {
+    const device = getItemFromStorage('device');
+
+    if (device?.id) {
+      setDeviceId(device.id);
+    }
+  }
+
+  const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider);
   const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress);
 
   return {
@@ -42,5 +53,6 @@ export default function useInit() {
     provider,
     getSmartWalletHandler,
     getEOA,
+    init,
   };
 }

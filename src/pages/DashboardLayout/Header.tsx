@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDropdown } from "react-icons/io";
 import { useAuth } from "../../hooks/useAuth";
@@ -9,6 +9,9 @@ import menuIcon from "../../assets/icons/menu.png";
 import ethIcon from "../../assets/icons/eth_logo.png";
 import Button from "../../components/common/Button";
 import {  AiOutlinePlus } from "react-icons/ai";
+import { useConfig } from "../../context/ConfigProvider";
+import { getItemFromStorage, getShortDisplayString } from "../../utils/helper";
+import { ethers } from "ethers";
 
 const navbarData = [
   {
@@ -37,6 +40,31 @@ export default function Header() {
   const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
   const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
+  const [balance, setBalance] = useState(0);
+
+  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
+
+  const item = getItemFromStorage("smartAccount");
+  const [SCW] = useState(item || null);
+
+  const { smartAccountAddress, provider, init } = useConfig();
+
+  useEffect(() => {
+    async function initializeSmartWallet() {
+      if (!smartAccountAddress) {
+        init();
+      } else {
+        let balance = await provider.getBalance(SCW || smartAccountAddress);
+        balance = ethers.utils.formatEther(balance);
+
+        setBalance(balance);
+      }
+    }
+
+    setSmartWalletAddress(SCW || smartAccountAddress);
+
+    initializeSmartWallet();
+  },[smartAccountAddress, smartWalletAddress]);
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -133,14 +161,13 @@ export default function Header() {
             <div className="flex-1 min-w-0">
               <p className="font-medium truncate dark:text-white">Account 1</p>
               <p className="text-sm truncate dark:text-gray-400">
-                0x1123...2432
+                {getShortDisplayString(SCW || setSmartWalletAddress)}
               </p>
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                0 ETH
+                {balance} ETH
               </div>
-              <div>$0.00 USD</div>
             </div>
           </div>
         </div>

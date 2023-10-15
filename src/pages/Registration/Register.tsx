@@ -5,29 +5,42 @@ import { toast } from "react-hot-toast";
 import { client } from "@passwordless-id/webauthn";
 import { v4 } from "uuid";
 import { ethers } from "ethers";
-import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
-import { Bundler } from '@biconomy/bundler';
-import { BiconomyPaymaster } from '@biconomy/paymaster';
 
 import Config from "../../config";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
 import { useAuth } from "../../hooks/useAuth";
+import { useConfig } from "../../context/ConfigProvider";
 
 const Register = () => {
   const [deviceName, setDeviceName] = useState<string | null>(null);
   const [signer, setSigner] = useState<any>(null);
   const [buttonTitle, setButtonTitle] = useState<string>("Register");
+
   const navigate = useNavigate();
   const { login } = useAuth();
-  console.log('login : ', { login });
+  const { smartAccountAddress, init } = useConfig();
 
   useEffect(() => {
     if (signer) {
       getSmartWalletAddress();
     }
   }, [signer]);
+
+  useEffect(() => {
+    if (smartAccountAddress) {
+      console.log('Smart Account Is Initialized : ', smartAccountAddress);
+
+      setButtonTitle("Done");
+      login();
+      toast.success("Account Created Successfully !", {
+        icon: "🚀", // Custom icon
+        duration: 3000, // Duration in milliseconds
+      });
+      navigate(`/dashboard`);
+    }
+  }, [smartAccountAddress])
 
    function generateEOA(credentialId: any) {
     setButtonTitle("Loading...");
@@ -45,25 +58,7 @@ const Register = () => {
   }
 
   async function getSmartWalletAddress() {
-    const bundler = new Bundler({ bundlerUrl: Config.BUNDLER_MUMBAI, chainId: Config.CHAINID_MUMBAI, entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS });
-    const paymaster = new BiconomyPaymaster({ paymasterUrl: Config.PAYMASTER_MUMBAI });
-
-    const smartAccountConfig: any = { signer, chainId: Config.CHAINID_MUMBAI, rpcUrl: Config.RPC_MUMBAI, bundler, paymaster };
-
-    const account = new BiconomySmartAccount(smartAccountConfig);
-    const smartAccount = await account.init();
-
-    const smartAccountAddress = await smartAccount.getSmartAccountAddress();
-    setItemInStorage("smartAccount", smartAccountAddress);
-    setItemInStorage("network", "Polygon Mumbai (80001)");
-    setItemInStorage("isLoggedIn", true);
-    setButtonTitle("Done");
-    login();
-    toast.success("Account Created Successfully !", {
-      icon: "🚀", // Custom icon
-      duration: 3000, // Duration in milliseconds
-    });
-    navigate(`/dashboard`);
+    init();
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
