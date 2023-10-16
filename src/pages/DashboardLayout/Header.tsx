@@ -41,6 +41,7 @@ export default function Header() {
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
   const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
   const [balance, setBalance] = useState(0);
+  const [defaultChainId] = useState<number>(80001);
 
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
 
@@ -52,7 +53,7 @@ export default function Header() {
   useEffect(() => {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
-        init();
+        init(defaultChainId);
       } else {
         let balance = await provider.getBalance(SCW || smartAccountAddress);
         balance = ethers.utils.formatEther(balance);
@@ -65,6 +66,10 @@ export default function Header() {
 
     initializeSmartWallet();
   },[smartAccountAddress, smartWalletAddress]);
+
+  function handleNetworkSwitch(chain: any) {
+    init(chain.chainId);
+  }
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -185,16 +190,18 @@ export default function Header() {
             setOpenNetworkModal(false);
           }}
         >
-          <div className="flex items-center space-x-4">
-            <div className="flex-shrink-0">
-              <img className="w-8 h-8 rounded-full" src={ethIcon} alt="ETH" />
+          <button onClick={() => handleNetworkSwitch({ chainId: 1 })}>
+            <div className="flex items-center space-x-4">
+              <div className="flex-shrink-0">
+                <img className="w-8 h-8 rounded-full" src={ethIcon} alt="ETH" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium truncate dark:text-white">
+                  Ethereum Mainnet
+                </p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate dark:text-white">
-                Ethereum Mainnet
-              </p>
-            </div>
-          </div>
+          </button>
         </div>
         <Button
           className="text-white bg-gray-900 border hover:bg-gray-950 rounded-3xl flex justify-center m-auto

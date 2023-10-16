@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
 import { initiateEOA } from "./initiateEOA";
-import Config from "../config";
 import { getItemFromStorage } from "../utils/helper";
 import { useAuth } from "./useAuth";
+import { getChainDetails } from "../utils/helper";
 
 export default function useInit() {
   const [signer, setSigner] = useState(null);
@@ -13,6 +13,10 @@ export default function useInit() {
   const [smartAccountAddress, setSmartAccountAddress] = useState(null);
   const [provider, setProvider] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
+  const [rpcUrl, setRpcUrl] = useState(null);
+  const [bundlerUrl, setBundlerUrl] = useState(null);
+  const [chainId, setChainId] = useState(null);
+  const [paymasterUrl, setPaymasterUrl] = useState(null);
 
   const auth = useAuth();
 
@@ -30,12 +34,14 @@ export default function useInit() {
     }
   }, [provider]);
 
-  const rpcUrl = Config.RPC_MUMBAI;
-  const bundlerUrl = Config.BUNDLER_MUMBAI;
-  const chainId = Config.CHAINID_MUMBAI;
-  const paymasterUrl = Config.PAYMASTER_MUMBAI;
+  function init(chainId) {
+    const chainData = getChainDetails(chainId);
 
-  function init() {
+    setRpcUrl(chainData.rpc);
+    setBundlerUrl(chainData.bundlerUrl);
+    setChainId(chainData.chainId);
+    setPaymasterUrl(chainData.paymasterUrl);
+
     const device = getItemFromStorage('device');
 
     if (device?.id) {

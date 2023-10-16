@@ -17,6 +17,7 @@ const Register = () => {
   const [deviceName, setDeviceName] = useState<string | null>(null);
   const [signer, setSigner] = useState<any>(null);
   const [buttonTitle, setButtonTitle] = useState<string>("Register");
+  const [defaultChainId] = useState<number>(80001);
 
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -58,7 +59,7 @@ const Register = () => {
   }
 
   async function getSmartWalletAddress() {
-    init();
+    init(defaultChainId);
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

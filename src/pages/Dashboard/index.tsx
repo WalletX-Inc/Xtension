@@ -15,7 +15,10 @@ function Dashboard() {
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
 
   const item = getItemFromStorage("smartAccount");
+  const chain = getItemFromStorage("network");
+
   const [SCW] = useState(item || null);
+  const [chainId] = useState(chain || null);
 
   const { smartAccountAddress, provider, init } = useConfig();
   const navigate = useNavigate();
@@ -23,7 +26,7 @@ function Dashboard() {
   useEffect(() => {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
-        init();
+        init(chainId);
       } else {
         let balance = await provider.getBalance(SCW || smartAccountAddress);
         balance = ethers.utils.formatEther(balance);
@@ -38,11 +41,6 @@ function Dashboard() {
   }, [smartAccountAddress, smartWalletAddress]);
 
   async function sendTx() {
-    console.log("sendTx");
-    toast.success("Transaction Sent Successfully !", {
-      icon: "🚀",
-      duration: 3000,
-    });
     navigate(`/dashboard/transaction/add-address`);
   }
 

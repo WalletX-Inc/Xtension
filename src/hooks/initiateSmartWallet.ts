@@ -25,7 +25,7 @@ export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId:
 
     login()
     setItemInStorage("smartAccount", smartAccountAddress);
-    setItemInStorage("network", "Polygon Mumbai (80001)");
+    setItemInStorage("network", chainId);
     setItemInStorage("isLoggedIn", true);
     setSmartAccountProvider(smartAccount);
     setSmartAccountAddress(smartAccountAddress);
