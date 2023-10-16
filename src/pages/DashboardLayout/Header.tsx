@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDropdown } from "react-icons/io";
+import {  AiOutlinePlus } from "react-icons/ai";
+import { ethers } from "ethers";
+
 import { useAuth } from "../../hooks/useAuth";
-import { setItemInStorage } from "../../utils/helper";
 import Modal from "../../components/common/Modal";
 import logoIcon from "../../assets/icons/icon16.png";
 import menuIcon from "../../assets/icons/menu.png";
-import ethIcon from "../../assets/icons/eth_logo.png";
 import Button from "../../components/common/Button";
-import {  AiOutlinePlus } from "react-icons/ai";
 import { useConfig } from "../../context/ConfigProvider";
-import { getItemFromStorage, getShortDisplayString } from "../../utils/helper";
-import { ethers } from "ethers";
+import { getItemFromStorage, getShortDisplayString, setItemInStorage } from "../../utils/helper";
+import Chains from "../../constants/chains";
 
 const navbarData = [
   {
@@ -42,18 +42,21 @@ export default function Header() {
   const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
   const [balance, setBalance] = useState(0);
   const [defaultChainId] = useState<number>(80001);
+  const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
 
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
 
   const item = getItemFromStorage("smartAccount");
+  const chain = getItemFromStorage("network");
   const [SCW] = useState(item || null);
+  const [chainId] = useState(chain);
 
   const { smartAccountAddress, provider, init } = useConfig();
 
   useEffect(() => {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
-        init(defaultChainId);
+        init(chainId || defaultChainId);
       } else {
         let balance = await provider.getBalance(SCW || smartAccountAddress);
         balance = ethers.utils.formatEther(balance);
@@ -67,8 +70,9 @@ export default function Header() {
     initializeSmartWallet();
   },[smartAccountAddress, smartWalletAddress]);
 
-  function handleNetworkSwitch(chain: any) {
-    init(chain.chainId);
+  function handleNetworkSwitch(chainId: number, chainUri: string) {
+    setCurrentChainLogo(chainUri);
+    init(chainId);
   }
 
   const navigate = useNavigate();
@@ -95,7 +99,7 @@ export default function Header() {
         >
           <img
             className="w-4 h-4 m-auto rounded-full"
-            src={ethIcon}
+            src={currentChainLogo}
             alt="ETH"
           />
           <IoIosArrowDropdown className="ml-2" />
@@ -190,19 +194,25 @@ export default function Header() {
             setOpenNetworkModal(false);
           }}
         >
-          <button onClick={() => handleNetworkSwitch({ chainId: 1 })}>
-            <div className="flex items-center space-x-4">
-              <div className="flex-shrink-0">
-                <img className="w-8 h-8 rounded-full" src={ethIcon} alt="ETH" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate dark:text-white">
-                  Ethereum Mainnet
-                </p>
-              </div>
-            </div>
-          </button>
+
+          { Chains.map((chain) => {
+            return (
+              <button onClick={() => { handleNetworkSwitch(chain.chainId, chain.chainUri) }}>
+                <div className="flex items-center space-x-4">
+                  <div className="flex-shrink-0">
+                    <img className="w-8 h-8 rounded-full" src={chain.chainUri} alt="ETH" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium truncate dark:text-white">
+                      {chain.name}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            )
+          })}
         </div>
+
         <Button
           className="text-white bg-gray-900 border hover:bg-gray-950 rounded-3xl flex justify-center m-auto
         transition duration-500 hover:scale-110 mt-24"
