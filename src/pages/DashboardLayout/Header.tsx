@@ -47,11 +47,20 @@ export default function Header() {
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
 
   const item = getItemFromStorage("smartAccount");
-  const chain = getItemFromStorage("network");
+  const storageChainId = getItemFromStorage("network");
   const [SCW] = useState(item || null);
-  const [chainId] = useState(chain);
+  const [chainId] = useState(storageChainId);
 
   const { smartAccountAddress, provider, init } = useConfig();
+
+  useEffect(() => {
+    if (storageChainId) {
+      const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
+      setCurrentChainLogo(currentChain?.[0]?.chainUri);
+    } else {
+      setCurrentChainLogo(Chains[0]?.chainUri);
+    }
+  }, [storageChainId]);
 
   useEffect(() => {
     async function initializeSmartWallet() {
@@ -70,9 +79,10 @@ export default function Header() {
     initializeSmartWallet();
   },[smartAccountAddress, smartWalletAddress]);
 
-  function handleNetworkSwitch(chainId: number, chainUri: string) {
+  const handleNetworkSwitch=(chainId: number, chainUri: string)=> {
     setCurrentChainLogo(chainUri);
     init(chainId);
+    setItemInStorage('network',chainId)
   }
 
   const navigate = useNavigate();
@@ -189,7 +199,7 @@ export default function Header() {
         headerText="Select an Network"
       >
         <div
-          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer"
+          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer max-h-60 overflow-auto"
           onClick={() => {
             setOpenNetworkModal(false);
           }}
@@ -197,10 +207,24 @@ export default function Header() {
 
           { Chains.map((chain) => {
             return (
-              <button onClick={() => { handleNetworkSwitch(chain.chainId, chain.chainUri) }}>
-                <div className="flex items-center space-x-4">
-                  <div className="flex-shrink-0">
-                    <img className="w-8 h-8 rounded-full" src={chain.chainUri} alt="ETH" />
+              <button
+                onClick={() =>
+                  handleNetworkSwitch(chain.chainId, chain.chainUri)
+                }
+              >
+                <div
+                  className={`flex items-center space-x-4 ${
+                    chain.chainId === storageChainId
+                      ? "border-l-4 rounded border-gray-400"
+                      : ""
+                  } `}
+                >
+                  <div className="flex-shrink-0 ml-2">
+                    <img
+                      className="w-8 h-8 rounded-full"
+                      src={chain.chainUri}
+                      alt="ETH"
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate dark:text-white">
@@ -209,13 +233,13 @@ export default function Header() {
                   </div>
                 </div>
               </button>
-            )
+            );
           })}
         </div>
 
         <Button
           className="text-white bg-gray-900 border hover:bg-gray-950 rounded-3xl flex justify-center m-auto
-        transition duration-500 hover:scale-110 mt-24"
+        transition duration-500 hover:scale-110 mt-10"
           onClick={() => {
             setOpenNetworkModal(true);
           }}
