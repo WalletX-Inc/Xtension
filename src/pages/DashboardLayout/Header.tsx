@@ -125,7 +125,7 @@ export default function Header() {
             setOpenAccountModal(true);
           }}
         >
-          Account 1
+          Smart Wallet
           <IoIosArrowDropdown className="mx-3" />
         </h1>
 
