@@ -43,13 +43,14 @@ export default function Header() {
   const [balance, setBalance] = useState(0);
   const [defaultChainId] = useState<number>(80001);
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
+  const [currentCoinName, setCurrentCoinName] = useState<string>("");
 
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
 
   const item = getItemFromStorage("smartAccount");
   const storageChainId = getItemFromStorage("network");
   const [SCW] = useState(item || null);
-  const [chainId] = useState(storageChainId);
+  const [chainId, setChainId] = useState(storageChainId);
 
   const { smartAccountAddress, provider, init } = useConfig();
 
@@ -57,8 +58,10 @@ export default function Header() {
     if (storageChainId) {
       const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
       setCurrentChainLogo(currentChain?.[0]?.chainUri);
+      setCurrentCoinName(currentChain?.[0]?.nativeAsset);
     } else {
       setCurrentChainLogo(Chains[0]?.chainUri);
+      setCurrentCoinName(Chains?.[0]?.nativeAsset);
     }
   }, [storageChainId]);
 
@@ -79,8 +82,10 @@ export default function Header() {
     initializeSmartWallet();
   },[smartAccountAddress, smartWalletAddress]);
 
-  const handleNetworkSwitch=(chainId: number, chainUri: string)=> {
+  const handleNetworkSwitch=(chainId: number, chainUri: string, nativeAsset: string)=> {
     setCurrentChainLogo(chainUri);
+    setChainId(chainId);
+    setCurrentCoinName(nativeAsset);
     init(chainId);
     setItemInStorage('network',chainId)
   }
@@ -185,7 +190,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {balance} ETH
+                {balance} {currentCoinName}
               </div>
             </div>
           </div>
@@ -209,7 +214,7 @@ export default function Header() {
             return (
               <button
                 onClick={() =>
-                  handleNetworkSwitch(chain.chainId, chain.chainUri)
+                  handleNetworkSwitch(chain.chainId, chain.chainUri, chain.nativeAsset)
                 }
               >
                 <div

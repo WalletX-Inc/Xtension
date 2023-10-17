@@ -9,10 +9,12 @@ import receive from "../../assets/arrow-down.png";
 import logoIcon from "../../assets/icons/icon16.png";
 import { getItemFromStorage, getShortDisplayString } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
+import Chains from "../../constants/chains";
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
+  const [currentCoinName, setCurrentCoinName] = useState<string>("");
 
   const item = getItemFromStorage("smartAccount");
   const chain = getItemFromStorage("network");
@@ -22,6 +24,8 @@ function Dashboard() {
 
   const { smartAccountAddress, provider, init } = useConfig();
   const navigate = useNavigate();
+
+  const storageChainId = getItemFromStorage("network");
 
   useEffect(() => {
     async function initializeSmartWallet() {
@@ -40,6 +44,15 @@ function Dashboard() {
     initializeSmartWallet();
   }, [smartAccountAddress, smartWalletAddress]);
 
+  useEffect(() => {
+    if (storageChainId) {
+      const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
+      setCurrentCoinName(currentChain?.[0]?.nativeAsset);
+    } else {
+      setCurrentCoinName(Chains?.[0]?.nativeAsset);
+    }
+  }, [storageChainId]);
+
   async function sendTx() {
     navigate(`/dashboard/transaction/add-address`);
   }
@@ -53,11 +66,10 @@ function Dashboard() {
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
         </div>
-        <h3 className="text-center text-3xl font-extrabold">{balance} ETH</h3>
+        <h3 className="text-center text-3xl font-extrabold">{balance} {currentCoinName}</h3>
 
         <div className="flex gap-5 justify-center item-center mt-5 text-center">
           <div
-            // onClick={openQrModal}
             className="flex flex-col justify-center item-center gap-2"
           >
             <img

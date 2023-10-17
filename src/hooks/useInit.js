@@ -23,10 +23,10 @@ export default function useInit() {
   const isLoggedIn = auth.isLoggedIn;
   
   useEffect(() => {
-    if (deviceId) {
+    if (deviceId || chainId) {
       getEOA();
     }
-  }, [deviceId]);
+  }, [deviceId, chainId]);
 
   useEffect(() => {
     if (provider) {
