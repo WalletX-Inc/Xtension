@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
-import { getShortDisplayString } from "../../utils/helper";
+import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import { gasState } from "../../state/GasState";
 import { tokenData } from "../../utils/tokenData/tokenData";
 
@@ -159,11 +159,9 @@ const ApproveTransacton = () => {
 
   if (transferData.length == 0) navigate("/dashboard");
 
-
-
   return (
     <>
-      <div className=" max-w-[350px] mx-auto mt-2 bg-[#1f1f20]">
+      <div className=" max-w-[350px] mx-auto mt-2 bg-[#1f1f20] overflow-y-hidden">
         <header className="mb-4 flex justify-between  ">
           <div className="flex flex-row items-center">
             <button
@@ -187,35 +185,73 @@ const ApproveTransacton = () => {
         {/* OverView */}
         <div className=" max-w-[325px] mx-auto">
           <div className="relative  mt-5">
-            <hr className="border-2 rounded-lg border-white opacity-70 " />
-            <h1 className="absolute top-[-15px] bg-[#1f1f20]  px-4 rounded-lg left-1/2 transform -translate-x-1/2 font-semibold text-2xl text-white">
+            <hr className="border rounded-lg border-white opacity-70 " />
+            <h1 className="absolute top-[-15px] bg-[#1f1f20]  px-4 rounded-lg left-1/2 transform -translate-x-1/2 font-semibold text-xl text-white">
               OverView
             </h1>
           </div>
-          <div className="mt-7">
-            {transferData.map((transaction) => {
+          <div className="mt-5 overflow-y-scroll  max-h-[315px]">
+            {transferData.map((transferData) => {
               return (
-                <div className="flex flex-row justify-center item-center text-center gap-2 border-2 border-white rounded-lg px-1 py-1 text-xl divide-x-2 divide-white mt-4 text-white">
-                  <p className="w-[50%] tracking-wider font-semibold text-xl ">
-                    {getShortDisplayString(transaction.address)}
-                  </p>
-                  <p className="w-[20%]  font-semibold ">
-                    {transaction.amount}
-                  </p>
-                  <p className="w-[20%] font-semibold ">
-                    {transaction.tokenSymbol}
-                  </p>
-                  <button
-                    onClick={() => openDeleteModal(transaction.uid)}
-                    className="flex item-center justify-center w-[10%]"
-                  >
-                    <img className="h-7" src={del} alt="delete button" />
-                  </button>
-                  <RemoveModal
-                    isOpen={isRemoveModalOpen}
-                    onCancel={closeDeleteModal}
-                    onRemove={handleRemove}
-                  />
+                // <div className="flex flex-row justify-center item-center text-center gap-2 border-2 border-white rounded-lg px-1 py-1 text-xl divide-x-2 divide-white mt-4 text-white">
+                //   <p className="w-[50%] tracking-wider font-semibold text-xl ">
+                //     {getShortDisplayString(transaction.address)}
+                //   </p>
+                //   <p className="w-[20%]  font-semibold ">
+                //     {transaction.amount}
+                //   </p>
+                //   <p className="w-[20%] font-semibold ">
+                //     {transaction.tokenSymbol}
+                //   </p>
+                //   <button
+                //     onClick={() => openDeleteModal(transaction.uid)}
+                //     className="flex item-center justify-center w-[10%]"
+                //   >
+                //     <img className="h-7" src={del} alt="delete button" />
+                //   </button>
+                //   <RemoveModal
+                //     isOpen={isRemoveModalOpen}
+                //     onCancel={closeDeleteModal}
+                //     onRemove={handleRemove}
+                //   />
+                // </div>
+                <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
+                  <div className=" bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
+                    <div className="flex justify-center item-center gap-2">
+                      <img
+                        className="h-7 border rounded-lg my-auto"
+                        src={generateAddressIcon(transferData.address)}
+                        alt="generate it from the token"
+                      />
+                      <p className="font-medium">
+                        {getShortDisplayString(transferData.address)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-2   justify-between w-full items-center   ">
+                    <div className="flex justify-center items-center gap-2">
+                      <img
+                        className="h-8 w-8 "
+                        src={maticLogo}
+                        alt="tokenIcon"
+                      />
+
+                      <div className="flex flex-col items-start ">
+                        <p>{transferData.tokenSymbol}</p>
+                        <p className="text-sm">{transferData.tokenName}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end ">
+                      <input
+                        className="bg-transparent  border-black outline-none max-w-[80px] text-right"
+                        type="number"
+                        value={transferData.amount}
+                        readOnly
+                      />
+                      <p className="text-sm ">$0.25</p>
+                    </div>
+                  </div>
                 </div>
               );
             })}
