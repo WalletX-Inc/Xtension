@@ -30,7 +30,7 @@ const ApproveTransacton = () => {
   const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
     useState<boolean>(false);
 
-  const [isGasModalVisible, setIsGasModalVisible] = useState<boolean>(true);
+  const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(true);
 
   const [gasData, setGasData] = useRecoilState(gasState);
 
@@ -81,7 +81,7 @@ const ApproveTransacton = () => {
   };
 
   const toggleGasDrawer = () => {
-    setIsGasModalVisible(!isGasModalVisible);
+    setIsGasDrawerVisible(!isGasDrawerVisible);
   };
 
   // FUNCTIONS RELATED TO GAS
@@ -101,7 +101,7 @@ const ApproveTransacton = () => {
       tokenAddress,
       tokenGasValue,
     });
-    setIsGasModalVisible(!isGasModalVisible);
+    setIsGasDrawerVisible(!isGasDrawerVisible);
   };
 
   const updateTokenData = () => {
@@ -169,9 +169,9 @@ const ApproveTransacton = () => {
             <button
               onClick={() => navigate("/dashboard/transaction/add-tokens")}
             >
-              <img className="h-12" src={backIcon} alt="backIcon" />
+              <img className="h-11" src={backIcon} alt="backIcon" />
             </button>
-            <h1 className="text-2xl font-semibold text-white">Edit</h1>
+            <h1 className="text-xl font-semibold text-white">Edit</h1>
           </div>
           <div className="felx justify-center item-center text-base font-semibold mr-2">
             <button
@@ -224,7 +224,7 @@ const ApproveTransacton = () => {
 
         {/* Gas and  Approve   */}
 
-        <div className="fixed left-1/2 translate-x-[-50%] bottom-0 flex flex-col item-center justify-center px-2 py-2   max-w-[350px] bg-transparent text-2xl font-bold w-full mx-auto">
+        <div className="fixed left-1/2 translate-x-[-50%] bottom-0 flex flex-col item-center justify-center  py-2   max-w-[350px] bg-transparent text-2xl font-bold w-full mx-auto">
           {/* FETCH THE TOKEN DETAILS FOR GAS FROM THE SELECTED TOKEN FOR GAS  */}
           <div className="flex w-[85%] items-center  justify-between text-white  text-base py-2 ">
             <h1 className="font-sans font-semibold text-lg">Gas</h1>
@@ -248,7 +248,7 @@ const ApproveTransacton = () => {
             </div>
           </div>
 
-          <div className="flex  w-[90%] border-2 border-gray-400 px-2 py-2 rounded-lg bg-gray-800 hover:bg-gray-900 items-center justify-center gap-3 text-xl text-white">
+          <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center gap-3 text-xl text-white min-w-[325px] max-w-[350px] ">
             <button
               onClick={() => {
                 console.log(transferData);
@@ -264,7 +264,7 @@ const ApproveTransacton = () => {
 
         <div
           className={`${
-            !isGasModalVisible ? "bottom-0" : " translate-y-full"
+            !isGasDrawerVisible ? "bottom-0" : " translate-y-full"
           }  fixed bottom-0   w-[350px] h-[350px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform `}
         >
           <h1 className="text-center font-semibold text-xl">

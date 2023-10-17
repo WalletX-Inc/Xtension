@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import backIcon from "../../assets/angle.svg";
 import del from "../../assets/delete.svg";
@@ -25,9 +25,22 @@ const AddTokens = () => {
     useState<string>("");
   const [isRemoveTokenModalOpen, setIsRemoveTokenModalOpen] = useState(false);
 
-  const [uidToRemoveToken, setUidToRemoveToken] = useState<
-    string 
-  >("");
+  const [uidToRemoveToken, setUidToRemoveToken] = useState<string>("");
+
+  const [enteredAmount, setEnteredAmount] = useState<number>(0);
+
+  const handelAmountChange = (uid: string) => {
+    setTransferData((prevData) =>
+      prevData.map((transferDetails) =>
+        transferDetails.uid == uid
+          ? {
+              ...transferDetails,
+              amount: enteredAmount,
+            }
+          : transferDetails
+      )
+    );
+  };
 
   // ADD TOKEN FUNCTIONS
   const openAddTokenModal = (uid: string) => {
@@ -40,7 +53,7 @@ const AddTokens = () => {
   };
 
   //  REMOVE TOKEN FUNCIOTNS
-  const openRemoveTokenModal = (uid: string ) => {
+  const openRemoveTokenModal = (uid: string) => {
     //
     setUidToRemoveToken(uid);
     setIsRemoveTokenModalOpen(true);
@@ -88,15 +101,14 @@ const AddTokens = () => {
       )
     );
     setIsRemoveAddressModalOpen(false);
-    
-    // Check this line and remove it 
+
+    // Check this line and remove it
     if (transferData.length == 0) {
       navigate("/dashboard/transaction/add-address");
     }
   };
 
   const handelProceedButton = () => {
-    console.log(transferData);
     const propertyName = "tokenSymbol";
     const tokenIsAddedForAll = transferData.every(
       (address) => !!address[propertyName]
@@ -116,7 +128,7 @@ const AddTokens = () => {
     setIsTokenAddedForAddresses(tokenIsAddedForAll);
   }, [transferData]);
 
-  if (transferData.length==0 ) navigate("/dashboard/transaction/add-address");
+  if (transferData.length == 0) navigate("/dashboard/transaction/add-address");
   return (
     <>
       <div className=" max-w-[350px] mx-auto  bg-[#1f1f20]  ">
@@ -125,9 +137,9 @@ const AddTokens = () => {
             <button
               onClick={() => navigate("/dashboard/transaction/add-address")}
             >
-              <img className="h-12" src={backIcon} alt="backIcon" />
+              <img className="h-11" src={backIcon} alt="backIcon" />
             </button>
-            <h1 className="text-2xl font-semibold mx-auto">Add Tokens</h1>
+            <h1 className="text-xl font-semibold mx-auto">Add Tokens</h1>
           </div>
         </header>
 
@@ -191,7 +203,12 @@ const AddTokens = () => {
                   {transferData.tokenSymbol ? (
                     <>
                       <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-2   justify-between w-full items-center   ">
-                        <div className="flex justify-center items-center gap-2">
+                        <div
+                          onClick={() => {
+                            openAddTokenModal(transferData.uid);
+                          }}
+                          className="flex justify-center items-center gap-2"
+                        >
                           <img
                             className="h-8 w-8 "
                             src={maticLogo}
@@ -205,7 +222,17 @@ const AddTokens = () => {
                         </div>
 
                         <div className="flex flex-col items-end ">
-                          <p>{transferData.amount}</p>
+                          <input
+                            className="bg-transparent  border-black outline-none max-w-[80px] text-right"
+                            type="number"
+                            defaultValue={transferData.amount}
+                            onChange={(e: any) => {
+                              setEnteredAmount(e.target.value);
+                            }}
+                            onBlurCapture={() =>
+                              handelAmountChange(transferData.uid)
+                            }
+                          />
                           <p className="text-sm ">$0.25</p>
                         </div>
                       </div>
@@ -286,9 +313,9 @@ const AddTokens = () => {
         disabled={isTokenAddedForAddresses ? false : true}
         className={`${
           !isTokenAddedForAddresses ? "text-opacity-50 " : ""
-        } bg-gray-950  border-gray-500 fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-3 min-w-[325px] max-w-[350px]  `}
+        } bg-gray-950 border-gray-500 hover:bg-black fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  `}
       >
-        <h1 className="text-2xl font-semibold tracking-wider">
+        <h1 className="text-xl font-semibold tracking-wider">
           {/* {isValid === false && enteredAddresses
             ? " Invalid Address"
             : " Next "} */}
