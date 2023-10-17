@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
 import { initiateEOA } from "./initiateEOA";
-import Config from "../config";
 import { getItemFromStorage } from "../utils/helper";
 import { useAuth } from "./useAuth";
+import { getChainDetails } from "../utils/helper";
 
 export default function useInit() {
   const [signer, setSigner] = useState(null);
@@ -13,26 +13,43 @@ export default function useInit() {
   const [smartAccountAddress, setSmartAccountAddress] = useState(null);
   const [provider, setProvider] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
+  const [rpcUrl, setRpcUrl] = useState(null);
+  const [bundlerUrl, setBundlerUrl] = useState(null);
+  const [chainId, setChainId] = useState(null);
+  const [paymasterUrl, setPaymasterUrl] = useState(null);
 
   const auth = useAuth();
-
-  const device = getItemFromStorage('device');
 
   const isLoggedIn = auth.isLoggedIn;
   
   useEffect(() => {
-    if (!deviceId) {
-      setDeviceId(device.id);
+    if (deviceId || chainId) {
       getEOA();
     }
-  }, [deviceId]);
+  }, [deviceId, chainId]);
 
-  const rpcUrl = Config.RPC_MUMBAI;
-  const bundlerUrl = Config.BUNDLER_MUMBAI;
-  const chainId = Config.CHAINID_MUMBAI;
-  const paymasterUrl = Config.PAYMASTER_MUMBAI;
+  useEffect(() => {
+    if (provider) {
+      getSmartWalletHandler();
+    }
+  }, [provider]);
 
-  const getEOA = initiateEOA(device.id, setSigner, rpcUrl, setProvider);
+  function init(chainId) {
+    const chainData = getChainDetails(chainId);
+
+    setRpcUrl(chainData.rpc);
+    setBundlerUrl(chainData.bundlerUrl);
+    setChainId(chainData.chainId);
+    setPaymasterUrl(chainData.paymasterUrl);
+
+    const device = getItemFromStorage('device');
+
+    if (device?.id) {
+      setDeviceId(device.id);
+    }
+  }
+
+  const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider);
   const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress);
 
   return {
@@ -42,5 +59,6 @@ export default function useInit() {
     provider,
     getSmartWalletHandler,
     getEOA,
+    init,
   };
 }

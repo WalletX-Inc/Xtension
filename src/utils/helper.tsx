@@ -1,3 +1,5 @@
+import Chains from '../constants/chains';
+
 export const getItemFromStorage: any = (
   key: string,
   storage: string = "localStorage"
@@ -40,3 +42,15 @@ export const getShortDisplayString: any = (address: string) => {
     </>
   );
 };
+
+export const getChainDetails: any = (chainId: number) => {
+  let chainData;
+
+  Chains.forEach((chain: any) => {
+    if (chain.chainId === chainId) {
+      chainData = chain;
+    }
+  });
+
+  return chainData;
+}

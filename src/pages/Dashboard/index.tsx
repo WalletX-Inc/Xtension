@@ -1,37 +1,36 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import send from "../../assets/arrow-up.png";
-import receive from "../../assets/arrow-down.png";
-
-import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
+import send from "../../assets/arrow-up.png";
+import receive from "../../assets/arrow-down.png";
 import logoIcon from "../../assets/icons/icon16.png";
 import { getItemFromStorage, getShortDisplayString } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
+import Chains from "../../constants/chains";
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
+  const [currentCoinName, setCurrentCoinName] = useState<string>("");
 
   const item = getItemFromStorage("smartAccount");
-  const [SCW, setSCW] = useState(item || null);
+  const chain = getItemFromStorage("network");
 
-  const { getSmartWalletHandler, smartAccountAddress, provider } = useConfig();
+  const [SCW] = useState(item || null);
+  const [chainId] = useState(chain || null);
+
+  const { smartAccountAddress, provider, init } = useConfig();
   const navigate = useNavigate();
-  async function sendTx() {
-    console.log("sendTx");
-    toast.success("Transaction Sent Successfully !", {
-      icon: "🚀",
-      duration: 3000,
-    });
-    navigate(`/dashboard/transaction/add-address`);
-  }
+
+  const storageChainId = getItemFromStorage("network");
+
   useEffect(() => {
     async function initializeSmartWallet() {
-      if (!SCW || !smartAccountAddress) {
-        await getSmartWalletHandler();
-        setSCW(smartAccountAddress);
+      if (!smartAccountAddress) {
+        init(chainId);
       } else {
         let balance = await provider.getBalance(SCW || smartAccountAddress);
         balance = ethers.utils.formatEther(balance);
@@ -43,7 +42,20 @@ function Dashboard() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
-  }, [SCW, getSmartWalletHandler, provider, smartAccountAddress]);
+  }, [smartAccountAddress, smartWalletAddress]);
+
+  useEffect(() => {
+    if (storageChainId) {
+      const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
+      setCurrentCoinName(currentChain?.[0]?.nativeAsset);
+    } else {
+      setCurrentCoinName(Chains?.[0]?.nativeAsset);
+    }
+  }, [storageChainId]);
+
+  async function sendTx() {
+    navigate(`/dashboard/transaction/add-address`);
+  }
 
   return (
     <>
@@ -54,11 +66,10 @@ function Dashboard() {
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
         </div>
-        <h3 className="text-center text-3xl font-extrabold">{balance} ETH</h3>
+        <h3 className="text-center text-3xl font-extrabold">{balance} {currentCoinName}</h3>
 
         <div className="flex gap-5 justify-center item-center mt-5 text-center">
           <div
-            // onClick={openQrModal}
             className="flex flex-col justify-center item-center gap-2"
           >
             <img

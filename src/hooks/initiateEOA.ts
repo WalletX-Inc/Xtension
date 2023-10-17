@@ -3,6 +3,11 @@ import { setItemInStorage } from "../utils/helper";
 
 export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any) {
   return () => {
+    if (!credentialId) {
+      console.log("[Hooks] No credentialId");
+      return;
+    }
+
     const inputBytes = ethers.utils.toUtf8Bytes(credentialId);
     const hash = ethers.utils.keccak256(inputBytes);
 

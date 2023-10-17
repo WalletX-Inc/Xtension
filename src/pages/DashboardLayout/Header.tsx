@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDropdown } from "react-icons/io";
+import {  AiOutlinePlus } from "react-icons/ai";
+import { ethers } from "ethers";
+
 import { useAuth } from "../../hooks/useAuth";
-import { setItemInStorage } from "../../utils/helper";
 import Modal from "../../components/common/Modal";
 import logoIcon from "../../assets/icons/icon16.png";
 import menuIcon from "../../assets/icons/menu.png";
-import ethIcon from "../../assets/icons/eth_logo.png";
 import Button from "../../components/common/Button";
-import {  AiOutlinePlus } from "react-icons/ai";
+import { useConfig } from "../../context/ConfigProvider";
+import { getItemFromStorage, getShortDisplayString, setItemInStorage } from "../../utils/helper";
+import Chains from "../../constants/chains";
 
 const navbarData = [
   {
@@ -37,6 +40,55 @@ export default function Header() {
   const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
   const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
+  const [balance, setBalance] = useState(0);
+  const [defaultChainId] = useState<number>(80001);
+  const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
+  const [currentCoinName, setCurrentCoinName] = useState<string>("");
+
+  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
+
+  const item = getItemFromStorage("smartAccount");
+  const storageChainId = getItemFromStorage("network");
+  const [SCW] = useState(item || null);
+  const [chainId, setChainId] = useState(storageChainId);
+
+  const { smartAccountAddress, provider, init } = useConfig();
+
+  useEffect(() => {
+    if (storageChainId) {
+      const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
+      setCurrentChainLogo(currentChain?.[0]?.chainUri);
+      setCurrentCoinName(currentChain?.[0]?.nativeAsset);
+    } else {
+      setCurrentChainLogo(Chains[0]?.chainUri);
+      setCurrentCoinName(Chains?.[0]?.nativeAsset);
+    }
+  }, [storageChainId]);
+
+  useEffect(() => {
+    async function initializeSmartWallet() {
+      if (!smartAccountAddress) {
+        init(chainId || defaultChainId);
+      } else {
+        let balance = await provider.getBalance(SCW || smartAccountAddress);
+        balance = ethers.utils.formatEther(balance);
+
+        setBalance(balance);
+      }
+    }
+
+    setSmartWalletAddress(SCW || smartAccountAddress);
+
+    initializeSmartWallet();
+  },[smartAccountAddress, smartWalletAddress]);
+
+  const handleNetworkSwitch=(chainId: number, chainUri: string, nativeAsset: string)=> {
+    setCurrentChainLogo(chainUri);
+    setChainId(chainId);
+    setCurrentCoinName(nativeAsset);
+    init(chainId);
+    setItemInStorage('network',chainId)
+  }
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -62,7 +114,7 @@ export default function Header() {
         >
           <img
             className="w-4 h-4 m-auto rounded-full"
-            src={ethIcon}
+            src={currentChainLogo}
             alt="ETH"
           />
           <IoIosArrowDropdown className="ml-2" />
@@ -73,7 +125,7 @@ export default function Header() {
             setOpenAccountModal(true);
           }}
         >
-          Account 1
+          Smart Wallet
           <IoIosArrowDropdown className="mx-3" />
         </h1>
 
@@ -133,14 +185,13 @@ export default function Header() {
             <div className="flex-1 min-w-0">
               <p className="font-medium truncate dark:text-white">Account 1</p>
               <p className="text-sm truncate dark:text-gray-400">
-                0x1123...2432
+                {getShortDisplayString(SCW || setSmartWalletAddress)}
               </p>
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                0 ETH
+                {balance} {currentCoinName}
               </div>
-              <div>$0.00 USD</div>
             </div>
           </div>
         </div>
@@ -153,25 +204,47 @@ export default function Header() {
         headerText="Select an Network"
       >
         <div
-          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer"
+          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer max-h-60 overflow-auto"
           onClick={() => {
             setOpenNetworkModal(false);
           }}
         >
-          <div className="flex items-center space-x-4">
-            <div className="flex-shrink-0">
-              <img className="w-8 h-8 rounded-full" src={ethIcon} alt="ETH" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate dark:text-white">
-                Ethereum Mainnet
-              </p>
-            </div>
-          </div>
+
+          { Chains.map((chain) => {
+            return (
+              <button
+                onClick={() =>
+                  handleNetworkSwitch(chain.chainId, chain.chainUri, chain.nativeAsset)
+                }
+              >
+                <div
+                  className={`flex items-center space-x-4 ${
+                    chain.chainId === storageChainId
+                      ? "border-l-4 rounded border-gray-400"
+                      : ""
+                  } `}
+                >
+                  <div className="flex-shrink-0 ml-2">
+                    <img
+                      className="w-8 h-8 rounded-full"
+                      src={chain.chainUri}
+                      alt="ETH"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium truncate dark:text-white">
+                      {chain.name}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
+
         <Button
           className="text-white bg-gray-900 border hover:bg-gray-950 rounded-3xl flex justify-center m-auto
-        transition duration-500 hover:scale-110 mt-24"
+        transition duration-500 hover:scale-110 mt-10"
           onClick={() => {
             setOpenNetworkModal(true);
           }}
