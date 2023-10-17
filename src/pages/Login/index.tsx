@@ -11,7 +11,6 @@ import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
 import icon128 from "../../assets/icons/mainLogo.png";
 
 function Login() {
-  console.log('Login');
   const [deviceName, setDeviceName] = useState<string | null>(null);
 
   const navigate = useNavigate()

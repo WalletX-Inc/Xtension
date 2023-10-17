@@ -1,4 +1,5 @@
 import { toSvg } from "jdenticon";
+import Chains from '../constants/chains';
 
 export const getItemFromStorage: any = (
   key: string,
@@ -49,3 +50,16 @@ export const generateAddressIcon = (address: string) => {
   const url = URL.createObjectURL(svg);
   return url;
 };
+
+
+export const getChainDetails: any = (chainId: number) => {
+  let chainData;
+
+  Chains.forEach((chain: any) => {
+    if (chain.chainId === chainId) {
+      chainData = chain;
+    }
+  });
+
+  return chainData;
+}

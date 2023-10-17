@@ -4,25 +4,28 @@ import AppRoutes from "./routes";
 import { AuthProvider } from "./hooks/useAuth";
 import { RecoilRoot } from "recoil";
 import { Toaster } from "react-hot-toast";
+import ConfigProvider from "./context/ConfigProvider";
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <RecoilRoot>
-          <AppRoutes />
-          <Toaster
-            toastOptions={{
-              style: {
-                border: "1px solid white",
-                color: "white",
-                background: "#030712",
-              },
-            }}
-          />
-        </RecoilRoot>
-      </AuthProvider>
-    </BrowserRouter>
+    <ConfigProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <RecoilRoot>
+            <AppRoutes />
+            <Toaster
+              toastOptions={{
+                style: {
+                  border: "1px solid white",
+                  color: "white",
+                  background: "#030712",
+                },
+              }}
+            />
+          </RecoilRoot>
+        </AuthProvider>
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }
 
