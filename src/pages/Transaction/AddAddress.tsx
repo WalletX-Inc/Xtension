@@ -134,7 +134,7 @@ const AddAddresses = () => {
   }, [enteredAddresses,cardAddress, selectedCardIndex, sendToAddresses]);
 
   return (
-    <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-black h-full text-white">
+    <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
       <header className="mb-4">
         <div className="flex flex-row items-center">
           <button onClick={() => navigate("/dashboard")}>
@@ -207,7 +207,7 @@ const AddAddresses = () => {
 
       <button
         onClick={handelProceed}
-        disabled={sendToAddresses && isCardSelected ?  false : true}
+        disabled={sendToAddresses && isCardSelected ? false : true}
         className={` ${
           isValid === false && enteredAddresses
             ? " bg-red-500 border-red-700"

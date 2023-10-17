@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { getShortDisplayString } from "../utils/helper";
-import { toSvg } from "jdenticon";
+import { generateAddressIcon, getShortDisplayString } from "../utils/helper";
 
 type addressesProps = {
   name: string;
@@ -22,17 +20,6 @@ const AddressCard = ({
     getClickedAddress(clickedAddress);
   };
 
-  const [pfpUrl, setPfpUrl] = useState("");
-  const createRandomPFP = (address: string) => {
-    const svgString = toSvg(address, 100);
-    const svg = new Blob([svgString], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(svg);
-    setPfpUrl(url);
-  };
-
-  useEffect(() => {
-    createRandomPFP(addresses);
-  }, []);
 
   return (
     <>
@@ -49,7 +36,7 @@ const AddressCard = ({
           }`}
         >
           <img
-            src={pfpUrl}
+            src={generateAddressIcon(addresses)}
             alt="Address Logo"
             className="min-w-[20%] w-15 h-15 rounded-xl object-cover mr-4 border"
           />

@@ -83,7 +83,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 flex items-start justify-center z-50 bg-black bg-opacity-50 ">
-      <div className="relative w-[335px] mx-auto border border-black shadow-lg rounded-lg bg-white mt-10 ">
+      <div className="relative w-[335px] mx-auto border border-black shadow-lg rounded-lg bg-white  text-black mt-10 ">
         <>
           <h1 className="m-4 text-xl font-semibold ">Select Token</h1>
           <button

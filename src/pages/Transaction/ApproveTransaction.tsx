@@ -163,11 +163,11 @@ const ApproveTransacton = () => {
 
   return (
     <>
-      <div className=" max-w-[350px] mx-auto mt-2">
+      <div className=" max-w-[350px] mx-auto mt-2 bg-[#1f1f20]">
         <header className="mb-4 flex justify-between  ">
           <div className="flex flex-row items-center">
             <button
-              onClick={() => navigate("/dashboard/transaction/add-address")}
+              onClick={() => navigate("/dashboard/transaction/add-tokens")}
             >
               <img className="h-12" src={backIcon} alt="backIcon" />
             </button>
@@ -188,7 +188,7 @@ const ApproveTransacton = () => {
         <div className=" max-w-[325px] mx-auto">
           <div className="relative  mt-5">
             <hr className="border-2 rounded-lg border-white opacity-70 " />
-            <h1 className="absolute top-[-15px] bg-black  px-4 rounded-lg left-1/2 transform -translate-x-1/2 font-semibold text-2xl text-white">
+            <h1 className="absolute top-[-15px] bg-[#1f1f20]  px-4 rounded-lg left-1/2 transform -translate-x-1/2 font-semibold text-2xl text-white">
               OverView
             </h1>
           </div>

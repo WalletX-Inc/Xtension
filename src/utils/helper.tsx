@@ -1,3 +1,5 @@
+import { toSvg } from "jdenticon";
+
 export const getItemFromStorage: any = (
   key: string,
   storage: string = "localStorage"
@@ -39,4 +41,11 @@ export const getShortDisplayString: any = (address: string) => {
       {firstFourDigit}...{lastFourDigit}
     </>
   );
+};
+
+export const generateAddressIcon = (address: string) => {
+  const svgString = toSvg(address, 100);
+  const svg = new Blob([svgString], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(svg);
+  return url;
 };
