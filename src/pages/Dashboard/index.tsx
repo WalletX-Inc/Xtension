@@ -1,12 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import send from "../../assets/arrow-up.png";
 import receive from "../../assets/arrow-down.png";
-import logoIcon from "../../assets/icons/icon16.png";
 import { generateAddressIcon, getItemFromStorage, getShortDisplayString } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";

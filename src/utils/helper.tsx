@@ -51,7 +51,6 @@ export const generateAddressIcon = (address: string) => {
   return url;
 };
 
-
 export const getChainDetails: any = (chainId: number) => {
   let chainData;
 
