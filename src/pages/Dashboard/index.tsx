@@ -3,8 +3,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import send from "../../assets/arrow-up.png";
 import receive from "../../assets/arrow-down.png";
+import send from "../../assets/arrow-up.png";
+import swap from "../../assets/swap.png";
+import bridge from "../../assets/rainbow.png";
+
 import {
   generateAddressIcon,
   getItemFromStorage,
@@ -79,27 +82,43 @@ function Dashboard() {
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
         </div>
-        <h3 className="text-center text-3xl font-extrabold">
+        <h3 className="text-center text-2xl font-extrabold">
           {balance} {currentCoinName}
         </h3>
 
-        <div className="flex gap-5 justify-center item-center mt-5 text-center">
+        <div className="flex gap-7 justify-center item-center mt-5 text-center">
           <div className="flex flex-col justify-center item-center gap-2">
             <img
-              className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={receive}
               alt="receiveButton"
             />
-            <h1 className="text-base font-medium">Recieve</h1>
+            <h1 className="text-base font-thin tracking-wider">Recieve</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
             <img
               onClick={() => sendTx()}
-              className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={send}
               alt="sendButton"
             />
-            <h1 className="text-base font-medium">Send</h1>
+            <h1 className="text-base font-thin tracking-wider">Send</h1>
+          </div>
+          <div className="flex flex-col justify-center item-center gap-2">
+            <img
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={swap}
+              alt="swapButton"
+            />
+            <h1 className="text-base font-thin tracking-wider">Swap</h1>
+          </div>
+          <div className="flex flex-col justify-center item-center gap-2">
+            <img
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={bridge}
+              alt="bridgeButton"
+            />
+            <h1 className="text-base font-thin tracking-wider">Bridge</h1>
           </div>
         </div>
       </div>
