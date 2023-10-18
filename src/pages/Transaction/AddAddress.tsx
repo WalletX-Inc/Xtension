@@ -9,7 +9,6 @@ import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
 
-
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
 
@@ -86,7 +85,7 @@ const AddAddresses = () => {
           getClickedAddress={receivedAddress}
           onClick={() => {
             handleCardClick(1);
-            setIsCardSelected(!isCardSelected)
+            setIsCardSelected(!isCardSelected);
           }}
         />
       </>
@@ -96,7 +95,7 @@ const AddAddresses = () => {
   const handleInputChange = (e: any) => {
     const inputValue = e.target.value;
     setEnteredAddresses(inputValue);
-    setCardAddress(inputValue)
+    setCardAddress(inputValue);
   };
   const handleFocus = () => {
     setSendToAddresses("");
@@ -126,21 +125,20 @@ const AddAddresses = () => {
 
   useEffect(() => {
     setIsValid(isEthereumAddress(enteredAddresses));
-    setIsValid(isEthereumAddress(cardAddress))
+    setIsValid(isEthereumAddress(cardAddress));
     if (isValid === true) {
-
       setSendToAddresses(cardAddress);
     }
-  }, [enteredAddresses,cardAddress, selectedCardIndex, sendToAddresses]);
+  }, [enteredAddresses, cardAddress, selectedCardIndex, sendToAddresses]);
 
   return (
-    <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-black h-full text-white">
+    <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
       <header className="mb-4">
         <div className="flex flex-row items-center">
           <button onClick={() => navigate("/dashboard")}>
-            <img className="h-12" src={backIcon} alt="backIcon" />
+            <img className="h-11" src={backIcon} alt="backIcon" />
           </button>
-          <h1 className="text-2xl font-semibold mx-auto">Select Address</h1>
+          <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
           {/* <button
             onClick={openAddAddressesModal}
             title="Add More Addresses"
@@ -207,19 +205,19 @@ const AddAddresses = () => {
 
       <button
         onClick={handelProceed}
-        disabled={sendToAddresses && isCardSelected ?  false : true}
+        disabled={sendToAddresses && isCardSelected ? false : true}
         className={` ${
           isValid === false && enteredAddresses
             ? " bg-red-500 border-red-700"
-            : " bg-gray-950 "
+            : " bg-gray-950 hover:bg-black"
         }  
-        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-3 min-w-[325px] max-w-[350px] ${
+        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  ${
           sendToAddresses && isCardSelected
             ? "border-white "
-            : "text-opacity-50 bg-gray-950 border-gray-500"
+            : "text-gray-200 bg-gray-950 border-gray-500"
         }`}
       >
-        <h1 className="text-2xl font-semibold tracking-wider">
+        <h1 className="text-xl font-semibold tracking-wider">
           {isValid === false && enteredAddresses
             ? " Invalid Address"
             : " Next "}

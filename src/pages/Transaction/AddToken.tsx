@@ -1,63 +1,114 @@
-import React, { useEffect, useState } from "react";
-import { getShortDisplayString } from "../../utils/helper";
+import { useEffect, useState } from "react";
+import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import backIcon from "../../assets/angle.svg";
-import remove from "../../assets/x.png";
-import del from "../../assets/delete.png";
-import edit from "../../assets/edit.png";
+import del from "../../assets/delete.svg";
 import addMoreAddress from "../../assets/add-user.svg";
 import { useNavigate } from "react-router-dom";
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
-import {  useRecoilState } from "recoil";
-import { transferState } from"../../state/TransferState";
+import { useRecoilState } from "recoil";
+import { transferState } from "../../state/TransferState";
+import maticLogo from "../../assets/matic-logo.png";
 
 const AddTokens = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
 
   const navigate = useNavigate();
-  const [isTokenModalOpen, setTokenModalOpen] = useState(false);
-  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const [isTokenModalOpen, setTokenModalOpen] = useState<boolean>(false);
+  const [isRemoveAddressModalOpen, setIsRemoveAddressModalOpen] =
+    useState(false);
+
   const [isTokenAddedForAddresses, setIsTokenAddedForAddresses] =
     useState(false);
-  const [uidToRemoveAddress, setUidToRemoveAddress] = useState("");
-  const [uidToAddTokenToAddress, setUidToAddTokenToAddress] = useState("");
+  const [uidToRemoveAddress, setUidToRemoveAddress] = useState<string>("");
+  const [uidToAddTokenToAddress, setUidToAddTokenToAddress] =
+    useState<string>("");
+  const [isRemoveTokenModalOpen, setIsRemoveTokenModalOpen] = useState(false);
 
+  const [uidToRemoveToken, setUidToRemoveToken] = useState<string>("");
+
+  const [enteredAmount, setEnteredAmount] = useState<number>(0);
+
+  const handelAmountChange = (uid: string) => {
+    setTransferData((prevData) =>
+      prevData.map((transferDetails) =>
+        transferDetails.uid == uid
+          ? {
+              ...transferDetails,
+              amount: enteredAmount,
+            }
+          : transferDetails
+      )
+    );
+  };
+
+  // ADD TOKEN FUNCTIONS
   const openAddTokenModal = (uid: string) => {
     setUidToAddTokenToAddress(uid);
     setTokenModalOpen(true);
   };
 
-  const closeTokenModal = () => {
+  const closeAddTokenModal = () => {
     setTokenModalOpen(false);
   };
 
-  const handleOpenRemoveModal = (uid: string) => {
+  //  REMOVE TOKEN FUNCIOTNS
+  const openRemoveTokenModal = (uid: string) => {
+    //
+    setUidToRemoveToken(uid);
+    setIsRemoveTokenModalOpen(true);
+  };
+
+  const closeRemoveTokenModal = () => {
+    setIsRemoveTokenModalOpen(false);
+  };
+
+  const handelRemoveToken = () => {
+    setTransferData((prevData) =>
+      prevData.map((transferDetails) =>
+        transferDetails.uid == uidToRemoveToken
+          ? {
+              ...transferDetails,
+              tokenName: "",
+              tokenSymbol: "",
+              tokenAddress: "",
+              tokenBalance: 0,
+              tokenDecimal: 0,
+              amount: 0,
+            }
+          : transferDetails
+      )
+    );
+    console.log(transferData);
+    setIsRemoveTokenModalOpen(false);
+  };
+
+  // Reomve Address Functions
+  const openRemoveAddressModal = (uid: string) => {
     setUidToRemoveAddress(uid);
-    setIsRemoveModalOpen(true);
+    setIsRemoveAddressModalOpen(true);
     console.log("Model Should Open");
   };
 
-  const handleCloseRemoveModal = () => {
-    setIsRemoveModalOpen(false);
-    console.log("no action was taken");
+  const closeRemoveAddressModal = () => {
+    setIsRemoveAddressModalOpen(false);
   };
 
-  const handleRemove = () => {
-    // Logic to handle remove action
+  const handleRemoveAddress = () => {
     setTransferData((prevAddresses) =>
       prevAddresses.filter(
         (transferDetails) => transferDetails.uid !== uidToRemoveAddress
       )
     );
-    setIsRemoveModalOpen(false); // Close the modal after removing
-    // Write the logic here for going on send screen if no address in on the token
+    setIsRemoveAddressModalOpen(false);
+
+    // Check this line and remove it
     if (transferData.length == 0) {
-      navigate("/dashboard/send/approvetransaction");
+      navigate("/dashboard/transaction/add-address");
     }
   };
 
   const handelProceedButton = () => {
-    console.log(transferData);
     const propertyName = "tokenSymbol";
     const tokenIsAddedForAll = transferData.every(
       (address) => !!address[propertyName]
@@ -77,143 +128,184 @@ const AddTokens = () => {
     setIsTokenAddedForAddresses(tokenIsAddedForAll);
   }, [transferData]);
 
-  // if (transferData.length==0 ) navigate("/dashboard/send")
+  if (transferData.length == 0) navigate("/dashboard/transaction/add-address");
   return (
     <>
-      <div className=" max-w-[350px] mx-auto pb-28 ">
+      <div className=" max-w-[350px] mx-auto  bg-[#1f1f20]  ">
         <header className="mb-4">
           <div className="flex flex-row items-center text-white">
             <button
               onClick={() => navigate("/dashboard/transaction/add-address")}
             >
-              <img className="h-12" src={backIcon} alt="backIcon" />
+              <img className="h-11" src={backIcon} alt="backIcon" />
             </button>
-            <h1 className="text-2xl font-semibold mx-auto">Add Tokens</h1>
+            <h1 className="text-xl font-semibold mx-auto">Add Tokens</h1>
           </div>
         </header>
 
+        {/* Pass the address of our wallet  */}
+        <div className="flex justify-between items-start bg-gray-800  border border-gray-700  w-full max-w-[325px] mx-auto py-2 px-3 rounded-xl text-gray-200">
+          <div>
+            <h1 className="text-xl text-gray-300 font-semibold">From</h1>
+            <div className="flex gap-2 justify-center items-center">
+              <img
+                className="h-6 rounded-lg border  border-white"
+                src={generateAddressIcon("abc")}
+                alt="address icon "
+              />
+              <p className="text-sm font-semibold tracking-wide ">
+                {" "}
+                Ox1Sbs...Shak
+              </p>
+            </div>
+          </div>
+          <div className="text-base text-gray-200 my-auto flex justify-center item-center gap-2 ">
+            <img
+              className="h-7 border rounded-full p-1 "
+              src={maticLogo}
+              alt=""
+            />
+            <p className="font-medium">Polygon</p>
+          </div>
+        </div>
+
         {/* CardSection  */}
-        <>
+        <div className="overflow-y-scroll max-h-[450px]  mt-2">
           {transferData.map((transferData) => {
             return (
-              <div className=" max-w-[325px] relative flex flex-col  bg-white rounded-xl shadow-md px-4 py-2 border-2 border-solid border-gray-600  border-opacity-70 mt-3 mx-auto">
-                <div className="flex flex-row items-center">
-                  <img
-                    src={""}
-                    alt="Address Logo"
-                    className=" h-12 rounded-full object-cover mr-4 border-2 border-gray-400"
-                  />
-                  <div className="min-w-[70%]">
-                    {/* <p className="text-xl font-semibold">{"Shakti"} </p> */}
-                    <p className="text-lg font-semibold overflow-hidden text-gray-600">
-                      {getShortDisplayString(transferData.address)}
-                    </p>
+              <>
+                <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
+                  <div className=" flex  justify-between   bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
+                    <div className="flex justify-center item-center gap-2">
+                      <img
+                        className="h-7 border rounded-lg my-auto"
+                        src={generateAddressIcon(transferData.address)}
+                        alt="generate it from the token"
+                      />
+                      <p className="font-medium">
+                        {getShortDisplayString(transferData.address)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        openRemoveAddressModal(transferData.uid);
+                      }}
+                    >
+                      <img
+                        className=" h-6  "
+                        src={del}
+                        alt="delete the address  "
+                      />
+                    </button>
                   </div>
-                </div>
-                <button
-                  onClick={() => {
-                    handleOpenRemoveModal(transferData.uid);
-                  }}
-                  className="absolute right-1 top-1 opacity-60"
-                >
-                  <img
-                    className=" h-8  "
-                    src={remove}
-                    alt="delete the address  "
+
+                  {/* TOKEN CARD SECTION */}
+                  {transferData.tokenSymbol ? (
+                    <>
+                      <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-2   justify-between w-full items-center   ">
+                        <div
+                          onClick={() => {
+                            openAddTokenModal(transferData.uid);
+                          }}
+                          className="flex justify-center items-center gap-2"
+                        >
+                          <img
+                            className="h-8 w-8 "
+                            src={maticLogo}
+                            alt="tokenIcon"
+                          />
+
+                          <div className="flex flex-col items-start ">
+                            <p>{transferData.tokenSymbol}</p>
+                            <p className="text-sm">{transferData.tokenName}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col items-end ">
+                          <input
+                            className="bg-transparent  border-black outline-none max-w-[80px] text-right"
+                            type="number"
+                            defaultValue={transferData.amount}
+                            onChange={(e: any) => {
+                              setEnteredAmount(e.target.value);
+                            }}
+                            onBlurCapture={() =>
+                              handelAmountChange(transferData.uid)
+                            }
+                          />
+                          <p className="text-sm ">$0.25</p>
+                        </div>
+                      </div>
+
+                      {/* balance and remove token  */}
+                      <div className="flex justify-between px-2 text-sm ">
+                        <p className="font-semibold">
+                          Balance <span>{transferData.tokenBalance}</span>
+                        </p>
+                        {/* Make a function to create the data of tokens added from the transferData  */}
+                        <button
+                          onClick={() => {
+                            openRemoveTokenModal(transferData.uid);
+                          }}
+                          className="text-red-500 font-semibold"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="self-center  bg-gray-900 border border-black  px-2 py-1 rounded-lg mt-2 text-white  ">
+                        <button
+                          onClick={() => {
+                            openAddTokenModal(transferData.uid);
+                          }}
+                          className="font-semibold tracking-widest "
+                        >
+                          Select Asset
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {/* MODAL FOR SELECTING THE TOKENS  */}
+                  <SearchToken
+                    isOpen={isTokenModalOpen}
+                    onClose={closeAddTokenModal}
+                    uid={uidToAddTokenToAddress}
                   />
-                </button>
-
-                {/* TOKEN CARD SECTION */}
-                {transferData.tokenSymbol ? (
-                  <>
-                    <div className="flex my-3 justify-center item-center gap-2 bg-gray-50 p-2 rounded-lg border shadow-md divide-x-2 divide-black divide-opacity-50">
-                      <div className="w-[90%] flex items-center justify-between mx-1 ">
-                        <div className="flex  flex-col gap-3">
-                          <p>
-                            Assest: <span>{transferData.tokenSymbol}</span>
-                          </p>
-                          <p>
-                            Balance: <span>{transferData.tokenBalance}</span>
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-start flex-col gap-3 px-5">
-                          <p>
-                            Amount: <span>{transferData.amount}</span>
-                            {/* <input
-                  type="text"
-                  className="border-b-2 border-black bg-transparent outline-none max-w-[80px]"
-                /> */}
-                          </p>
-                          <p>
-                            INR: <span>calculate</span>
-                          </p>
-                        </div>
-                      </div>
-                      <div className=" flex flex-col items-end justify-center gap-2 w-[10%]">
-                        <button
-                          onClick={() => {
-                            console.log("open and modal and remove the token");
-                          }}
-                        >
-                          <img src={del} className="h-6" alt="deleteToken" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            console.log("open and modal and remove the token");
-                          }}
-                        >
-                          <img src={edit} className="h-6" alt="deleteToken" />
-                        </button>
-                      </div>
-                    </div>
-                    
-                  </>
-                ) : (
-                  <>
-                    <div className="self-center  bg-blue-400 border border-blue-700 border-opacity-50 px-2 py-1 rounded-lg mt-2 text-white  ">
-                      <button
-                        onClick={() => {
-                          openAddTokenModal(transferData.uid);
-                        }}
-                        className="font-semibold tracking-widest "
-                      >
-                        Add Tokens
-                      </button>
-                    </div>
-                  </>
-                )}
-
-                {/* MODAL FOR SELECTING THE TOKENS  */}
-                <SearchToken
-                  isOpen={isTokenModalOpen}
-                  onClose={closeTokenModal}
-                  uid={uidToAddTokenToAddress}
-                />
-              </div>
+                </div>
+              </>
             );
           })}
-        </>
-
-        <RemoveModal
-          onCancel={handleCloseRemoveModal}
-          onRemove={handleRemove}
-          isOpen={isRemoveModalOpen}
-        />
-
-        {/* Add more addresses  */}
-        <div className="flex justify-center item-center mt-10  ">
-          <button
-            onClick={() => {
-              navigate("/dashboard/transaction/add-address");
-            }}
-          >
-            <img
-              className="h-16 "
-              src={addMoreAddress}
-              alt="add more addresses"
-            />
-          </button>
+          {/* Add more addresses  */}
+          <div className="flex justify-center item-center mt-10 pb-28  ">
+            <button
+              onClick={() => {
+                navigate("/dashboard/transaction/add-address");
+              }}
+            >
+              <img
+                className="h-16 "
+                src={addMoreAddress}
+                alt="add more addresses"
+              />
+            </button>
+          </div>
         </div>
+
+        {/* Modal to remove Address  */}
+        <RemoveModal
+          onCancel={closeRemoveAddressModal}
+          onRemove={handleRemoveAddress}
+          isOpen={isRemoveAddressModalOpen}
+        />
+        {/* Modal to remove token  */}
+        <RemoveModal
+          onCancel={closeRemoveTokenModal}
+          onRemove={handelRemoveToken}
+          isOpen={isRemoveTokenModalOpen}
+        />
       </div>
       {/* ######################## PROCEED SECTION ######################## */}
       <button
@@ -221,9 +313,9 @@ const AddTokens = () => {
         disabled={isTokenAddedForAddresses ? false : true}
         className={`${
           !isTokenAddedForAddresses ? "text-opacity-50 " : ""
-        } bg-gray-950  border-gray-500 fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-3 min-w-[325px] max-w-[350px]  `}
+        } bg-gray-950 border-gray-500 hover:bg-black fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  `}
       >
-        <h1 className="text-2xl font-semibold tracking-wider">
+        <h1 className="text-xl font-semibold tracking-wider">
           {/* {isValid === false && enteredAddresses
             ? " Invalid Address"
             : " Next "} */}

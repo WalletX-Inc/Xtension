@@ -17,6 +17,7 @@ export default function useInit() {
   const [bundlerUrl, setBundlerUrl] = useState(null);
   const [chainId, setChainId] = useState(null);
   const [paymasterUrl, setPaymasterUrl] = useState(null);
+  const [EOA, setEOA] = useState(null);
 
   const auth = useAuth();
 
@@ -49,7 +50,7 @@ export default function useInit() {
     }
   }
 
-  const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider);
+  const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider, setEOA);
   const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress);
 
   return {
@@ -60,5 +61,6 @@ export default function useInit() {
     getSmartWalletHandler,
     getEOA,
     init,
+    EOA,
   };
 }
