@@ -6,12 +6,18 @@ import { ethers } from "ethers";
 
 import send from "../../assets/arrow-up.png";
 import receive from "../../assets/arrow-down.png";
-import logoIcon from "../../assets/icons/icon16.png";
-import { generateAddressIcon, getItemFromStorage, getShortDisplayString } from "../../utils/helper";
+import {
+  generateAddressIcon,
+  getItemFromStorage,
+  getShortDisplayString,
+} from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
+import { useRecoilState } from "recoil";
+import { transferState } from "../../state/TransferState";
 
 function Dashboard() {
+  const [transferData, setTransferData] = useRecoilState(transferState);
   const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
@@ -42,6 +48,10 @@ function Dashboard() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
+
+    // This is to clear the state if the user restarts the app and is on the dashboard.
+    // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.
+    setTransferData([]);
   }, [smartAccountAddress, smartWalletAddress]);
 
   useEffect(() => {
@@ -61,17 +71,21 @@ function Dashboard() {
     <>
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
-          <img className=" h-9 rounder mr-3 border rounded-lg " src={generateAddressIcon(SCW || smartWalletAddress)} alt="address" />
+          <img
+            className=" h-9 rounder mr-3 border rounded-lg "
+            src={generateAddressIcon(SCW || smartWalletAddress)}
+            alt="address"
+          />
           <h2 className="text-2xl font-bold">
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
         </div>
-        <h3 className="text-center text-3xl font-extrabold">{balance} {currentCoinName}</h3>
+        <h3 className="text-center text-3xl font-extrabold">
+          {balance} {currentCoinName}
+        </h3>
 
         <div className="flex gap-5 justify-center item-center mt-5 text-center">
-          <div
-            className="flex flex-col justify-center item-center gap-2"
-          >
+          <div className="flex flex-col justify-center item-center gap-2">
             <img
               className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={receive}
