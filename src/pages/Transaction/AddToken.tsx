@@ -262,7 +262,7 @@ const AddTokens = () => {
                           }}
                           className="font-semibold tracking-widest "
                         >
-                          Add Tokens
+                          Select Asset
                         </button>
                       </div>
                     </>
