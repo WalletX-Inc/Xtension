@@ -14,6 +14,7 @@ const ConfigProvider = ({ children }) => {
     isLoggedIn: initParams.isLoggedIn,
     init: initParams.init,
     EOA: initParams.EOA,
+    chainId: initParams.chainId,
   };
 
   console.log("Context : ", { providerValues });
