@@ -6,7 +6,7 @@ import { v4 } from "uuid";
 
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/system-hooks/useAuth";
 import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
 import icon128 from "../../assets/icons/mainLogo.png";
 

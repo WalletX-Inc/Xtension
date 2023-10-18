@@ -4,7 +4,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import {  AiOutlinePlus } from "react-icons/ai";
 import { ethers } from "ethers";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/system-hooks/useAuth";
 import Modal from "../../components/common/Modal";
 import logoIcon from "../../assets/icons/icon16.png";
 import menuIcon from "../../assets/icons/menu.png";

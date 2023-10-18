@@ -1,6 +1,6 @@
 import PublicRoutes from "./publicRoutes";
 import PrivateRoutes from "./privateRoutes";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../hooks/system-hooks/useAuth";
 
 function AppRoutes() {
   const { isLoggedIn } = useAuth();

@@ -1,7 +1,7 @@
 type tokenCardParams = {
   tokenIcon:string;
   tokenName:string;
-  tokenBalance:number;
+  tokenBalance:null | number;
   tokenSymbol:string;
 }
 
