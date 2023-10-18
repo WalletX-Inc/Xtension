@@ -36,7 +36,7 @@ const TabContainer: React.FC<TabContainerProps> = ({ children }) => {
           );
         })}
       </div>
-      <div className="p-4">{children[activeTab].props.children}</div>
+      <div >{children[activeTab].props.children}</div>
     </div>
   );
 };

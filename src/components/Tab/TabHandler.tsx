@@ -12,7 +12,7 @@ type Token = {
   address: string;
   decimals: number | string;
   logoUri: string;
-}
+};
 
 const TabHandler = () => {
   const [tokens, setTokens] = useState<Token[] | null>(null);
@@ -22,21 +22,23 @@ const TabHandler = () => {
   useEffect(() => {
     const tokenList = Tokens[chainId] || [];
     setTokens(tokenList);
-  }, [chainId])
+  }, [chainId]);
 
   return (
     <div>
       <TabContainer>
         <Tab label="Tokens">
-          <div className="pb-4">
-            <h2 className="text-lg font-medium mb-2">Tokens</h2>
-              {tokens && tokens.map((token: any) => (
-                <TokenCard
-                  tokenIcon={token.logoUri}
-                  tokenName={token.name}
-                  tokenSymbol={token.symbol}
-                  tokenBalance={100}
-                />
+          <div className="max-h-[235px] overflow-y-scroll py-2 px-3">
+            {tokens &&
+              tokens.map((token: any) => (
+                <>
+                  <TokenCard
+                    tokenIcon={token.logoUri}
+                    tokenName={token.name}
+                    tokenSymbol={token.symbol}
+                    tokenBalance={100}
+                  />
+                </>
               ))}
           </div>
         </Tab>
