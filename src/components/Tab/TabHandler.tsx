@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import Tab from "./";
 import TabContainer from "./Tabs";
 import TokenCard from "../TokenCard";
 import Tokens from "../../constants/tokens";
-import { getItemFromStorage } from "../../utils/helper";
-import { useEffect } from "react";
+import { useConfig } from "../../context/ConfigProvider";
 
 type Token = {
   name: string;
@@ -17,14 +17,12 @@ type Token = {
 const TabHandler = () => {
   const [tokens, setTokens] = useState<Token[] | null>(null);
 
-  useEffect(() => {
-    window.addEventListener('storage', (event) => {
-      const chainId = getItemFromStorage("network");
+  const { chainId } = useConfig();
 
-      const tokenList = Tokens[chainId] || [];
-      setTokens(tokenList);
-    });
-  }, [tokens])
+  useEffect(() => {
+    const tokenList = Tokens[chainId] || [];
+    setTokens(tokenList);
+  }, [chainId])
 
   return (
     <div>
