@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import send from "../../assets/arrow-up.png";
-import receive from "../../assets/arrow-down.png";
-import logoIcon from "../../assets/icons/icon16.png";
 import { generateAddressIcon, getItemFromStorage, getShortDisplayString } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
+import {  ArrowDownCircle,  ArrowUpCircle } from "react-feather";
+
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);
@@ -61,30 +59,37 @@ function Dashboard() {
     <>
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
-          <img className=" h-9 rounder mr-3 border rounded-lg " src={generateAddressIcon(SCW || smartWalletAddress)} alt="address" />
+          <img
+            className=" h-9 rounder mr-3 border rounded-lg "
+            src={generateAddressIcon(SCW || smartWalletAddress)}
+            alt="address"
+          />
           <h2 className="text-2xl font-bold">
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
         </div>
-        <h3 className="text-center text-3xl font-extrabold">{balance} {currentCoinName}</h3>
+        <h3 className="text-center text-3xl font-extrabold">
+          {balance} {currentCoinName}
+        </h3>
 
         <div className="flex gap-5 justify-center item-center mt-5 text-center">
-          <div
-            className="flex flex-col justify-center item-center gap-2"
-          >
-            <img
-              className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
-              src={receive}
-              alt="receiveButton"
+          <div className="flex flex-col justify-center item-center gap-2">
+            <ArrowUpCircle
+              onClick={() => sendTx()}
+              className="h-10 w-[40px] rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
             />
-            <h1 className="text-base font-medium">Recieve</h1>
+            <h1 className="text-base font-medium">Receive</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
-            <img
+            {/* <img
               onClick={() => sendTx()}
               className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={send}
               alt="sendButton"
+            /> */}
+            <ArrowDownCircle
+              onClick={() => sendTx()}
+              className="h-10 w-full rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
             />
             <h1 className="text-base font-medium">Send</h1>
           </div>

@@ -1,4 +1,4 @@
-import { RxCross2 } from "react-icons/rx";
+import { X } from "react-feather";
 
 interface ModalProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ const Modal:React.FC<ModalProps> = ({ isOpen, onClose, children,headerText,foote
             className="modal-close-button hover:opacity-70 text-xl"
             onClick={onClose}
           >
-            <RxCross2 style={{ color: "#FFFFFF", fill: "#FFFFFF" }} />
+            <X style={{ color: "#FFFFFF", fill: "#FFFFFF" }} />
           </button>
         </div>
         <div className="modal-content">{children}</div>

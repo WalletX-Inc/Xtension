@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import backIcon from "../../assets/angle.svg";
+import React, { useEffect, useState } from "react";
 import AddressesCard from "../../components/AddressCard";
-import paste from "../../assets/copy&paste.png";
-import search from "../../assets/search.svg";
-import add from "../../assets/add.png";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Search } from "react-feather";
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -136,7 +133,7 @@ const AddAddresses = () => {
       <header className="mb-4">
         <div className="flex flex-row items-center">
           <button onClick={() => navigate("/dashboard")}>
-            <img className="h-11" src={backIcon} alt="backIcon" />
+            <ArrowLeft className="h-11 w-6" />
           </button>
           <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
           {/* <button
@@ -152,7 +149,7 @@ const AddAddresses = () => {
       {/* ######################## SEARCH BOX ########################  */}
       <div className="flex items-center max-w-[325px] mx-auto border border-gray-300 rounded-lg my-4 p-2">
         <button className="min-w-fit pb-1 pr-1 opacity-60 ">
-          <img className="h-6  mt-1" src={search} alt="searchIcon" />
+          <Search className="h-6 w-6" />
         </button>
         <input
           type="text"
