@@ -26,7 +26,6 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   const [tokenIsSelected, setTokenIsSelected] = useState<boolean>(false);
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(); // can also use token id for this
   const [balanceOfToken, setBalanceOfToken] = useState<number>(); // use it in handelAddButton
-  const [enteredAmount, setEnteredAmount] = useState<number>(0);
 
   const addToken = ([
     _tokenName,
@@ -52,7 +51,6 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
               tokenAddress,
               tokenBalance,
               tokenDecimal,
-              amount: enteredAmount,
             }
           : transferDetails
       )

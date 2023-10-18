@@ -27,7 +27,7 @@ const AddTokens = () => {
 
   const [uidToRemoveToken, setUidToRemoveToken] = useState<string>("");
 
-  const [enteredAmount, setEnteredAmount] = useState<number>(0);
+  const [enteredAmount, setEnteredAmount] = useState<any>();
 
   const handelAmountChange = (uid: string) => {
     setTransferData((prevData) =>
@@ -225,7 +225,10 @@ const AddTokens = () => {
                           <input
                             className="bg-transparent  border-black outline-none max-w-[80px] text-right"
                             type="number"
-                            defaultValue={transferData.amount}
+                            placeholder="0"
+                            defaultValue={`${
+                              enteredAmount ? transferData.amount : ""
+                            }`}
                             onChange={(e: any) => {
                               setEnteredAmount(e.target.value);
                             }}
