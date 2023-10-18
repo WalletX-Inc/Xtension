@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import backIcon from "../../assets/angle.svg";
 import AddressesCard from "../../components/AddressCard";
 import paste from "../../assets/copy&paste.png";
 import search from "../../assets/search.svg";
-import add from "../../assets/add.png";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
+import RemoveModal from "../../components/Modal";
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -20,7 +20,27 @@ const AddAddresses = () => {
   );
   const [cardAddress, setCardAddress] = useState<string>("");
   const [isCardSelected, setIsCardSelected] = useState<boolean>(false);
+  const [isBackModalOpen, setIsBackModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  // function to go back to the dashboard
+  const openBackModal = () => {
+    if (transferData.length > 0) {
+      setIsBackModalOpen(true);
+      console.log("transactons are there should not revert back to dashboard");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const closeBackModal = () => {
+    setIsBackModalOpen(false);
+  };
+
+  const handleBack = () => {
+    setTransferData([]);
+    navigate("/dashboard");
+  };
 
   //function for opning the add Addresses modal
   const [isAddAddressesModalVisible, setIsAddAddressesModalVisible] =
@@ -135,7 +155,7 @@ const AddAddresses = () => {
     <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
       <header className="mb-4">
         <div className="flex flex-row items-center">
-          <button onClick={() => navigate("/dashboard")}>
+          <button onClick={() => openBackModal()}>
             <img className="h-11" src={backIcon} alt="backIcon" />
           </button>
           <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
@@ -223,6 +243,12 @@ const AddAddresses = () => {
             : " Next "}
         </h1>
       </button>
+
+      <RemoveModal
+        isOpen={isBackModalOpen}
+        onCancel={closeBackModal}
+        onRemove={handleBack}
+      />
     </div>
   );
 };
