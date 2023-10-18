@@ -13,6 +13,7 @@ const ConfigProvider = ({ children }) => {
     getEOA: initParams.getEOA,
     isLoggedIn: initParams.isLoggedIn,
     init: initParams.init,
+    EOA: initParams.EOA,
   };
 
   console.log("Context : ", { providerValues });

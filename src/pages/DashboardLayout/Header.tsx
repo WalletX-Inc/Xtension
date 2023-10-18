@@ -52,7 +52,7 @@ export default function Header() {
   const [SCW] = useState(item || null);
   const [chainId, setChainId] = useState(storageChainId);
 
-  const { smartAccountAddress, provider, init } = useConfig();
+  const { smartAccountAddress, provider, init, EOA } = useConfig();
 
   useEffect(() => {
     if (storageChainId) {
@@ -125,7 +125,7 @@ export default function Header() {
             setOpenAccountModal(true);
           }}
         >
-          Smart Wallet
+          Wallets
           <IoIosArrowDropdown className="mx-3" />
         </h1>
 
@@ -174,7 +174,7 @@ export default function Header() {
             setOpenAccountModal(false);
           }}
         >
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4" style={{paddingTop: "20px", paddingBottom: "20px"}}>
             <div className="flex-shrink-0">
               <img
                 className="w-8 h-8 rounded-full"
@@ -183,9 +183,30 @@ export default function Header() {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate dark:text-white">Account 1</p>
+              <p className="font-medium truncate dark:text-white" >Smart Account</p>
               <p className="text-sm truncate dark:text-gray-400">
                 {getShortDisplayString(SCW || setSmartWalletAddress)}
+              </p>
+            </div>
+            <div className="flex flex-col text-right text-md">
+              <div className="inline-flex items-center text-base font-semibold dark:text-white">
+                {balance} {currentCoinName}
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="flex items-center space-x-4" style={{paddingTop: "20px", paddingBottom: "20px"}}>
+            <div className="flex-shrink-0">
+              <img
+                className="w-8 h-8 rounded-full"
+                src={logoIcon}
+                alt="Wallet x"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate dark:text-white">EOA</p>
+              <p className="text-sm truncate dark:text-gray-400">
+                {EOA && getShortDisplayString(EOA)}
               </p>
             </div>
             <div className="flex flex-col text-right text-md">

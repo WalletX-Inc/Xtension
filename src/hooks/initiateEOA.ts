@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { setItemInStorage } from "../utils/helper";
 
-export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any) {
+export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any, setEOA: any) {
   return () => {
     if (!credentialId) {
       console.log("[Hooks] No credentialId");
@@ -22,5 +22,6 @@ export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setP
     const signer = eoa.connect(provider);
     setSigner(signer);
     setProvider(provider);
+    setEOA(eoa.address);
   }  
 }
