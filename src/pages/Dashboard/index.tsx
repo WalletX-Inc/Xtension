@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import send from "../../assets/arrow-up.png";
 import receive from "../../assets/arrow-down.png";
 import logoIcon from "../../assets/icons/icon16.png";
-import { getItemFromStorage, getShortDisplayString } from "../../utils/helper";
+import { generateAddressIcon, getItemFromStorage, getShortDisplayString } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
 
@@ -60,8 +60,8 @@ function Dashboard() {
   return (
     <>
       <div className=" text-white mt-24 min-h-[210px]">
-        <div className="flex justify-center mb-7">
-          <img className="w-7 h-7 rounder mr-3" src={logoIcon} alt="address" />
+        <div className="flex justify-center mb-7 items-center">
+          <img className=" h-9 rounder mr-3 border rounded-lg " src={generateAddressIcon(SCW || smartWalletAddress)} alt="address" />
           <h2 className="text-2xl font-bold">
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
