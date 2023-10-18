@@ -137,6 +137,7 @@ const AddAddresses = () => {
         amount: 0,
         tokenDecimal: 0,
         tokenBalance: 0,
+        tokenLogo:"",
       },
     ]);
     console.log(transferData);
