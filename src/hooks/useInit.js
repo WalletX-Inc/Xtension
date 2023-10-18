@@ -62,5 +62,6 @@ export default function useInit() {
     getEOA,
     init,
     EOA,
+    chainId,
   };
 }

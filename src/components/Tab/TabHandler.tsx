@@ -1,20 +1,40 @@
+import { useState, useEffect } from "react";
+
 import Tab from "./";
 import TabContainer from "./Tabs";
-import logoIcon from "../../assets/icons/icon16.png";
 import TokenCard from "../TokenCard";
-import maticLogo from "../../../src/assets/matic-logo.png";
+import Tokens from "../../constants/tokens";
+import { useConfig } from "../../context/ConfigProvider";
+
+type Token = {
+  name: string;
+  symbol: string;
+  address: string;
+  decimals: number | string;
+  logoUri: string;
+}
 
 const TabHandler = () => {
+  const [tokens, setTokens] = useState<Token[] | null>(null);
+
+  const { chainId } = useConfig();
+
+  useEffect(() => {
+    const tokenList = Tokens[chainId] || [];
+    setTokens(tokenList);
+  }, [chainId])
+
   return (
     <div>
       <TabContainer>
         <Tab label="Tokens">
           <div className="pb-4">
-            <h2 className="text-lg font-medium mb-2">All Tokens</h2>
-              {[1, 2, 3].map((token) => (
+            <h2 className="text-lg font-medium mb-2">Tokens</h2>
+              {tokens && tokens.map((token: any) => (
                 <TokenCard
-                  tokenIcon={maticLogo}
-                  tokenName="Matic"
+                  tokenIcon={token.logoUri}
+                  tokenName={token.name}
+                  tokenSymbol={token.symbol}
                   tokenBalance={100}
                 />
               ))}

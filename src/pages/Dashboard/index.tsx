@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
