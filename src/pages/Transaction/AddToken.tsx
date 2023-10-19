@@ -39,7 +39,7 @@ const AddTokens = () => {
   const handelAmountChange = (uid: string) => {
     setTransferData((prevData) =>
       prevData.map((transferDetails) =>
-        transferDetails.uid == uid
+        transferDetails.uid === uid
           ? {
               ...transferDetails,
               amount: enteredAmount,

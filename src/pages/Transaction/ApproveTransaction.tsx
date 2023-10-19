@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { ethers } from "ethers";
+
 import { transferState } from "../../state/TransferState";
 import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import { gasState } from "../../state/GasState";
 import { tokenData } from "../../utils/tokenData/tokenData";
-
 import RemoveModal from "../../components/Modal";
-
 import fingerPrint from "../../assets/biometric-identification.svg";
 import backIcon from "../../assets/angle.svg";
-import del from "../../assets/delete.svg";
 import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
+import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
+import { useConfig } from "../../context/ConfigProvider";
 
 type selectedTokenForGas = {
   icon: string;
@@ -23,14 +24,11 @@ type selectedTokenForGas = {
   tokenGasValue: number;
 };
 
-const ApproveTransacton = () => {
+const ApproveTransaction = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [uidToRemoveAddress, setUidToRemoveAddress] = useState<string>("");
-  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
-    useState<boolean>(false);
-
+  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] = useState<boolean>(false);
   const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(true);
+  const [transactionHash, setTransactionHash] = useState<string>("");
 
   const [gasData, setGasData] = useRecoilState(gasState);
 
@@ -39,31 +37,12 @@ const ApproveTransacton = () => {
       icon: `${maticLogo}`,
       tokenName: "PolygonMatic",
       tokenSymbol: "MATIC",
-      tokenAddress: "0x000",
+      tokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       tokenGasValue: 0,
     });
 
   const navigate = useNavigate();
-
-  // removing individual transactions for the batch
-  const handleRemove = () => {
-    // Logic to handle remove action
-    setTransferData((prevAddresses) =>
-      prevAddresses.filter(
-        (transferDetails) => transferDetails.uid !== uidToRemoveAddress
-      )
-    );
-    setIsRemoveModalOpen(false); // Close the modal after removing
-  };
-
-  const openDeleteModal = (uid: string) => {
-    setIsRemoveModalOpen(true);
-    setUidToRemoveAddress(uid);
-  };
-
-  const closeDeleteModal = () => {
-    setIsRemoveModalOpen(false);
-  };
+  const { smartAccountProvider, smartAccountAddress } = useConfig();
 
   // Cancel the whole transaction
   const clearAllTransactions = () => {
@@ -157,7 +136,39 @@ const ApproveTransacton = () => {
     updateGasData(); // it update the gas, gasValue in dollars and
   }, [transferData]);
 
-  if (transferData.length == 0) navigate("/dashboard");
+  async function sendBatchTransaction(transferData: any) {
+    let rawTransaction: any[] = [];
+
+    transferData.forEach((data: any) => {
+      let obj: any = {};
+      const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
+      obj.to = isCoin ? data.address : data.tokenAddress;
+      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
+      obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
+      obj.from = smartAccountAddress;
+
+      rawTransaction.push(obj);
+    });
+
+    console.log({ rawTransaction });
+    const txns = constructTransactionData(rawTransaction);
+
+    const partialUserOp = await smartAccountProvider.buildUserOp(txns);
+    let finalUserOp = partialUserOp;
+
+    if (selectedTokenForGas.tokenAddress !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      console.log('selectedTokenForGas', selectedTokenForGas);
+      finalUserOp = constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
+    }
+
+    const userOpResponse = await smartAccountProvider.sendUserOp(finalUserOp);
+    const transactionDetails = await userOpResponse.wait();
+
+    setTransactionHash(transactionDetails.receipt.transactionHash);
+  }
+
+  if (transferData.length === 0) navigate("/dashboard");
 
   return (
     <>
@@ -193,28 +204,6 @@ const ApproveTransacton = () => {
           <div className="mt-5 overflow-y-scroll  max-h-[315px]">
             {transferData.map((transferData) => {
               return (
-                // <div className="flex flex-row justify-center item-center text-center gap-2 border-2 border-white rounded-lg px-1 py-1 text-xl divide-x-2 divide-white mt-4 text-white">
-                //   <p className="w-[50%] tracking-wider font-semibold text-xl ">
-                //     {getShortDisplayString(transaction.address)}
-                //   </p>
-                //   <p className="w-[20%]  font-semibold ">
-                //     {transaction.amount}
-                //   </p>
-                //   <p className="w-[20%] font-semibold ">
-                //     {transaction.tokenSymbol}
-                //   </p>
-                //   <button
-                //     onClick={() => openDeleteModal(transaction.uid)}
-                //     className="flex item-center justify-center w-[10%]"
-                //   >
-                //     <img className="h-7" src={del} alt="delete button" />
-                //   </button>
-                //   <RemoveModal
-                //     isOpen={isRemoveModalOpen}
-                //     onCancel={closeDeleteModal}
-                //     onRemove={handleRemove}
-                //   />
-                // </div>
                 <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
                   <div className=" bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
                     <div className="flex justify-center item-center gap-2">
@@ -286,9 +275,7 @@ const ApproveTransacton = () => {
 
           <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center gap-3 text-xl text-white min-w-[325px] max-w-[350px] ">
             <button
-              onClick={() => {
-                console.log(transferData);
-              }}
+              onClick={() => { sendBatchTransaction(transferData) }}
             >
               Approve Transaction
             </button>
@@ -365,4 +352,4 @@ const ApproveTransacton = () => {
   );
 };
 
-export default ApproveTransacton;
+export default ApproveTransaction;

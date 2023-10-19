@@ -1,5 +1,9 @@
+/* eslint-disable array-callback-return */
 import { toSvg } from "jdenticon";
+import { ethers } from "ethers";
+
 import Chains from '../constants/chains';
+import erc20ABI from "../constants/erc20ABI";
 
 export const getItemFromStorage: any = (
   key: string,
@@ -61,4 +65,42 @@ export const getChainDetails: any = (chainId: number) => {
   });
 
   return chainData;
+}
+
+export const constructTransactionData: any = (transactions: any) => {
+  let txns: any = [];
+
+  transactions.map(({ to, args, value, from }: any) => {
+    const contract = args.length ? new ethers.utils.Interface(erc20ABI) : null;
+    const data = contract ? contract.encodeFunctionData('transfer', args) : '0x';
+    const txn = { from, to, data, value: value ? ethers.utils.parseEther(value).toString() : '0' };
+
+    txns.push(txn);
+  });
+
+  console.log('txns', txns);
+  return txns;
+}
+
+export const constructFinalUserOp: any = async (smartAccountInstance: any, partialUserOp: any, gasFeeAddress: string) => {
+  const paymaster = smartAccountInstance.paymaster;
+  const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(partialUserOp, { mode: 'ERC20', tokenList: [gasFeeAddress] });
+  console.log('feeQuotesResponse', feeQuotesResponse);
+  const requiredFeeQuotes = feeQuotesResponse.feeQuotes[0];
+  const spender = feeQuotesResponse.tokenPaymasterAddress || '';
+
+  let finalUserOp = await smartAccountInstance.buildTokenPaymasterUserOp(partialUserOp, { feeQuote: requiredFeeQuotes, spender, maxApproval: false });
+  let paymasterServiceData = { mode: 'ERC20', feeTokenAddress: requiredFeeQuotes.tokenAddress };
+
+  const paymasterAndDataWithLimits = await paymaster.getPaymasterAndData(finalUserOp, paymasterServiceData);
+  finalUserOp.paymasterAndData = paymasterAndDataWithLimits.paymasterAndData;
+
+  if (paymasterAndDataWithLimits.callGasLimit && paymasterAndDataWithLimits.verificationGasLimit && paymasterAndDataWithLimits.preVerificationGas) {
+    finalUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
+    finalUserOp.verificationGasLimit = paymasterAndDataWithLimits.verificationGasLimit;
+    finalUserOp.preVerificationGas = paymasterAndDataWithLimits.preVerificationGas;
+  }
+
+  console.log('finalUserOp', finalUserOp);
+  return finalUserOp;
 }

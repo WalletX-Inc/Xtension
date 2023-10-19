@@ -3,7 +3,7 @@ import Dashboard from "../pages/Dashboard";
 import { PrivateLayout} from "../pages/Layout/PrivateLayout";
 import AddAddresses from "../pages/Transaction/AddAddress";
 import AddTokens from "../pages/Transaction/AddToken";
-import ApproveTransacton from "../pages/Transaction/ApproveTransaction";
+import ApproveTransaction from "../pages/Transaction/ApproveTransaction";
 
 function PrivateRoutes() {
 
@@ -22,7 +22,7 @@ function PrivateRoutes() {
         />
         <Route
           path="/dashboard/transaction/approve-transactions"
-          element={<ApproveTransacton/>}
+          element={<ApproveTransaction/>}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

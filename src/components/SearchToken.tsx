@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../src/state/TransferState";
 import { useConfig } from "../context/ConfigProvider";
-import { TokenData } from "./dummyTokenData";
 import Tokens from "../constants/tokens";
 
-import maticLogo from "../../src/assets/matic-logo.png";
 import search from "../../src/assets/search.svg";
-import remove from "../../src/assets/x.png";
 
 type searchTokenPara = {
   isOpen: boolean;
