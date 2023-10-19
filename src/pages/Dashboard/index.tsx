@@ -21,6 +21,8 @@ import send from "../../assets/arrow-up.png";
 
 import copyAndPaste from "../../assets/copy.svg";
 
+import toast,  { Toaster } from "react-hot-toast";
+
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
   const [balance, setBalance] = useState(0);
@@ -51,6 +53,7 @@ function Dashboard() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(smartAccountAddress);
+      toast.success("Text Copied To clipboard");
     } catch (error) {
       console.error("Copy failed due to: ", error);
     }
@@ -108,6 +111,7 @@ function Dashboard() {
             src={copyAndPaste}
             alt="copy"
           />
+          <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
           {balance} {currentCoinName}
