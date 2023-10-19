@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
-import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
-import backIcon from "../../assets/angle.svg";
-import del from "../../assets/delete.svg";
-import addMoreAddress from "../../assets/add-user.svg";
+import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
+
+import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
+import { transferState } from "../../state/TransferState";
+import { useConfig } from "../../context/ConfigProvider";
+
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
-import { useRecoilState } from "recoil";
-import { transferState } from "../../state/TransferState";
+
+import addMoreAddress from "../../assets/add-user.svg";
+import backIcon from "../../assets/angle.svg";
 import maticLogo from "../../assets/matic-logo.png";
+import del from "../../assets/delete.svg";
 
 const AddTokens = () => {
+  const { smartAccountAddress} = useConfig()
+
+
   const [transferData, setTransferData] = useRecoilState(transferState);
 
   const navigate = useNavigate();
@@ -27,7 +34,7 @@ const AddTokens = () => {
 
   const [uidToRemoveToken, setUidToRemoveToken] = useState<string>("");
 
-  const [enteredAmount, setEnteredAmount] = useState<number>(0);
+  const [enteredAmount, setEnteredAmount] = useState<any>();
 
   const handelAmountChange = (uid: string) => {
     setTransferData((prevData) =>
@@ -150,12 +157,11 @@ const AddTokens = () => {
             <div className="flex gap-2 justify-center items-center">
               <img
                 className="h-6 rounded-lg border  border-white"
-                src={generateAddressIcon("abc")}
+                src={generateAddressIcon(smartAccountAddress)}
                 alt="address icon "
               />
-              <p className="text-sm font-semibold tracking-wide ">
-                {" "}
-                Ox1Sbs...Shak
+              <p className="text-base font-semibold tracking-wide ">
+                {getShortDisplayString(smartAccountAddress)}
               </p>
             </div>
           </div>
@@ -211,7 +217,7 @@ const AddTokens = () => {
                         >
                           <img
                             className="h-8 w-8 "
-                            src={maticLogo}
+                            src={transferData.tokenLogo}
                             alt="tokenIcon"
                           />
 
@@ -225,7 +231,10 @@ const AddTokens = () => {
                           <input
                             className="bg-transparent  border-black outline-none max-w-[80px] text-right"
                             type="number"
-                            defaultValue={transferData.amount}
+                            placeholder="0"
+                            defaultValue={`${
+                              enteredAmount ? transferData.amount : ""
+                            }`}
                             onChange={(e: any) => {
                               setEnteredAmount(e.target.value);
                             }}

@@ -10,8 +10,9 @@ type transferData = {
   tokenName: string | undefined;
   tokenSymbol: string | undefined;
   tokenAddress: string | undefined;
-  tokenDecimal: number | undefined;
+  tokenDecimal: number | string;
   tokenBalance: number | undefined;
+  tokenLogo: string;
   amount: number;
 };
 
