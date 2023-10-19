@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
@@ -10,10 +10,12 @@ import RemoveModal from "../../components/Modal";
 
 import fingerPrint from "../../assets/biometric-identification.svg";
 import backIcon from "../../assets/angle.svg";
-import del from "../../assets/delete.svg";
 import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
+
+import { SyncLoader } from "react-spinners";
+import TransactionModal from "../../components/TransactionModal";
 
 type selectedTokenForGas = {
   icon: string;
@@ -24,9 +26,11 @@ type selectedTokenForGas = {
 };
 
 const ApproveTransacton = () => {
+  const [transactionInProcess, setTransactionInProcess] =
+    useState<boolean>(false);
+  const [isTransactionModalOpen, setIsTransactionModalOpen] =
+    useState<boolean>(false);
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
-  const [uidToRemoveAddress, setUidToRemoveAddress] = useState<string>("");
   const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
     useState<boolean>(false);
 
@@ -44,26 +48,6 @@ const ApproveTransacton = () => {
     });
 
   const navigate = useNavigate();
-
-  // removing individual transactions for the batch
-  const handleRemove = () => {
-    // Logic to handle remove action
-    setTransferData((prevAddresses) =>
-      prevAddresses.filter(
-        (transferDetails) => transferDetails.uid !== uidToRemoveAddress
-      )
-    );
-    setIsRemoveModalOpen(false); // Close the modal after removing
-  };
-
-  const openDeleteModal = (uid: string) => {
-    setIsRemoveModalOpen(true);
-    setUidToRemoveAddress(uid);
-  };
-
-  const closeDeleteModal = () => {
-    setIsRemoveModalOpen(false);
-  };
 
   // Cancel the whole transaction
   const clearAllTransactions = () => {
@@ -151,6 +135,16 @@ const ApproveTransacton = () => {
     );
   };
 
+  // Approve button funciton
+  const handleApprove = () => {
+    console.log(transferData);
+    setTransactionInProcess(true);
+
+    setTimeout(() => {
+      setIsTransactionModalOpen(true);
+    }, 5000);
+  };
+
   useEffect(() => {
     updateTokenData(); // it update the icon, name , address, give uiid
 
@@ -165,6 +159,7 @@ const ApproveTransacton = () => {
         <header className="mb-4 flex justify-between  ">
           <div className="flex flex-row items-center">
             <button
+              disabled={transactionInProcess}
               onClick={() => navigate("/dashboard/transaction/add-tokens")}
             >
               <img className="h-11" src={backIcon} alt="backIcon" />
@@ -173,6 +168,7 @@ const ApproveTransacton = () => {
           </div>
           <div className="felx justify-center item-center text-base font-semibold mr-2">
             <button
+              disabled={transactionInProcess}
               onClick={openCancelAllTransactionsModal}
               title="Cancel all transaction"
               className="border px-2 py-1 rounded-lg bg-gray-800 text-white hover:bg-red-500"
@@ -181,7 +177,6 @@ const ApproveTransacton = () => {
             </button>
           </div>
         </header>
-
         {/* OverView */}
         <div className=" max-w-[325px] mx-auto">
           <div className="relative  mt-5">
@@ -190,31 +185,9 @@ const ApproveTransacton = () => {
               OverView
             </h1>
           </div>
-          <div className="mt-5 overflow-y-scroll  max-h-[315px]">
+          <div className="mt-5 overflow-y-scroll  max-h-[375px] px-2">
             {transferData.map((transferData) => {
               return (
-                // <div className="flex flex-row justify-center item-center text-center gap-2 border-2 border-white rounded-lg px-1 py-1 text-xl divide-x-2 divide-white mt-4 text-white">
-                //   <p className="w-[50%] tracking-wider font-semibold text-xl ">
-                //     {getShortDisplayString(transaction.address)}
-                //   </p>
-                //   <p className="w-[20%]  font-semibold ">
-                //     {transaction.amount}
-                //   </p>
-                //   <p className="w-[20%] font-semibold ">
-                //     {transaction.tokenSymbol}
-                //   </p>
-                //   <button
-                //     onClick={() => openDeleteModal(transaction.uid)}
-                //     className="flex item-center justify-center w-[10%]"
-                //   >
-                //     <img className="h-7" src={del} alt="delete button" />
-                //   </button>
-                //   <RemoveModal
-                //     isOpen={isRemoveModalOpen}
-                //     onCancel={closeDeleteModal}
-                //     onRemove={handleRemove}
-                //   />
-                // </div>
                 <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
                   <div className=" bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
                     <div className="flex justify-center item-center gap-2">
@@ -257,15 +230,14 @@ const ApproveTransacton = () => {
             })}
           </div>
         </div>
-
         {/* Gas and  Approve   */}
-
         <div className="fixed left-1/2 translate-x-[-50%] bottom-0 flex flex-col item-center justify-center  py-2   max-w-[350px] bg-transparent text-2xl font-bold w-full mx-auto">
           {/* FETCH THE TOKEN DETAILS FOR GAS FROM THE SELECTED TOKEN FOR GAS  */}
           <div className="flex w-[85%] items-center  justify-between text-white  text-base py-2 ">
             <h1 className="font-sans font-semibold text-lg">Gas</h1>
-            <div
+            <button
               className="flex  item-center gap-1"
+              disabled={transactionInProcess}
               onClick={() => toggleGasDrawer()}
             >
               <p className="font-sans text-sm  font-semibold">
@@ -281,23 +253,37 @@ const ApproveTransacton = () => {
                 {selectedTokenForGas.tokenSymbol}
               </p>
               <img className="h-8" src={selectArrow} alt="selectArrow" />
-            </div>
+            </button>
           </div>
 
-          <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center gap-3 text-xl text-white min-w-[325px] max-w-[350px] ">
+          {/* Approve button  */}
+          <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center  text-xl text-white min-w-[325px] max-w-[350px] h-[55px] ">
             <button
+              disabled={transactionInProcess}
               onClick={() => {
-                console.log(transferData);
+                handleApprove();
               }}
             >
-              Approve Transaction
+              {transactionInProcess == true ? (
+                <div className="pt-2">
+                  <SyncLoader
+                    size={9}
+                    margin={7}
+                    loading={transactionInProcess}
+                    speedMultiplier={0.6}
+                    color="#4b5563"
+                  />
+                </div>
+              ) : (
+                <div className="flex gap-3 w-full">
+                  <p>Approve Transaction</p>
+                  <img className="h-8" src={fingerPrint} alt="fingerPring" />
+                </div>
+              )}
             </button>
-            <img className="h-8" src={fingerPrint} alt="fingerPring" />
           </div>
         </div>
-
         {/* Select token for gas component andt it should be componetizeEd */}
-
         <div
           className={`${
             !isGasDrawerVisible ? "bottom-0" : " translate-y-full"
@@ -355,6 +341,7 @@ const ApproveTransacton = () => {
           </div>
         </div>
 
+        <TransactionModal isOpen={isTransactionModalOpen} />
         <RemoveModal
           isOpen={isCancelAllTransactionModalOpen}
           onCancel={closeCancelAllTransactionsModal}
