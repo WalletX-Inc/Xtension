@@ -16,10 +16,10 @@ export default function useCoinBalance() {
             setBalance(parseFloat(ethers.utils.formatEther(rawBalance)));
         };
 
-        provider && provider.on('block', updateBalance(provider));
+        // provider && provider.on('block', updateBalance(provider));
 
         return () => {
-            provider.off('block', updateBalance(provider));
+            // provider.off('block', updateBalance(provider));
         };
     }, [address, provider]);
 

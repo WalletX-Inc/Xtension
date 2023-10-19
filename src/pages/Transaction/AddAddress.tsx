@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import backIcon from "../../assets/angle.svg";
 import AddressesCard from "../../components/AddressCard";
+import paste from "../../assets/paste.svg";
+import search from "../../assets/search.svg";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search } from "react-feather";
 import RemoveModal from "../../components/Modal";
+import { ArrowLeft } from "react-feather";
+
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -78,20 +82,19 @@ const AddAddresses = () => {
   };
 
   // this function is not beign use cause of manifest v3 problem on build
-  // const pasteAddresses = async () => {
-  //   console.log("addressPasted");
-  //   try {
-  //     setSendToAddresses("");
-  //     handleCardClick(null);
-  //     console.log("lineBeforeClipboard  ");
-  //     const address: string = await navigator.clipboard.readText();
-  //     console.log("address");
-  //     setEnteredAddresses(address);
-  //     setIsValid(isEthereumAddress(address));
-  //   } catch (error) {
-  //     console.log("Copy failed due to: ", error);
-  //   }
-  // };
+  const pasteAddresses = async () => {
+    console.log("pasting address")
+    try {
+      setSendToAddresses("");
+      handleCardClick(null);
+      const address: string = await navigator.clipboard.readText();
+      console.log("pastedAdress" + address)
+      setEnteredAddresses(address);
+      setIsValid(isEthereumAddress(address));
+    } catch (error) {
+      console.log("Copy failed due to: ", error);
+    }
+  };
   const generateAddressCard = (enteredAddresses: string) => {
     return (
       <>
@@ -135,7 +138,7 @@ const AddAddresses = () => {
         amount: 0,
         tokenDecimal: 0,
         tokenBalance: 0,
-        tokenLogo:"",
+        tokenLogo: "",
       },
     ]);
     console.log(transferData);
@@ -154,8 +157,8 @@ const AddAddresses = () => {
     <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
       <header className="mb-4">
         <div className="flex flex-row items-center">
-          <button onClick={() => navigate("/dashboard")}>
-            <ArrowLeft className="h-11 w-6" />
+          <button onClick={() => openBackModal()}>
+            <ArrowLeft color="white" className="h-11 w-6 mx-3" />
           </button>
           <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
           {/* <button
@@ -171,7 +174,7 @@ const AddAddresses = () => {
       {/* ######################## SEARCH BOX ########################  */}
       <div className="flex items-center max-w-[325px] mx-auto border border-gray-300 rounded-lg my-4 p-2">
         <button className="min-w-fit pb-1 pr-1 opacity-60 ">
-          <Search className="h-6 w-6" />
+          <img className="h-6  mt-1" src={search} alt="searchIcon" />
         </button>
         <input
           type="text"
@@ -181,9 +184,9 @@ const AddAddresses = () => {
           onChange={handleInputChange}
           onFocus={handleFocus}
         />
-        {/* <button onClick={pasteAddresses} className="min-w-fit">
+        <button onClick={pasteAddresses} className="min-w-fit">
           <img className="h-6 opacity-70" src={paste} alt="pasteIcon" />
-        </button> */}
+        </button>
       </div>
 
       {/* ######################## ADDRESSES CARD ########################  */}
@@ -230,10 +233,10 @@ const AddAddresses = () => {
             ? " bg-red-500 border-red-700"
             : " bg-gray-950 hover:bg-black"
         }  
-        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  ${
+        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg text-white    border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  ${
           sendToAddresses && isCardSelected
-            ? "border-white "
-            : "text-gray-200 bg-gray-950 border-gray-500"
+            ? "border-white text-white "
+            : " text-opacity-50 bg-gray-950 border-gray-500"
         }`}
       >
         <h1 className="text-xl font-semibold tracking-wider">
