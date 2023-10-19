@@ -3,13 +3,22 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import { generateAddressIcon, getItemFromStorage, getShortDisplayString } from "../../utils/helper";
+import {
+  generateAddressIcon,
+  getItemFromStorage,
+  getShortDisplayString,
+} from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
-import {  ArrowDownCircle,  ArrowUpCircle } from "react-feather";
+import { ArrowDownCircle, ArrowUpCircle } from "react-feather";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import QRCodeModal from "../../components/QRCodeModal";
+
+import swap from "../../assets/swap.png";
+import bridge from "../../assets/rainbow.png";
+import receive from "../../assets/arrow-down.png";
+import send from "../../assets/arrow-up.png";
 
 
 function Dashboard() {
@@ -30,7 +39,7 @@ function Dashboard() {
 
   const storageChainId = getItemFromStorage("network");
 
-  // Receve Button functions 
+  // Receve Button functions
   const openQrModal = () => {
     setQrcodemodal(true);
   };
@@ -78,12 +87,7 @@ function Dashboard() {
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
           <img
-            className=" h-9 rounder mr-3 border rounded-lg "
-            src={generateAddressIcon(SCW || smartWalletAddress)}
-            alt="address"
-          />
-          <img
-            className=" h-9 rounder mr-3 border rounded-lg "
+            className=" h-8 rounder mr-3 border rounded-lg "
             src={generateAddressIcon(SCW || smartWalletAddress)}
             alt="address"
           />
@@ -91,30 +95,44 @@ function Dashboard() {
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
         </div>
-        <h3 className="text-center text-3xl font-extrabold">
+        <h3 className="text-center text-2xl font-extrabold">
           {balance} {currentCoinName}
         </h3>
 
-        <div className="flex gap-5 justify-center item-center mt-5 text-center">
+        <div className="flex gap-8 justify-center item-center mt-5 text-center">
           <div className="flex flex-col justify-center item-center gap-2">
-            <ArrowUpCircle
+            <img
               onClick={() => openQrModal()}
-              className="h-10 w-[40px] rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={receive}
+              alt="receiveButton"
             />
-            <h1 className="text-base font-medium">Receive</h1>
+            <h1 className="text-{15px} font-thin tracking-wider">Receive</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
-            {/* <img
+            <img
               onClick={() => sendTx()}
               className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={send}
               alt="sendButton"
-            /> */}
-            <ArrowDownCircle
-              onClick={() => sendTx()}
-              className="h-10 w-full rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
             />
-            <h1 className="text-base font-medium">Send</h1>
+            <h1 className="text-{15px} font-thin tracking-wider">Send</h1>
+          </div>
+          <div className="flex flex-col justify-center item-center gap-2">
+            <img
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={swap}
+              alt="swapButton"
+            />
+            <h1 className="text-{15px} font-thin tracking-wider">Swap</h1>
+          </div>
+          <div className="flex flex-col justify-center item-center gap-2">
+            <img
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              src={bridge}
+              alt="bridgeButton"
+            />
+            <h1 className="text-{15px}  font-thin tracking-wider">Bridge</h1>
           </div>
         </div>
       </div>
