@@ -17,12 +17,14 @@ import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
+import QRCodeModal from "../../components/QRCodeModal";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
   const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
+  const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
 
   const item = getItemFromStorage("smartAccount");
   const chain = getItemFromStorage("network");
@@ -34,6 +36,15 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
+
+  // Receve Button functions 
+  const openQrModal = () => {
+    setQrcodemodal(true);
+  };
+
+  const closeQrModal = () => {
+    setQrcodemodal(false);
+  };
 
   useEffect(() => {
     async function initializeSmartWallet() {
@@ -89,6 +100,7 @@ function Dashboard() {
         <div className="flex gap-7 justify-center item-center mt-5 text-center">
           <div className="flex flex-col justify-center item-center gap-2">
             <img
+              onClick={() => openQrModal()}
               className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={receive}
               alt="receiveButton"
@@ -122,6 +134,11 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      <QRCodeModal
+        isOpen={qrcodemodal}
+        onClose={closeQrModal}
+        walletAddress={smartWalletAddress}
+      />
     </>
   );
 }
