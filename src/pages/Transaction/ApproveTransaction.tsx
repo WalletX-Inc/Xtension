@@ -9,7 +9,6 @@ import { tokenData } from "../../utils/tokenData/tokenData";
 import RemoveModal from "../../components/Modal";
 
 import fingerPrint from "../../assets/biometric-identification.svg";
-import backIcon from "../../assets/angle.svg";
 import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
@@ -163,7 +162,7 @@ const ApproveTransacton = () => {
               disabled={transactionInProcess}
               onClick={() => navigate("/dashboard/transaction/add-tokens")}
             >
-              <ArrowLeft className="h-11 w-6" />
+              <ArrowLeft color="white" className="h-11 w-6 mx-3" />
             </button>
             <h1 className="text-xl font-semibold text-white">Edit</h1>
           </div>
@@ -332,14 +331,18 @@ const ApproveTransacton = () => {
                           className="h-4 opacity-70"
                           src={gas}
                           alt="gasCanImage"
-                        />{
-                          token.tokenGas> 0? <>
-                          {token.tokenGas}
-                          </>:
+                        />
+                        {token.tokenGas > 0 ? (
+                          <>{token.tokenGas}</>
+                        ) : (
                           <>
-                          <BeatLoader size={5} loading={true} color="#ffffff"/>
+                            <BeatLoader
+                              size={5}
+                              loading={true}
+                              color="#ffffff"
+                            />
                           </>
-                        }
+                        )}
                       </p>
                     </div>
                   </div>

@@ -142,7 +142,7 @@ const AddTokens = () => {
             <button
               onClick={() => navigate("/dashboard/transaction/add-address")}
             >
-              <ArrowLeft className="h-11 w-6" />
+              <ArrowLeft className="h-11 w-6 mx-3" />
             </button>
             <h1 className="text-xl font-semibold mx-auto">Add Tokens</h1>
           </div>
@@ -195,7 +195,6 @@ const AddTokens = () => {
                         openRemoveAddressModal(transferData.uid);
                       }}
                     >
-                      
                       <Trash className="h-6 w-6" />
                     </button>
                   </div>
@@ -316,7 +315,7 @@ const AddTokens = () => {
         onClick={handelProceedButton}
         disabled={isTokenAddedForAddresses ? false : true}
         className={`${
-          !isTokenAddedForAddresses ? "text-opacity-50 " : ""
+          !isTokenAddedForAddresses ? "text-opacity-50 " : " border-white"
         } bg-gray-950 border-gray-500 hover:bg-black fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  `}
       >
         <h1 className="text-xl font-semibold tracking-wider">

@@ -8,6 +8,8 @@ import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
 import RemoveModal from "../../components/Modal";
+import { ArrowLeft } from "react-feather";
+
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -157,7 +159,7 @@ const AddAddresses = () => {
       <header className="mb-4">
         <div className="flex flex-row items-center">
           <button onClick={() => openBackModal()}>
-            <img className="h-11" src={backIcon} alt="backIcon" />
+            <ArrowLeft color="white" className="h-11 w-6 mx-3" />
           </button>
           <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
           {/* <button
@@ -232,10 +234,10 @@ const AddAddresses = () => {
             ? " bg-red-500 border-red-700"
             : " bg-gray-950 hover:bg-black"
         }  
-        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  ${
+        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg text-white    border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  ${
           sendToAddresses && isCardSelected
-            ? "border-white "
-            : "text-gray-200 bg-gray-950 border-gray-500"
+            ? "border-white text-white "
+            : " text-opacity-50 bg-gray-950 border-gray-500"
         }`}
       >
         <h1 className="text-xl font-semibold tracking-wider">
