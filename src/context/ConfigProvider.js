@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import useInit from "../hooks/useInit";
+import useInit from "../hooks/system-hooks/useInit";
 import ConfigContext from "./ConfigContext";
 
 const ConfigProvider = ({ children }) => {

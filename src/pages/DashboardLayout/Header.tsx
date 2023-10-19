@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/system-hooks/useAuth";
 import Modal from "../../components/common/Modal";
 import logoIcon from "../../assets/icons/icon16.png";
 import menuIcon from "../../assets/icons/menu.png";
