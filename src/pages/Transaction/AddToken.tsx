@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 
-import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
+import {
+  generateAddressIcon,
+  getShortDisplayString,
+  getChainDetails,
+} from "../../utils/helper";
 import addMoreAddress from "../../assets/add-user.svg";
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
@@ -11,11 +15,12 @@ import { useConfig } from "../../context/ConfigProvider";
 import { transferState } from "../../state/TransferState";
 import { ArrowLeft, Trash } from "react-feather";
 
-
 const AddTokens = () => {
-  const { smartAccountAddress} = useConfig()
-
-
+  const { smartAccountAddress, chainId } = useConfig();
+  const currentChainData = {
+    name: getChainDetails(chainId).name,
+    logo: getChainDetails(chainId).chainUri,
+  };
   const [transferData, setTransferData] = useRecoilState(transferState);
 
   const navigate = useNavigate();
@@ -126,6 +131,7 @@ const AddTokens = () => {
   };
 
   useEffect(() => {
+
     const propertyName = "tokenSymbol";
     const tokenIsAddedForAll = transferData.every(
       (address) => !!address[propertyName]
@@ -165,11 +171,13 @@ const AddTokens = () => {
           </div>
           <div className="text-base text-gray-200 my-auto flex justify-center item-center gap-2 ">
             <img
-              className="h-7 border rounded-full p-1 "
-              src={maticLogo}
-              alt=""
+              className="h-9 border rounded-full p-1 "
+              src={currentChainData.logo}
+              alt={currentChainData.name}
             />
-            <p className="font-medium">Polygon</p>
+            <p className="text-[15px] font-semibold w-[85px]">
+              {currentChainData.name}{" "}
+            </p>
           </div>
         </div>
 
@@ -302,12 +310,16 @@ const AddTokens = () => {
           onCancel={closeRemoveAddressModal}
           onRemove={handleRemoveAddress}
           isOpen={isRemoveAddressModalOpen}
+          message="Do you want to delete the address for the transaction"
+          actionBtnName="Delete"
         />
         {/* Modal to remove token  */}
         <RemoveModal
           onCancel={closeRemoveTokenModal}
           onRemove={handelRemoveToken}
           isOpen={isRemoveTokenModalOpen}
+          message="Do you want to remove the token?"
+          actionBtnName="Remove"
         />
       </div>
       {/* ######################## PROCEED SECTION ######################## */}

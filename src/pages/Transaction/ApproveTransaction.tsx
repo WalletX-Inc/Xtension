@@ -391,6 +391,8 @@ const ApproveTransaction = () => {
           isOpen={isCancelAllTransactionModalOpen}
           onCancel={closeCancelAllTransactionsModal}
           onRemove={clearAllTransactions}
+          message="Do you want to delete all the transactions?"
+          actionBtnName="Delete"
         />
       </div>
     </>
