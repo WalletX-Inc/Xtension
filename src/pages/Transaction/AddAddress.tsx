@@ -264,6 +264,8 @@ const AddAddresses = () => {
         isOpen={isBackModalOpen}
         onCancel={closeBackModal}
         onRemove={handleBack}
+        message="Do you want to delete all the transactions?"
+        actionBtnName="Delete"
       />
     </div>
   );

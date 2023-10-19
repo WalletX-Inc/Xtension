@@ -175,7 +175,9 @@ const AddTokens = () => {
               src={currentChainData.logo}
               alt={currentChainData.name}
             />
-            <p className="text-[15px] font-semibold w-[85px]">{currentChainData.name} </p>
+            <p className="text-[15px] font-semibold w-[85px]">
+              {currentChainData.name}{" "}
+            </p>
           </div>
         </div>
 
@@ -308,12 +310,16 @@ const AddTokens = () => {
           onCancel={closeRemoveAddressModal}
           onRemove={handleRemoveAddress}
           isOpen={isRemoveAddressModalOpen}
+          message="Do you want to delete the address for the transaction"
+          actionBtnName="Delete"
         />
         {/* Modal to remove token  */}
         <RemoveModal
           onCancel={closeRemoveTokenModal}
           onRemove={handelRemoveToken}
           isOpen={isRemoveTokenModalOpen}
+          message="Do you want to remove the token?"
+          actionBtnName="Remove"
         />
       </div>
       {/* ######################## PROCEED SECTION ######################## */}
