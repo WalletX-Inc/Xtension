@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Button from "../../components/common/Button";
-import { AiOutlineArrowRight } from "react-icons/ai";
 import icon128 from "../../assets/icons/mainLogo.png";
 import Register from "./Register";
+import { ArrowRightCircle } from "react-feather";
 
 function Registration() {
   const [showRegister, setShowRegister] = useState(false);
@@ -23,7 +23,7 @@ function Registration() {
           }}
         >
           <div className="p-2 flex justify-between items-center gap-5 font-bold">
-            Create new wallet <AiOutlineArrowRight />{" "}
+            Create new wallet <ArrowRightCircle />{" "}
           </div>
         </Button>
       )}
