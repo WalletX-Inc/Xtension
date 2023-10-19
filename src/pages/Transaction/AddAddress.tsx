@@ -8,8 +8,7 @@ import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
 import RemoveModal from "../../components/Modal";
-import { ArrowLeft } from "react-feather";
-
+import { ArrowLeft, ArrowRight } from "react-feather";
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -25,7 +24,7 @@ const AddAddresses = () => {
   const [isBackModalOpen, setIsBackModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // function to go back to the dashboard
+  // function to go back to the dashboard and forward to the add token page
   const openBackModal = () => {
     if (transferData.length > 0) {
       setIsBackModalOpen(true);
@@ -33,6 +32,10 @@ const AddAddresses = () => {
     } else {
       navigate("/dashboard");
     }
+  };
+
+  const goToAddTokens = () => {
+    navigate("/dashboard/transaction/add-tokens");
   };
 
   const closeBackModal = () => {
@@ -83,12 +86,12 @@ const AddAddresses = () => {
 
   // this function is not beign use cause of manifest v3 problem on build
   const pasteAddresses = async () => {
-    console.log("pasting address")
+    console.log("pasting address");
     try {
       setSendToAddresses("");
       handleCardClick(null);
       const address: string = await navigator.clipboard.readText();
-      console.log("pastedAdress" + address)
+      console.log("pastedAdress" + address);
       setEnteredAddresses(address);
       setIsValid(isEthereumAddress(address));
     } catch (error) {
@@ -161,6 +164,16 @@ const AddAddresses = () => {
             <ArrowLeft color="white" className="h-11 w-6 mx-3" />
           </button>
           <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
+          {transferData.length > 0 ? (
+            <>
+              <button onClick={() => goToAddTokens()}>
+                <ArrowRight color="white" className="h-11 w-6 mx-3" />
+              </button>
+            </>
+          ) : (
+            <></>
+          )}
+
           {/* <button
             onClick={openAddAddressesModal}
             title="Add More Addresses"
@@ -184,6 +197,7 @@ const AddAddresses = () => {
           onChange={handleInputChange}
           onFocus={handleFocus}
         />
+
         <button onClick={pasteAddresses} className="min-w-fit">
           <img className="h-6 opacity-70" src={paste} alt="pasteIcon" />
         </button>
