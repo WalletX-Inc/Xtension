@@ -7,9 +7,12 @@ import { generateAddressIcon, getItemFromStorage, getShortDisplayString } from "
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
 import {  ArrowDownCircle,  ArrowUpCircle } from "react-feather";
+import { useRecoilState } from "recoil";
+import { transferState } from "../../state/TransferState";
 
 
 function Dashboard() {
+  const [transferData, setTransferData] = useRecoilState(transferState);
   const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
@@ -40,6 +43,10 @@ function Dashboard() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
+
+    // This is to clear the state if the user restarts the app and is on the dashboard.
+    // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.
+    setTransferData([]);
   }, [smartAccountAddress, smartWalletAddress]);
 
   useEffect(() => {
@@ -64,6 +71,11 @@ function Dashboard() {
             src={generateAddressIcon(SCW || smartWalletAddress)}
             alt="address"
           />
+          <img
+            className=" h-9 rounder mr-3 border rounded-lg "
+            src={generateAddressIcon(SCW || smartWalletAddress)}
+            alt="address"
+          />
           <h2 className="text-2xl font-bold">
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
@@ -83,7 +95,7 @@ function Dashboard() {
           <div className="flex flex-col justify-center item-center gap-2">
             {/* <img
               onClick={() => sendTx()}
-              className="h-10 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={send}
               alt="sendButton"
             /> */}

@@ -1,45 +1,46 @@
 import React, { useState } from "react";
-import maticLogo from "../../src/assets/matic-logo.png";
-import { TokenData } from "./dummyTokenData";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../src/state/TransferState";
 import {Search} from 'react-feather'
+import Tokens from "../constants/tokens";
+import { useConfig } from "../context/ConfigProvider";
 
 type searchTokenPara = {
   isOpen: boolean;
   onClose: Function;
   uid: string;
 };
-type TokenData = [
-  tokenName: string | undefined,
-  tokenSymbol: string | undefined,
-  tokenAddress: string | undefined,
-  price: number | undefined,
-  balance: number | undefined,
-  tokenDecimal: number | undefined
+
+type Token = [
+  name: string,
+  symbol: string,
+  address: string,
+  decimals: number | string,
+  logoUri: string
 ];
+
 const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
+  const { chainId } = useConfig();
+
   const [transferData, setTransferData] = useRecoilState(transferState);
 
-  const [selectedToken, setSelectedToken] = useState<TokenData>();
+  const [selectedToken, setSelectedToken] = useState<Token>();
   const [tokenIsSelected, setTokenIsSelected] = useState<boolean>(false);
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(); // can also use token id for this
   const [balanceOfToken, setBalanceOfToken] = useState<number>(); // use it in handelAddButton
-  const [enteredAmount, setEnteredAmount] = useState<number>(0);
 
   const addToken = ([
     _tokenName,
     _tokenSymbol,
     _tokenAddress,
-    _price,
-    _balance,
     _tokenDecimal,
-  ]: TokenData) => {
+    _tokenLogoUri
+  ]: Token) => {
     const tokenName = _tokenName;
     const tokenSymbol = _tokenSymbol;
     const tokenAddress = _tokenAddress;
-    const tokenBalance = _balance;
     const tokenDecimal = _tokenDecimal;
+    const tokenLogo = _tokenLogoUri;
 
     setTransferData((prevData) =>
       prevData.map((transferDetails) =>
@@ -49,9 +50,8 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
               tokenName,
               tokenSymbol,
               tokenAddress,
-              tokenBalance,
               tokenDecimal,
-              amount: enteredAmount,
+              tokenLogo,
             }
           : transferDetails
       )
@@ -90,17 +90,16 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
 
       {/* TOKEN CARD  */}
       <div className="overflow-y-scroll  max-h-[315px]">
-        {TokenData.map((token, index) => {
+        {Tokens[chainId].map((token, index) => {
           return (
             <div
               onClick={() => {
                 addToken([
-                  token?.tokenName,
-                  token?.tokenSymbol,
-                  token?.tokenAddress,
-                  token?.price,
-                  token?.balance,
-                  token?.tokenDecimal,
+                  token?.name,
+                  token?.symbol,
+                  token?.address,
+                  token?.decimals,
+                  token?.logoUri,
                 ]);
 
                 setSelectedTokenIndex(index);
@@ -122,20 +121,20 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
               >
                 <div className=" min-w-[20%]">
                   <img
-                    src={maticLogo}
+                    src={token?.logoUri}
                     alt="token Logo"
                     className=" w-12 h-12 rounded-full object-cover mr-4 border-2"
                   />
                 </div>
                 <div className="w-full flex justify-between items-center">
                   <div>
-                    <p className="text-lg font-semibold">{token?.tokenName}</p>
+                    <p className="text-lg font-semibold">{token?.name}</p>
                     <p className="text-lg font-semibold overflow-hidden text-gray-600">
-                      {token?.tokenSymbol}
+                      {token?.symbol}
                     </p>
                   </div>
                   <div className="items-end">
-                    <p title="current Balance">{token?.balance}</p>
+                    <p title="current Balance">0000</p>
                     <p title="balance in dollars">
                       <span>$</span>
                       00.00

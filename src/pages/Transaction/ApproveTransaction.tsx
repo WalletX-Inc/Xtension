@@ -227,11 +227,11 @@ const ApproveTransacton = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-2   justify-between w-full items-center   ">
+                  <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-4   justify-between w-full items-center   ">
                     <div className="flex justify-center items-center gap-2">
                       <img
                         className="h-8 w-8 "
-                        src={maticLogo}
+                        src={transferData.tokenLogo}
                         alt="tokenIcon"
                       />
 

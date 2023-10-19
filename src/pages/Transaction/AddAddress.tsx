@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search } from "react-feather";
+import RemoveModal from "../../components/Modal";
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -17,7 +18,27 @@ const AddAddresses = () => {
   );
   const [cardAddress, setCardAddress] = useState<string>("");
   const [isCardSelected, setIsCardSelected] = useState<boolean>(false);
+  const [isBackModalOpen, setIsBackModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  // function to go back to the dashboard
+  const openBackModal = () => {
+    if (transferData.length > 0) {
+      setIsBackModalOpen(true);
+      console.log("transactons are there should not revert back to dashboard");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const closeBackModal = () => {
+    setIsBackModalOpen(false);
+  };
+
+  const handleBack = () => {
+    setTransferData([]);
+    navigate("/dashboard");
+  };
 
   //function for opning the add Addresses modal
   const [isAddAddressesModalVisible, setIsAddAddressesModalVisible] =
@@ -114,6 +135,7 @@ const AddAddresses = () => {
         amount: 0,
         tokenDecimal: 0,
         tokenBalance: 0,
+        tokenLogo:"",
       },
     ]);
     console.log(transferData);
@@ -220,6 +242,12 @@ const AddAddresses = () => {
             : " Next "}
         </h1>
       </button>
+
+      <RemoveModal
+        isOpen={isBackModalOpen}
+        onCancel={closeBackModal}
+        onRemove={handleBack}
+      />
     </div>
   );
 };
