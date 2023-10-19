@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
 import { initiateEOA } from "./initiateEOA";
-import { getItemFromStorage } from "../utils/helper";
+import { getItemFromStorage } from "../../utils/helper";
 import { useAuth } from "./useAuth";
-import { getChainDetails } from "../utils/helper";
+import { getChainDetails } from "../../utils/helper";
 
 export default function useInit() {
   const [signer, setSigner] = useState(null);

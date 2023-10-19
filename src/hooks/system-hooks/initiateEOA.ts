@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { setItemInStorage } from "../utils/helper";
+import { setItemInStorage } from "../../utils/helper";
 
 export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any, setEOA: any) {
   return () => {

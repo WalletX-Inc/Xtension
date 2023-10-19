@@ -3,11 +3,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import receive from "../../assets/arrow-down.png";
-import send from "../../assets/arrow-up.png";
-import swap from "../../assets/swap.png";
-import bridge from "../../assets/rainbow.png";
-
 import {
   generateAddressIcon,
   getItemFromStorage,
@@ -17,12 +12,21 @@ import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
+import QRCodeModal from "../../components/QRCodeModal";
+
+import swap from "../../assets/swap.png";
+import bridge from "../../assets/rainbow.png";
+import receive from "../../assets/arrow-down.png";
+import send from "../../assets/arrow-up.png";
+
+import copyAndPaste from "../../assets/copy.svg";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
   const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
+  const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
 
   const item = getItemFromStorage("smartAccount");
   const chain = getItemFromStorage("network");
@@ -34,6 +38,23 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
+
+  // Receve Button functions
+  const openQrModal = () => {
+    setQrcodemodal(true);
+  };
+
+  const closeQrModal = () => {
+    setQrcodemodal(false);
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(smartAccountAddress);
+    } catch (error) {
+      console.error("Copy failed due to: ", error);
+    }
+  };
 
   useEffect(() => {
     async function initializeSmartWallet() {
@@ -74,26 +95,34 @@ function Dashboard() {
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
           <img
-            className=" h-9 rounder mr-3 border rounded-lg "
+            className=" h-7 rounder mr-3 border rounded-lg "
             src={generateAddressIcon(SCW || smartWalletAddress)}
-            alt="address"
+            alt="address icon"
           />
-          <h2 className="text-2xl font-bold">
+          <h2 className="text-base font-bold">
             {getShortDisplayString(SCW || smartWalletAddress)}
           </h2>
+          <img
+            onClick={() => copyToClipboard()}
+            className="h-5 ml-1"
+            src={copyAndPaste}
+            alt="copy"
+          />
         </div>
-        <h3 className="text-center text-2xl font-extrabold">
+        <h3 className="text-center text-3xl font-extrabold">
           {balance} {currentCoinName}
         </h3>
 
-        <div className="flex gap-7 justify-center item-center mt-5 text-center">
+        {/* Features Buttons  */}
+        <div className="flex gap-8 justify-center item-center mt-10 text-center">
           <div className="flex flex-col justify-center item-center gap-2">
             <img
+              onClick={() => openQrModal()}
               className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={receive}
               alt="receiveButton"
             />
-            <h1 className="text-base font-thin tracking-wider">Recieve</h1>
+            <h1 className="text-{15px} font-thin tracking-wider">Receive</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
             <img
@@ -102,7 +131,7 @@ function Dashboard() {
               src={send}
               alt="sendButton"
             />
-            <h1 className="text-base font-thin tracking-wider">Send</h1>
+            <h1 className="text-{15px} font-thin tracking-wider">Send</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
             <img
@@ -110,7 +139,7 @@ function Dashboard() {
               src={swap}
               alt="swapButton"
             />
-            <h1 className="text-base font-thin tracking-wider">Swap</h1>
+            <h1 className="text-{15px} font-thin tracking-wider">Swap</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
             <img
@@ -118,10 +147,15 @@ function Dashboard() {
               src={bridge}
               alt="bridgeButton"
             />
-            <h1 className="text-base font-thin tracking-wider">Bridge</h1>
+            <h1 className="text-{15px}  font-thin tracking-wider">Bridge</h1>
           </div>
         </div>
       </div>
+      <QRCodeModal
+        isOpen={qrcodemodal}
+        onClose={closeQrModal}
+        walletAddress={smartWalletAddress}
+      />
     </>
   );
 }

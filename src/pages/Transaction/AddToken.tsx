@@ -3,16 +3,14 @@ import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 
 import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
-import { transferState } from "../../state/TransferState";
-import { useConfig } from "../../context/ConfigProvider";
-
+import addMoreAddress from "../../assets/add-user.svg";
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
-
-import addMoreAddress from "../../assets/add-user.svg";
-import backIcon from "../../assets/angle.svg";
 import maticLogo from "../../assets/matic-logo.png";
-import del from "../../assets/delete.svg";
+import { useConfig } from "../../context/ConfigProvider";
+import { transferState } from "../../state/TransferState";
+import { ArrowLeft, Trash } from "react-feather";
+
 
 const AddTokens = () => {
   const { smartAccountAddress} = useConfig()
@@ -73,7 +71,7 @@ const AddTokens = () => {
   const handelRemoveToken = () => {
     setTransferData((prevData) =>
       prevData.map((transferDetails) =>
-        transferDetails.uid == uidToRemoveToken
+        transferDetails.uid === uidToRemoveToken
           ? {
               ...transferDetails,
               tokenName: "",
@@ -135,7 +133,7 @@ const AddTokens = () => {
     setIsTokenAddedForAddresses(tokenIsAddedForAll);
   }, [transferData]);
 
-  if (transferData.length == 0) navigate("/dashboard/transaction/add-address");
+  if (transferData.length === 0) navigate("/dashboard/transaction/add-address");
   return (
     <>
       <div className=" max-w-[350px] mx-auto  bg-[#1f1f20]  ">
@@ -144,7 +142,7 @@ const AddTokens = () => {
             <button
               onClick={() => navigate("/dashboard/transaction/add-address")}
             >
-              <img className="h-11" src={backIcon} alt="backIcon" />
+              <ArrowLeft className="h-11 w-6 mx-3" />
             </button>
             <h1 className="text-xl font-semibold mx-auto">Add Tokens</h1>
           </div>
@@ -197,11 +195,7 @@ const AddTokens = () => {
                         openRemoveAddressModal(transferData.uid);
                       }}
                     >
-                      <img
-                        className=" h-6  "
-                        src={del}
-                        alt="delete the address  "
-                      />
+                      <Trash className="h-6 w-6" />
                     </button>
                   </div>
 
@@ -321,7 +315,7 @@ const AddTokens = () => {
         onClick={handelProceedButton}
         disabled={isTokenAddedForAddresses ? false : true}
         className={`${
-          !isTokenAddedForAddresses ? "text-opacity-50 " : ""
+          !isTokenAddedForAddresses ? "text-opacity-50 " : " border-white"
         } bg-gray-950 border-gray-500 hover:bg-black fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  `}
       >
         <h1 className="text-xl font-semibold tracking-wider">

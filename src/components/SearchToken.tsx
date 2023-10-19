@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../src/state/TransferState";
-import { useConfig } from "../context/ConfigProvider";
+import {Search} from 'react-feather'
 import Tokens from "../constants/tokens";
-
-import search from "../../src/assets/search.svg";
+import { useConfig } from "../context/ConfigProvider";
 
 type searchTokenPara = {
   isOpen: boolean;
@@ -77,7 +76,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       {/* SEARCH BOX  */}
       <div className="flex items-center max-w-[95%] mx-auto border border-gray-300 rounded-lg my-4 p-2">
         <button className="min-w-fit  pr-1 opacity-60">
-          <img className="h-5 mx-auto my-auto" src={search} alt="searchIcon" />
+          <Search className="h-5 mx-auto my-auto" />
         </button>
         <input
           type="text"
