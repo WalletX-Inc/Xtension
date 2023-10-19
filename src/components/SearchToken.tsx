@@ -103,7 +103,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
                 ]);
 
                 setSelectedTokenIndex(index);
-                if (selectedTokenIndex == index) {
+                if (selectedTokenIndex === index) {
                   setSelectedTokenIndex(undefined);
                   setTokenIsSelected(false);
                 } else {

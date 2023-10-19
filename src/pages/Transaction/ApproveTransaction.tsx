@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import { transferState } from "../../state/TransferState";
 import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import { gasState } from "../../state/GasState";
-import { tokenData } from "../../utils/tokenData/tokenData";
+import tokenData from "../../constants/feeTokens";
 import RemoveModal from "../../components/Modal";
 import fingerPrint from "../../assets/biometric-identification.svg";
 import gas from "../../assets/gas.svg";
@@ -51,7 +51,7 @@ const ApproveTransaction = () => {
     });
 
   const navigate = useNavigate();
-  const { smartAccountProvider, smartAccountAddress } = useConfig();
+  const { smartAccountProvider, smartAccountAddress, chainId } = useConfig();
 
   // Cancel the whole transaction
   const clearAllTransactions = () => {
@@ -95,13 +95,13 @@ const ApproveTransaction = () => {
   const updateTokenData = () => {
     const uuid = crypto.randomUUID();
 
-    const updatedTokenData = tokenData.map((token) => {
+    const updatedTokenData = tokenData[chainId].map((token) => {
       return {
         tokenUID: uuid,
-        tokenLogo: token.tokenIcon,
-        tokenName: token.tokenName,
-        tokenSymbol: token.tokenSymbol,
-        tokenAddress: token.tokenAddress,
+        tokenLogo: token.logoUri,
+        tokenName: token.name,
+        tokenSymbol: token.symbol,
+        tokenAddress: token.address,
         tokenBalance: 0,
         tokenGas: 0,
         tokenGasValue: 0,
@@ -185,6 +185,7 @@ const ApproveTransaction = () => {
     const transactionDetails = await userOpResponse.wait();
 
     setTransactionHash(transactionDetails.receipt.transactionHash);
+    console.log('transactionDetails', transactionDetails);
   }
 
   if (transferData.length === 0) navigate("/dashboard");
@@ -298,7 +299,7 @@ const ApproveTransaction = () => {
               disabled={transactionInProcess}
               onClick={() => { sendBatchTransaction(transferData) }}
             >
-              {transactionInProcess == true ? (
+              {transactionInProcess === true ? (
                 <div className="pt-2">
                   <SyncLoader
                     size={9}
