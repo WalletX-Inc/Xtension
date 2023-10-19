@@ -171,11 +171,11 @@ const AddTokens = () => {
           </div>
           <div className="text-base text-gray-200 my-auto flex justify-center item-center gap-2 ">
             <img
-              className="h-7 border rounded-full p-1 "
+              className="h-9 border rounded-full p-1 "
               src={currentChainData.logo}
               alt={currentChainData.name}
             />
-            <p className="font-medium">{currentChainData.name} </p>
+            <p className="text-[15px] font-semibold w-[85px]">{currentChainData.name} </p>
           </div>
         </div>
 
