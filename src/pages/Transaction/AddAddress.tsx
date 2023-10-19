@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import backIcon from "../../assets/angle.svg";
 import AddressesCard from "../../components/AddressCard";
-import paste from "../../assets/copy&paste.png";
+import paste from "../../assets/paste.svg";
 import search from "../../assets/search.svg";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
@@ -82,20 +82,19 @@ const AddAddresses = () => {
   };
 
   // this function is not beign use cause of manifest v3 problem on build
-  // const pasteAddresses = async () => {
-  //   console.log("addressPasted");
-  //   try {
-  //     setSendToAddresses("");
-  //     handleCardClick(null);
-  //     console.log("lineBeforeClipboard  ");
-  //     const address: string = await navigator.clipboard.readText();
-  //     console.log("address");
-  //     setEnteredAddresses(address);
-  //     setIsValid(isEthereumAddress(address));
-  //   } catch (error) {
-  //     console.log("Copy failed due to: ", error);
-  //   }
-  // };
+  const pasteAddresses = async () => {
+    console.log("pasting address")
+    try {
+      setSendToAddresses("");
+      handleCardClick(null);
+      const address: string = await navigator.clipboard.readText();
+      console.log("pastedAdress" + address)
+      setEnteredAddresses(address);
+      setIsValid(isEthereumAddress(address));
+    } catch (error) {
+      console.log("Copy failed due to: ", error);
+    }
+  };
   const generateAddressCard = (enteredAddresses: string) => {
     return (
       <>
@@ -185,9 +184,9 @@ const AddAddresses = () => {
           onChange={handleInputChange}
           onFocus={handleFocus}
         />
-        {/* <button onClick={pasteAddresses} className="min-w-fit">
+        <button onClick={pasteAddresses} className="min-w-fit">
           <img className="h-6 opacity-70" src={paste} alt="pasteIcon" />
-        </button> */}
+        </button>
       </div>
 
       {/* ######################## ADDRESSES CARD ########################  */}

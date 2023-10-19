@@ -5,10 +5,19 @@ import QRCode from "react-qr-code";
 type qrmodalparams = {
   onClose: Function;
   isOpen: Boolean;
-  walletAddress: String;
+  walletAddress: any;
 };
 
 const QRCodeModal = ({ onClose, isOpen, walletAddress }: qrmodalparams) => {
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(walletAddress);
+    } catch (error) {
+      console.error("Copy failed due to: ", error);
+    }
+  };
+
   return (
     <>
       <div
@@ -36,7 +45,7 @@ const QRCodeModal = ({ onClose, isOpen, walletAddress }: qrmodalparams) => {
             </span>
 
             <button className="w-[10%] flex justify-center  ">
-              <img className="h-6" src={copy} alt="copyWalletAddresses" />
+              <img onClick={() => copyToClipboard() } className="h-6" src={copy} alt="copyWalletAddresses" />
             </button>
           </div>
         </div>
