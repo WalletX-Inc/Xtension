@@ -10,7 +10,7 @@ import Config from "../../config";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/system-hooks/useAuth";
 import { useConfig } from "../../context/ConfigProvider";
 
 const Register = () => {

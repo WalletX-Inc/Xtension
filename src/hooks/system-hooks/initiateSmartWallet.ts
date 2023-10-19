@@ -1,7 +1,7 @@
 import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
 import { Bundler } from '@biconomy/bundler';
 import { BiconomyPaymaster } from '@biconomy/paymaster';
-import { setItemInStorage } from "../utils/helper";
+import { setItemInStorage } from "../../utils/helper";
 
 export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId: number, paymasterUrl: string, signer: any, login: any, setSmartAccountProvider: any, setSmartAccountAddress: any) {
 

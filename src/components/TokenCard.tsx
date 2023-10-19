@@ -1,9 +1,9 @@
 type tokenCardParams = {
-  tokenIcon: string;
-  tokenName: string;
-  tokenBalance: number;
-  tokenSymbol: string;
-};
+  tokenIcon:string;
+  tokenName:string;
+  tokenBalance:null | number;
+  tokenSymbol:string;
+}
 
 const TokenCard = ({
   tokenIcon,
