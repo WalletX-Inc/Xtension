@@ -9,11 +9,10 @@ import { tokenData } from "../../utils/tokenData/tokenData";
 import RemoveModal from "../../components/Modal";
 
 import fingerPrint from "../../assets/biometric-identification.svg";
-import backIcon from "../../assets/angle.svg";
-import del from "../../assets/delete.svg";
 import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
+import { ArrowLeft } from "react-feather";
 
 type selectedTokenForGas = {
   icon: string;
@@ -157,7 +156,7 @@ const ApproveTransacton = () => {
     updateGasData(); // it update the gas, gasValue in dollars and
   }, [transferData]);
 
-  if (transferData.length == 0) navigate("/dashboard");
+  if (transferData.length === 0) navigate("/dashboard");
 
   return (
     <>
@@ -167,7 +166,7 @@ const ApproveTransacton = () => {
             <button
               onClick={() => navigate("/dashboard/transaction/add-tokens")}
             >
-              <img className="h-11" src={backIcon} alt="backIcon" />
+              <ArrowLeft className="h-11 w-6" />
             </button>
             <h1 className="text-xl font-semibold text-white">Edit</h1>
           </div>

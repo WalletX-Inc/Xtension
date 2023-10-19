@@ -20,6 +20,9 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
+  "paths": {
+      "stream": ["./node_modules/readable-stream"]
+    },
   "include": [
     "src"
   ]

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { IoIosArrowDropdown } from "react-icons/io";
-import {  AiOutlinePlus } from "react-icons/ai";
 import { ethers } from "ethers";
 
 import { useAuth } from "../../hooks/useAuth";
@@ -12,6 +10,7 @@ import Button from "../../components/common/Button";
 import { useConfig } from "../../context/ConfigProvider";
 import { getItemFromStorage, getShortDisplayString, setItemInStorage } from "../../utils/helper";
 import Chains from "../../constants/chains";
+import {  ChevronDown, Plus } from "react-feather";
 
 const navbarData = [
   {
@@ -117,7 +116,7 @@ export default function Header() {
             src={currentChainLogo}
             alt="ETH"
           />
-          <IoIosArrowDropdown className="ml-2" />
+          <ChevronDown className="ml-2" />
         </h1>
         <h1
           className="text-xl font-bold flex items-center cursor-pointer hover:opacity-70  hover:border-1 hover:border-gray-600 hover:shadow-lg rounded p-[3px]"
@@ -126,7 +125,7 @@ export default function Header() {
           }}
         >
           Wallets
-          <IoIosArrowDropdown className="mx-3" />
+          <ChevronDown className="mx-3" />
         </h1>
 
         <button
@@ -271,7 +270,7 @@ export default function Header() {
           }}
         >
           <div className="p-2 flex justify-between items-center gap-5 font-bold">
-            <AiOutlinePlus /> Add Network
+            <Plus /> Add Network
           </div>
         </Button>
       </Modal>
