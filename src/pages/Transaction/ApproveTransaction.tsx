@@ -14,7 +14,7 @@ import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
 
-import { SyncLoader } from "react-spinners";
+import { SyncLoader, BeatLoader } from "react-spinners";
 import TransactionModal from "../../components/TransactionModal";
 
 type selectedTokenForGas = {
@@ -119,7 +119,7 @@ const ApproveTransacton = () => {
     {
       tokenAddress: "0x123",
       tokenBalance: 50,
-      tokenGas: 200,
+      tokenGas: 0,
       tokenGasValue: 30,
     },
   ];
@@ -283,6 +283,7 @@ const ApproveTransacton = () => {
             </button>
           </div>
         </div>
+
         {/* Select token for gas component andt it should be componetizeEd */}
         <div
           className={`${
@@ -330,8 +331,14 @@ const ApproveTransacton = () => {
                           className="h-4 opacity-70"
                           src={gas}
                           alt="gasCanImage"
-                        />
-                        {token.tokenGas}
+                        />{
+                          token.tokenGas> 0? <>
+                          {token.tokenGas}
+                          </>:
+                          <>
+                          <BeatLoader size={5} loading={true} color="#ffffff"/>
+                          </>
+                        }
                       </p>
                     </div>
                   </div>
