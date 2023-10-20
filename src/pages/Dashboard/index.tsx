@@ -107,7 +107,7 @@ function Dashboard() {
           </h2>
           <img
             onClick={() => copyToClipboard()}
-            className="h-5 ml-1"
+            className="h-5 ml-1 cursor-pointer"
             src={copyAndPaste}
             alt="copy"
           />
@@ -119,16 +119,16 @@ function Dashboard() {
 
         {/* Features Buttons  */}
         <div className="flex gap-8 justify-center item-center mt-10 text-center">
-          <div className="flex flex-col justify-center item-center gap-2">
+          <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => openQrModal()}
-              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              className="h-8 bg-white rounded-full  p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={receive}
               alt="receiveButton"
             />
             <h1 className="text-{15px} font-thin tracking-wider">Receive</h1>
           </div>
-          <div className="flex flex-col justify-center item-center gap-2">
+          <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => sendTx()}
               className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
