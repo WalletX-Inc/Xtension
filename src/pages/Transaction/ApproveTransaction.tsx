@@ -92,6 +92,21 @@ const ApproveTransaction = () => {
     setIsGasDrawerVisible(!isGasDrawerVisible);
   };
 
+  const supportedTokensForGas = async (txns: any) => {
+    const userOp = await smartAccountProvider.buildUserOp(txns);
+
+    const paymaster = smartAccountProvider.paymaster;
+    const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(userOp, { mode: 'ERC20', tokenList: [] });
+
+    let supportedTokens: any = [];
+
+    feeQuotesResponse.feeQuotes.map((token: any) => {
+      const tokenObj = { symbol: token.symbol, tokenAddress: token.tokenAddress, maxGasFee: token.maxGasFee, maxGasFeeUSD: token.maxGasFeeUSD };
+
+      return supportedTokens.push(tokenObj);
+    });
+  }
+
   const updateTokenData = () => {
     const uuid = crypto.randomUUID();
 
