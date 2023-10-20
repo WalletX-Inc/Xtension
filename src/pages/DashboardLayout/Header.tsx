@@ -96,7 +96,7 @@ export default function Header() {
     if (key === "/logout") {
       logout();
       setItemInStorage("isLoggedIn", false);
-      navigate("/register");
+      navigate("/login");
     }
     setToggle(!toggle);
   };

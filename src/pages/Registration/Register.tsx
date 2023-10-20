@@ -21,8 +21,8 @@ const Register = () => {
 
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { smartAccountAddress, init } = useConfig();
-
+  const { init } = useConfig();
+  const smartAccountAddress = getItemFromStorage("smartAccount");
   useEffect(() => {
     if (signer) {
       getSmartWalletAddress();
@@ -31,7 +31,7 @@ const Register = () => {
 
   useEffect(() => {
     if (smartAccountAddress) {
-      console.log('Smart Account Is Initialized : ', smartAccountAddress);
+      console.log("Smart Account Is Initialized : ", smartAccountAddress);
 
       setButtonTitle("Done");
       login();
@@ -41,10 +41,10 @@ const Register = () => {
       });
       navigate(`/dashboard`);
     }
-  }, [smartAccountAddress])
+  }, [smartAccountAddress]);
 
-   function generateEOA(credentialId: any) {
-    setButtonTitle("Loading...");
+  function generateEOA(credentialId: any) {
+    setButtonTitle("Registering...");
     const inputBytes = ethers.utils.toUtf8Bytes(credentialId);
     const hash = ethers.utils.keccak256(inputBytes);
 
@@ -54,7 +54,7 @@ const Register = () => {
     setItemInStorage("signer", eoa.address);
 
     const provider = new ethers.providers.JsonRpcProvider(Config.RPC_MUMBAI);
-    const signer =  eoa.connect(provider);
+    const signer = eoa.connect(provider);
     setSigner(signer);
   }
 
@@ -67,7 +67,7 @@ const Register = () => {
   };
 
   async function registerDevice() {
-    const device = deviceName ? getItemFromStorage('device') : null;
+    const device = deviceName ? getItemFromStorage("device") : null;
 
     if (device?.name === deviceName) {
       alert(`${deviceName} is already registered. Please choose another name`);
@@ -76,20 +76,24 @@ const Register = () => {
 
     const challenge = v4();
 
-    const registration = deviceName ? 
-      await client.register(deviceName, challenge, {
-        authenticatorType: "both",
-        userVerification: "required",
-        timeout: 60000,
-        attestation: false,
-        debug: false,
-      }) : null;
+    const registration = deviceName
+      ? await client.register(deviceName, challenge, {
+          authenticatorType: "both",
+          userVerification: "required",
+          timeout: 60000,
+          attestation: false,
+          debug: false,
+        })
+      : null;
 
-    if(deviceName && registration){
-      setItemInStorage('device', { name: deviceName?.toString(), id: registration?.credential.id })
-      setItemInStorage('isLoggedIn', true)
+    if (deviceName && registration) {
+      setItemInStorage("device", {
+        name: deviceName?.toString(),
+        id: registration?.credential.id,
+      });
+      setItemInStorage("isLoggedIn", true);
       generateEOA(registration?.credential.id);
-    } 
+    }
   }
 
   return (
@@ -111,7 +115,12 @@ const Register = () => {
           >
             {buttonTitle}
           </Button>
-          <Link className="mt-3 text-sm" to={"/login"}>
+          <Link
+            className={`mt-3 text-sm ${
+              smartAccountAddress ? "" : "cursor-not-allowed opacity-50"
+            }`}
+            to={"/login"}
+          >
             Already Have an account ? Login
           </Link>
         </div>

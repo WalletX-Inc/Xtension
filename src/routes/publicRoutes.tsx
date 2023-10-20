@@ -14,7 +14,7 @@ function PublicRoutes() {
     <Routes>
       <Route element={<PublicLayout />}>
         <Route element={!isRegistered ? <LandingPage /> : <Login />} path="/" />
-
+        <Route element={<Login/>} path='/login' />
         <Route element={<LandingPage />} path="/landing" />
         <Route element={<Registration />} path="register" />
       </Route>
