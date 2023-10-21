@@ -11,12 +11,20 @@ type importTokenParam = {
   isOpen: boolean;
 };
 
+type tokenDataT = {
+  tokenAddress: string;
+  tokenSymbol: string;
+  tokenName: string;
+  tokenLogoUrl: string;
+  tokenDecimal: number;
+};
+
 const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const [isValidAddress, setIsValidAddress] = useState<boolean>(false);
-  const [tokenAddress , setTokenAddress] = useState<string>("");
-  const {chainId}  = useConfig()
+  const [tokenAddress, setTokenAddress] = useState<string>("");
+  const { chainId } = useConfig();
 
-  const [tokenData, setTokenData] = useState({
+  const [tokenData, setTokenData] = useState<tokenDataT>({
     tokenAddress: "",
     tokenSymbol: "",
     tokenName: "",
@@ -36,10 +44,10 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const handelContractAddressInput = (e: any) => {
     const inputAddress = e.target.value;
     setIsValidAddress(isEthereumAddress(inputAddress));
-    setTokenAddress(inputAddress)
+    setTokenAddress(inputAddress);
     setTokenData({
       tokenAddress: inputAddress,
-      tokenSymbol: "",
+      tokenSymbol: "Shakti",
       tokenName: "",
       tokenLogoUrl: "",
       tokenDecimal: 0,
@@ -62,7 +70,6 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
 
   const addToken = () => {
     console.log("tokenAdded");
-    // Chain id should be given in the string below as parameter
     setTokenDataForKey(chainId, [tokenData]);
     toast.success("Token Added Sucessfully");
     setTokenData({
@@ -73,7 +80,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
       tokenDecimal: 0,
     });
     onClose();
-    setTokenAddress("")
+    setTokenAddress("");
   };
 
   return (
