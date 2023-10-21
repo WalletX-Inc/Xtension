@@ -68,6 +68,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
       tokenLogoUrl: "",
       tokenDecimal: 0,
     });
+    onClose();
   };
 
   return (
