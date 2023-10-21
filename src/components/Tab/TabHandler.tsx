@@ -6,6 +6,9 @@ import TokenCard from "../TokenCard";
 import Tokens from "../../constants/tokens";
 import { useConfig } from "../../context/ConfigProvider";
 
+import { Plus } from "react-feather";
+import ImportTokenDrawer from "../ImportTokenDrawer";
+
 type Token = {
   name: string;
   symbol: string;
@@ -16,6 +19,16 @@ type Token = {
 
 const TabHandler = () => {
   const [tokens, setTokens] = useState<Token[] | null>(null);
+  const [isImportTokenDrawerOpen, setIsImportTokenDrawerOpen] = useState<boolean>(false)
+
+  
+  const openImportTokenModal = () => {
+    setIsImportTokenDrawerOpen(true)
+  };
+
+  const closeImportTokenDrawer = () =>{
+    setIsImportTokenDrawerOpen(false)
+  }
 
   const { chainId } = useConfig();
 
@@ -40,7 +53,20 @@ const TabHandler = () => {
                   />
                 </>
               ))}
+
+            <div className="flex flex-col gap-2 my-5">
+              <button
+                onClick={() => openImportTokenModal()}
+                className="flex gap-1 justify-center items-center"
+              >
+                <Plus />
+                <p className="hover:border-b border-gray-300 text-[17px] font-semibold">
+                  Import Tokens
+                </p>
+              </button>
+            </div>
           </div>
+          <ImportTokenDrawer isOpen={isImportTokenDrawerOpen} onClose={closeImportTokenDrawer}/>
         </Tab>
         <Tab label="NFTs">
           <div className="py-4">

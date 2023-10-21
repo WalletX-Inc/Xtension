@@ -2,7 +2,7 @@ import React from "react";
 import cancel from "../assets/x.png";
 import copy from "../assets/copy&paste.png";
 import QRCode from "react-qr-code";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type qrmodalparams = {
   onClose: Function;
