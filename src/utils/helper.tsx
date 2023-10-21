@@ -1,5 +1,5 @@
 import { toSvg } from "jdenticon";
-import Chains from '../constants/chains';
+import Chains from "../constants/chains";
 
 export const getItemFromStorage: any = (
   key: string,
