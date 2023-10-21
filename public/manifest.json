@@ -9,7 +9,7 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["activeTab", "storage" ,"clipboardRead"],
+  "permissions": ["storage" ,"clipboardRead"],
   "action": {
     "default_popup": "js/index.html",
     "default_title": "WalletX | Smart Wallet",
