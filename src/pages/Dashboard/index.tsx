@@ -52,7 +52,7 @@ function Dashboard() {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(smartAccountAddress);
+      await navigator.clipboard.writeText(SCW || smartAccountAddress);
       toast.success("Text Copied To clipboard");
     } catch (error) {
       console.error("Copy failed due to: ", error);
