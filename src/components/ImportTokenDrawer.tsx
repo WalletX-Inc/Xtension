@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import TokenCard from "./TokenCard";
 import localforage from "localforage";
 import toast from "react-hot-toast";
+import { useConfig } from "../context/ConfigProvider";
 
 type importTokenParam = {
   onClose: Function;
@@ -12,6 +13,8 @@ type importTokenParam = {
 
 const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const [isValidAddress, setIsValidAddress] = useState<boolean>(false);
+  const [tokenAddress , setTokenAddress] = useState<string>("");
+  const {chainId}  = useConfig()
 
   const [tokenData, setTokenData] = useState({
     tokenAddress: "",
@@ -33,6 +36,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const handelContractAddressInput = (e: any) => {
     const inputAddress = e.target.value;
     setIsValidAddress(isEthereumAddress(inputAddress));
+    setTokenAddress(inputAddress)
     setTokenData({
       tokenAddress: inputAddress,
       tokenSymbol: "",
@@ -59,7 +63,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const addToken = () => {
     console.log("tokenAdded");
     // Chain id should be given in the string below as parameter
-    setTokenDataForKey("001", [tokenData]);
+    setTokenDataForKey(chainId, [tokenData]);
     toast.success("Token Added Sucessfully");
     setTokenData({
       tokenAddress: "",
@@ -69,6 +73,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
       tokenDecimal: 0,
     });
     onClose();
+    setTokenAddress("")
   };
 
   return (
@@ -95,6 +100,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
             className="border border-gray-300 bg-transparent w-[95%] focus:outline-none mt-2 rounded-lg px-3 py-2"
             onChange={handelContractAddressInput}
             type="text"
+            value={tokenAddress}
           />
         </div>
         {tokenData.tokenSymbol ? (
