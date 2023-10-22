@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
 
 import {
   generateAddressIcon,
@@ -26,7 +25,6 @@ import Loader from "../../components/common/Loader";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
@@ -38,7 +36,7 @@ function Dashboard() {
   const [SCW] = useState(item || null);
   const [chainId] = useState(chain || null);
 
-  const { smartAccountAddress, provider, init } = useConfig();
+  const { smartAccountAddress, provider, init, balance: { SCW: SCWBalance }, isConnected } = useConfig();
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
@@ -62,14 +60,17 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    console.log({ isConnected });
+    if (isConnected) {
+      setIsLoading(false);
+      console.log('CHANGED : ', { isConnected });
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
         init(chainId);
-      } else {
-        let balance = await provider.getBalance(SCW || smartAccountAddress);
-        balance = ethers.utils.formatEther(balance);
-
-        setBalance(balance);
       }
     }
 
@@ -118,7 +119,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {balance} {currentCoinName}
+          {SCWBalance} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
