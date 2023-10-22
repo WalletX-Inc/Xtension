@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown } from "react-feather";
 import { ethers } from "ethers";
 import localforage from "localforage";
@@ -48,21 +48,39 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
     }
   };
 
+  const closeDrawer = () => {
+    onClose();
+    setTokenData({
+      tokenAddress: "",
+      tokenSymbol: "",
+      tokenName: "",
+      tokenLogoUrl: "",
+      tokenDecimal: 0,
+      balance: "",
+    });
+    setTokenAddress("");
+    setIsValidTokenContract(null);
+    setIsValidAddress(null)
+  };
+
   const handelContractAddressInput = async (e: any) => {
     const inputAddress = e.target.value;
     isEthereumAddress(inputAddress);
+    setTokenAddress(inputAddress);
 
     if (!isEthereumAddress(inputAddress)) {
       setIsValidAddress(false);
       return;
     }
-    
+
     setIsValidAddress(true);
-    setIsValidTokenContract('LOADING');
+    setIsValidTokenContract("LOADING");
 
-    setTokenAddress(inputAddress);
-
-    const tokenData = await getTokenData(inputAddress, provider, smartAccountAddress);
+    const tokenData = await getTokenData(
+      inputAddress,
+      provider,
+      smartAccountAddress
+    );
 
     if (!tokenData) {
       setIsValidTokenContract(false);
@@ -72,11 +90,13 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
         tokenAddress: inputAddress,
         tokenSymbol: tokenData.symbol,
         tokenName: tokenData.name,
-        tokenLogoUrl: `https://ui-avatars.com/api/?background=fff&color=000&name=${tokenData.symbol}`,
+        tokenLogoUrl: `https://ui-avatars.com/api/?background=fff&color=000&rounded=true&bold=true&name=${tokenData.symbol}`,
         tokenDecimal: tokenData.decimals,
         balance: tokenData.balance,
       });
     }
+
+    
   };
 
   /// ADDING TOKEN IN THE CURRENT CHAIN ID
@@ -107,7 +127,20 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
     });
     onClose();
     setTokenAddress("");
+    setIsValidTokenContract(null);
+    setIsValidAddress(null);
   };
+
+  useEffect(() => {
+    setTokenData({
+      tokenAddress: "",
+      tokenSymbol: "",
+      tokenName: "",
+      tokenLogoUrl: "",
+      tokenDecimal: 0,
+      balance: "",
+    });
+  }, [isValidAddress]);
 
   return (
     <>
@@ -121,7 +154,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
             Import Tokens
           </h1>
           <button
-            onClick={() => onClose()}
+            onClick={() => closeDrawer()}
             className="absolute right-2 top-6 opacity-90"
           >
             <ChevronDown size={30} />
@@ -136,7 +169,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
             value={tokenAddress}
           />
         </div>
-        {tokenData.tokenSymbol ? (
+        {tokenData.tokenSymbol && isValidTokenContract == true ? (
           <TokenCard
             tokenIcon={tokenData.tokenLogoUrl}
             tokenName={tokenData.tokenName}
@@ -149,17 +182,27 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
 
         <button
           onClick={addToken}
-          disabled={(isValidAddress === true || isValidTokenContract === true) ? false : true}
+          disabled={
+            isValidAddress === true && isValidTokenContract === true
+              ? false
+              : true
+          }
           className={` fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg text-white    border-2    rounded-lg  py-2 min-w-[300px] max-w-[315px] bg-gray-950 hover:bg-black ${
-            (isValidAddress === true || isValidTokenContract === true) 
+            isValidAddress === true && isValidTokenContract === true
               ? "border-white text-white "
               : " text-opacity-50 bg-gray-950 border-gray-500"
           }`}
         >
           <h1 className="text-xl font-semibold tracking-wider">
-            {(isValidTokenContract === 'LOADING') ? <BeatLoader size={5} loading={true} color="#ffffff" /> : (isValidAddress === false && tokenData.tokenAddress
-              ? " Invalid Address" : (
-             (isValidTokenContract === false) ? "Invalid Token" : " Add Token "))}
+            {isValidTokenContract === "LOADING" ? (
+              <BeatLoader size={5} loading={true} color="#ffffff" />
+            ) : isValidAddress === false && tokenData.tokenAddress ? (
+              " Invalid Address"
+            ) : isValidTokenContract === false ||isValidAddress === false  ? (
+              "Invalid Token"
+            ) :(
+              " Add Token "
+            )}
           </h1>
         </button>
       </div>
