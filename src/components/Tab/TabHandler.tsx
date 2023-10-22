@@ -4,6 +4,7 @@ import Tab from "./";
 import TabContainer from "./Tabs";
 import TokenCard from "../TokenCard";
 import Tokens from "../../constants/tokens";
+import { useConfig } from "../../context/ConfigProvider";
 
 import { Plus } from "react-feather";
 import ImportTokenDrawer from "../ImportTokenDrawer";
@@ -41,6 +42,9 @@ const TabHandler = () => {
   const chain = getItemFromStorage("network");
   const chainId = chain.toString();
 
+  const { smartAccountAddress } = useConfig();
+  const SCW = getItemFromStorage('smartAccount');
+
   // function to fetch the data form Indexed DB using localFORage
   const getTokenDataForKey = async (key: string) => {
     try {
@@ -76,7 +80,8 @@ const TabHandler = () => {
                     tokenIcon={token.logoUri}
                     tokenName={token.name}
                     tokenSymbol={token.symbol}
-                    tokenBalance={100}
+                    tokenAddress={token.address}
+                    userAddress={SCW || smartAccountAddress}
                   />
                 </>
               ))}
@@ -87,7 +92,8 @@ const TabHandler = () => {
                     tokenIcon={tokens.tokenLogoUrl}
                     tokenName={tokens.tokenName}
                     tokenSymbol={tokens.tokenSymbol}
-                    tokenBalance={0}
+                    tokenAddress={tokens.tokenAddress}
+                    userAddress={SCW || smartAccountAddress}
                   />
                 </>
               ))}

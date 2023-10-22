@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
 
 import { useAuth } from "../../hooks/system-hooks/useAuth";
 import Modal from "../../components/common/Modal";
@@ -183,7 +182,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {SCWBalance} {currentCoinName}
+                {SCWBalance && Number(SCWBalance).toFixed(2).toString()} {currentCoinName}
               </div>
             </div>
           </div>
@@ -204,7 +203,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {EOABalance} {currentCoinName}
+                {EOABalance && Number(EOABalance).toFixed(2).toString()} {currentCoinName}
               </div>
             </div>
           </div>

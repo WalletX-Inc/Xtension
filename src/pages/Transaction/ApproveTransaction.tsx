@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { ethers } from "ethers";
+import { SyncLoader, BeatLoader } from "react-spinners";
+import { ArrowLeft } from "react-feather";
+
 import { transferState } from "../../state/TransferState";
 import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import { gasState } from "../../state/GasState";
-import { tokenData } from "../../utils/tokenData/tokenData";
-
 import RemoveModal from "../../components/Modal";
-
 import fingerPrint from "../../assets/biometric-identification.svg";
 import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
-import { ArrowLeft } from "react-feather";
-
-import { SyncLoader, BeatLoader } from "react-spinners";
+import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
+import { useConfig } from "../../context/ConfigProvider";
 import TransactionModal from "../../components/TransactionModal";
+import { getItemFromStorage } from "../../utils/helper";
+import { validateBiometric } from "../../hooks/functional-hooks";
 
 type selectedTokenForGas = {
   icon: string;
@@ -25,29 +27,31 @@ type selectedTokenForGas = {
   tokenGasValue: number;
 };
 
-const ApproveTransacton = () => {
-  const [transactionInProcess, setTransactionInProcess] =
-    useState<boolean>(false);
-  const [isTransactionModalOpen, setIsTransactionModalOpen] =
-    useState<boolean>(false);
+const ApproveTransaction = () => {
+  const [transactionInProcess, setTransactionInProcess] = useState<boolean>(false);
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState<boolean>(false);
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
-    useState<boolean>(false);
-
+  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] = useState<boolean>(false);
   const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(true);
+  const [transactionHash, setTransactionHash] = useState<string>("");
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const [gasData, setGasData] = useRecoilState(gasState);
+  const biometricAuth = validateBiometric();
+
+  const dName = getItemFromStorage('device');
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
     useState<selectedTokenForGas>({
       icon: `${maticLogo}`,
       tokenName: "PolygonMatic",
       tokenSymbol: "MATIC",
-      tokenAddress: "0x000",
+      tokenAddress: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       tokenGasValue: 0,
     });
 
   const navigate = useNavigate();
+  const { smartAccountProvider, smartAccountAddress } = useConfig();
 
   // Cancel the whole transaction
   const clearAllTransactions = () => {
@@ -88,68 +92,106 @@ const ApproveTransacton = () => {
     setIsGasDrawerVisible(!isGasDrawerVisible);
   };
 
-  const updateTokenData = () => {
-    const uuid = crypto.randomUUID();
+  const supportedTokensForGas = async (transferData: any) => {
+    console.log('Fetching the gas data');
+    let rawTransaction: any[] = [];
 
-    const updatedTokenData = tokenData.map((token) => {
+    transferData.forEach((data: any) => {
+      let obj: any = {};
+      const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
+      obj.to = isCoin ? data.address : data.tokenAddress;
+      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
+      obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
+      obj.from = smartAccountAddress;
+
+      rawTransaction.push(obj);
+    });
+
+    const txns = constructTransactionData(rawTransaction);
+    const userOp = await smartAccountProvider.buildUserOp(txns);
+
+    const paymaster = smartAccountProvider.paymaster;
+    const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(userOp, { mode: 'ERC20', tokenList: [] });
+
+    let supportedTokens: any = [];
+
+    feeQuotesResponse.feeQuotes.map((token: any) => {
+      const tokenObj = { name: token.symbol, symbol: token.symbol, address: token.tokenAddress, logoUri: token.logoUrl, maxGasFee: token.maxGasFee, maxGasFeeUSD: token.maxGasFeeUSD };
+
+      return supportedTokens.push(tokenObj);
+    });
+
+    console.log('Fee Quotes : ', supportedTokens);
+
+    const uuid = crypto.randomUUID();
+    const gasDataWithValues = supportedTokens.map((token: any) => {
       return {
         tokenUID: uuid,
-        tokenLogo: token.tokenIcon,
-        tokenName: token.tokenName,
-        tokenSymbol: token.tokenSymbol,
-        tokenAddress: token.tokenAddress,
+        tokenLogo: token.logoUri,
+        tokenName: token.name,
+        tokenSymbol: token.symbol,
+        tokenAddress: token.address,
         tokenBalance: 0,
-        tokenGas: 0,
-        tokenGasValue: 0,
+        tokenGas: token.maxGasFee.toFixed(5),
+        tokenGasValue: token.maxGasFeeUSD.toFixed(5),
       };
     });
-    setGasData(updatedTokenData);
-  };
 
-  // This is a dummy data for the gas of the tokens it should be passed in the below function
-  // Just change the name of before the map function
-  // IMPORTANT : REMEMBER TO NAME THEN JUST LIKE BELOW tokenBalance,tokenGas,tokenGasValue as the function uses ES6
-  const updates = [
-    {
-      tokenAddress: "0x000",
-      tokenBalance: 100,
-      tokenGas: 10,
-      tokenGasValue: 5,
-    },
-    {
-      tokenAddress: "0x123",
-      tokenBalance: 50,
-      tokenGas: 0,
-      tokenGasValue: 30,
-    },
-  ];
+    setGasData(gasDataWithValues);
 
-  const updateGasData = () => {
-    setGasData((prevGasData) =>
-      prevGasData.map((gasToken) => {
-        const update = updates.find(
-          (token) => token.tokenAddress === gasToken.tokenAddress
-        );
-        return update ? { ...gasToken, ...update } : gasToken;
-      })
-    );
-  };
-
-  // Approve button funciton
-  const handleApprove = () => {
-    console.log(transferData);
-    setTransactionInProcess(true);
-
-    setTimeout(() => {
-      setIsTransactionModalOpen(true);
-    }, 5000);
-  };
+    console.log('Gas Data : ', gasData);
+  }
 
   useEffect(() => {
-    updateTokenData(); // it update the icon, name , address, give uiid
+    console.log('Transfer Data is here : ', { transferData });
+    supportedTokensForGas(transferData);
 
-    updateGasData(); // it update the gas, gasValue in dollars and
   }, [transferData]);
+
+  async function sendBatchTransaction(transferData: any) {
+    const isValid = await biometricAuth(dName.id);
+
+    if (!isValid) {
+      setAuthError('Authentication Failed')
+      return;
+    };
+
+    let rawTransaction: any[] = [];
+    setTransactionInProcess(true);
+
+    transferData.forEach((data: any) => {
+      let obj: any = {};
+      const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
+      obj.to = isCoin ? data.address : data.tokenAddress;
+      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
+      obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
+      obj.from = smartAccountAddress;
+
+      rawTransaction.push(obj);
+    });
+
+    console.log({ rawTransaction });
+    const txns = constructTransactionData(rawTransaction);
+
+    const partialUserOp = await smartAccountProvider.buildUserOp(txns);
+    let finalUserOp = partialUserOp;
+
+    console.log('TOKEN FOR GAS : ', selectedTokenForGas);
+
+    if (selectedTokenForGas.tokenAddress !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      console.log('selectedTokenForGas', selectedTokenForGas);
+      finalUserOp = constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
+    }
+
+    const userOpResponse = await smartAccountProvider.sendUserOp(finalUserOp);
+    const transactionDetails = await userOpResponse.wait();
+
+    setTransactionHash(transactionDetails.receipt.transactionHash);
+    setIsTransactionModalOpen(true);
+    console.log('transactionDetails', transactionDetails);
+  }
 
   if (transferData.length === 0) navigate("/dashboard");
 
@@ -260,9 +302,7 @@ const ApproveTransacton = () => {
           <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center  text-xl text-white min-w-[325px] max-w-[350px] h-[55px] ">
             <button
               disabled={transactionInProcess}
-              onClick={() => {
-                handleApprove();
-              }}
+              onClick={() => { sendBatchTransaction(transferData) }}
             >
               {transactionInProcess === true ? (
                 <div className="pt-2">
@@ -276,7 +316,7 @@ const ApproveTransacton = () => {
                 </div>
               ) : (
                 <div className="flex gap-3 w-full">
-                  <p>Approve Transaction</p>
+                  <p>{authError || "Approve Transaction"}</p>
                   <img className="h-8" src={fingerPrint} alt="fingerPring" />
                 </div>
               )}
@@ -294,7 +334,7 @@ const ApproveTransacton = () => {
             Select Token For Gas
           </h1>
 
-          <div className="mt-5">
+          <div className="mt-5 overflow-y-scroll h-[250px]">
             {gasData.map((token) => {
               const tokenData: selectedTokenForGas = {
                 icon: token.tokenLogo,
@@ -352,7 +392,7 @@ const ApproveTransacton = () => {
           </div>
         </div>
 
-        <TransactionModal isOpen={isTransactionModalOpen} />
+        <TransactionModal isOpen={isTransactionModalOpen} transactionHash={transactionHash} />
         <RemoveModal
           isOpen={isCancelAllTransactionModalOpen}
           onCancel={closeCancelAllTransactionsModal}
@@ -365,4 +405,4 @@ const ApproveTransacton = () => {
   );
 };
 
-export default ApproveTransacton;
+export default ApproveTransaction;

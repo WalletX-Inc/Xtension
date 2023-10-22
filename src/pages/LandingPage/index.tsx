@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import Button from "../../components/common/Button";
-import { LandingTagLines } from "../../utils/constants";
+import { LandingTagLines } from "../../constants/landingTagLines";
 
 function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState<number>(0);

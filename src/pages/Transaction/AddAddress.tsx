@@ -123,7 +123,6 @@ const AddAddresses = () => {
   const handleFocus = () => {
     setSendToAddresses("");
     handleCardClick(null);
-    console.log("focused hu");
   };
 
   const handelProceed = () => {

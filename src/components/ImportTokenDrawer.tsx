@@ -8,6 +8,7 @@ import { BeatLoader } from "react-spinners";
 import TokenCard from "./TokenCard";
 import { useConfig } from "../context/ConfigProvider";
 import { getTokenData } from "../utils/helper";
+import { getItemFromStorage } from "../utils/helper";
 
 type importTokenParam = {
   onClose: Function;
@@ -29,6 +30,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const [isValidTokenContract, setIsValidTokenContract] = useState<any>(null);
 
   const { chainId, provider, smartAccountAddress } = useConfig();
+  const SCW = getItemFromStorage('smartAccount')
 
   const [tokenData, setTokenData] = useState<tokenDataT>({
     tokenAddress: "",
@@ -169,12 +171,13 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
             value={tokenAddress}
           />
         </div>
-        {tokenData.tokenSymbol && isValidTokenContract == true ? (
+        {tokenData.tokenSymbol && isValidTokenContract === true ? (
           <TokenCard
             tokenIcon={tokenData.tokenLogoUrl}
             tokenName={tokenData.tokenName}
             tokenSymbol={tokenData.tokenSymbol}
-            tokenBalance={Number(tokenData.balance)}
+            tokenAddress={tokenData.tokenAddress}
+            userAddress={SCW || smartAccountAddress}
           />
         ) : (
           <></>
