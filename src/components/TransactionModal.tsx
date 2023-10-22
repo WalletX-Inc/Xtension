@@ -1,11 +1,13 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+
 import approved from "../../src/assets/approveTsx.svg"
+
 type transactionModalParams = {
   isOpen: boolean;
+  transactionHash: string;
 };
 
-const TransactionModal = ({ isOpen }: transactionModalParams) => {
+const TransactionModal = ({ isOpen, transactionHash }: transactionModalParams) => {
     const navigate = useNavigate()
   return (
     <div
@@ -19,7 +21,7 @@ const TransactionModal = ({ isOpen }: transactionModalParams) => {
         <div className="flex flex-col px-2 justify-center items-start max-w-[300px] ">
           <p className="font-semibold text-xl">Transaction hash:</p>
           <p className="overflow-x-scroll text-sm max-w-[95%] py-1">
-            0x64618e6956ed410a39acbcefdfc5b5bcb33cd50411767220edcffdcb704050ca
+            {transactionHash}
           </p>
         </div>
         <button onClick={() => navigate("/dashboard")} className="bg-slate-800 px-2 py-1 rounded-lg border border-slate-400  font-semibold text-xl ">

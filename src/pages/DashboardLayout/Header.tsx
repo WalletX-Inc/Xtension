@@ -182,7 +182,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {SCWBalance} {currentCoinName}
+                {SCWBalance && Number(SCWBalance).toFixed(2).toString()} {currentCoinName}
               </div>
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {EOABalance} {currentCoinName}
+                {EOABalance && Number(EOABalance).toFixed(2).toString()} {currentCoinName}
               </div>
             </div>
           </div>

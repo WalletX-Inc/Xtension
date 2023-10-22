@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { ethers } from "ethers";
+import { SyncLoader, BeatLoader } from "react-spinners";
+import { ArrowLeft } from "react-feather";
 
 import { transferState } from "../../state/TransferState";
 import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import { gasState } from "../../state/GasState";
-import tokenData from "../../constants/feeTokens";
 import RemoveModal from "../../components/Modal";
 import fingerPrint from "../../assets/biometric-identification.svg";
 import gas from "../../assets/gas.svg";
@@ -14,10 +15,9 @@ import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
 import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
-import { ArrowLeft } from "react-feather";
-
-import { SyncLoader, BeatLoader } from "react-spinners";
 import TransactionModal from "../../components/TransactionModal";
+import { getItemFromStorage } from "../../utils/helper";
+import { validateBiometric } from "../../hooks/functional-hooks";
 
 type selectedTokenForGas = {
   icon: string;
@@ -28,18 +28,18 @@ type selectedTokenForGas = {
 };
 
 const ApproveTransaction = () => {
-  const [transactionInProcess, setTransactionInProcess] =
-    useState<boolean>(false);
-  const [isTransactionModalOpen, setIsTransactionModalOpen] =
-    useState<boolean>(false);
+  const [transactionInProcess, setTransactionInProcess] = useState<boolean>(false);
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState<boolean>(false);
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
-    useState<boolean>(false);
-
+  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] = useState<boolean>(false);
   const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(true);
   const [transactionHash, setTransactionHash] = useState<string>("");
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const [gasData, setGasData] = useRecoilState(gasState);
+  const biometricAuth = validateBiometric();
+
+  const dName = getItemFromStorage('device');
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
     useState<selectedTokenForGas>({
@@ -51,7 +51,7 @@ const ApproveTransaction = () => {
     });
 
   const navigate = useNavigate();
-  const { smartAccountProvider, smartAccountAddress, chainId } = useConfig();
+  const { smartAccountProvider, smartAccountAddress } = useConfig();
 
   // Cancel the whole transaction
   const clearAllTransactions = () => {
@@ -143,73 +143,22 @@ const ApproveTransaction = () => {
     console.log('Gas Data : ', gasData);
   }
 
-  // const updateTokenData = () => {
-  //   const uuid = crypto.randomUUID();
-
-  //   const updatedTokenData = tokenData[chainId].map((token) => {
-  //     return {
-  //       tokenUID: uuid,
-  //       tokenLogo: token.logoUri,
-  //       tokenName: token.name,
-  //       tokenSymbol: token.symbol,
-  //       tokenAddress: token.address,
-  //       tokenBalance: 0,
-  //       tokenGas: token.maxGasFee,
-  //       tokenGasValue: token.maxGasFeeUSD,
-  //     };
-  //   });
-  //   setGasData(updatedTokenData);
-  // };
-
-  // This is a dummy data for the gas of the tokens it should be passed in the below function
-  // Just change the name of before the map function
-  // IMPORTANT : REMEMBER TO NAME THEN JUST LIKE BELOW tokenBalance,tokenGas,tokenGasValue as the function uses ES6
-  const updates = [
-    {
-      tokenAddress: "0x000",
-      tokenBalance: 100,
-      tokenGas: 10,
-      tokenGasValue: 5,
-    },
-    {
-      tokenAddress: "0x123",
-      tokenBalance: 50,
-      tokenGas: 0,
-      tokenGasValue: 30,
-    },
-  ];
-
-  const updateGasData = () => {
-    setGasData((prevGasData) =>
-      prevGasData.map((gasToken) => {
-        const update = updates.find(
-          (token) => token.tokenAddress === gasToken.tokenAddress
-        );
-        return update ? { ...gasToken, ...update } : gasToken;
-      })
-    );
-  };
-
-  // Approve button funciton
-  const handleApprove = () => {
-    console.log(transferData);
-    setTransactionInProcess(true);
-
-    setTimeout(() => {
-      setIsTransactionModalOpen(true);
-    }, 5000);
-  };
-
   useEffect(() => {
-    // updateTokenData(); // it update the icon, name , address, give uiid
     console.log('Transfer Data is here : ', { transferData });
     supportedTokensForGas(transferData);
 
-    // updateGasData(); // it update the gas, gasValue in dollars and
   }, [transferData]);
 
   async function sendBatchTransaction(transferData: any) {
+    const isValid = await biometricAuth(dName.id);
+
+    if (!isValid) {
+      setAuthError('Authentication Failed')
+      return;
+    };
+
     let rawTransaction: any[] = [];
+    setTransactionInProcess(true);
 
     transferData.forEach((data: any) => {
       let obj: any = {};
@@ -229,6 +178,8 @@ const ApproveTransaction = () => {
     const partialUserOp = await smartAccountProvider.buildUserOp(txns);
     let finalUserOp = partialUserOp;
 
+    console.log('TOKEN FOR GAS : ', selectedTokenForGas);
+
     if (selectedTokenForGas.tokenAddress !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
       console.log('selectedTokenForGas', selectedTokenForGas);
       finalUserOp = constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
@@ -238,6 +189,7 @@ const ApproveTransaction = () => {
     const transactionDetails = await userOpResponse.wait();
 
     setTransactionHash(transactionDetails.receipt.transactionHash);
+    setIsTransactionModalOpen(true);
     console.log('transactionDetails', transactionDetails);
   }
 
@@ -364,7 +316,7 @@ const ApproveTransaction = () => {
                 </div>
               ) : (
                 <div className="flex gap-3 w-full">
-                  <p>Approve Transaction</p>
+                  <p>{authError || "Approve Transaction"}</p>
                   <img className="h-8" src={fingerPrint} alt="fingerPring" />
                 </div>
               )}
@@ -440,7 +392,7 @@ const ApproveTransaction = () => {
           </div>
         </div>
 
-        <TransactionModal isOpen={isTransactionModalOpen} />
+        <TransactionModal isOpen={isTransactionModalOpen} transactionHash={transactionHash} />
         <RemoveModal
           isOpen={isCancelAllTransactionModalOpen}
           onCancel={closeCancelAllTransactionsModal}

@@ -117,7 +117,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {SCWBalance} {currentCoinName}
+          {SCWBalance && Number(SCWBalance).toFixed(5).toString()} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
