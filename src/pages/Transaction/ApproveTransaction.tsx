@@ -180,17 +180,23 @@ const ApproveTransaction = () => {
 
     console.log('TOKEN FOR GAS : ', selectedTokenForGas);
 
-    if (selectedTokenForGas.tokenAddress !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+    if (selectedTokenForGas.tokenAddress.toString() !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      console.log("Token for gas is not ETH");
       console.log('selectedTokenForGas', selectedTokenForGas);
-      finalUserOp = constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
+      finalUserOp = await constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
+      console.log('FINAL USEROP : ', finalUserOp);
     }
 
-    const userOpResponse = await smartAccountProvider.sendUserOp(finalUserOp);
-    const transactionDetails = await userOpResponse.wait();
-
-    setTransactionHash(transactionDetails.receipt.transactionHash);
-    setIsTransactionModalOpen(true);
-    console.log('transactionDetails', transactionDetails);
+    try {
+      const userOpResponse = await smartAccountProvider.sendUserOp(finalUserOp);
+      const transactionDetails = await userOpResponse.wait();
+  
+      setTransactionHash(transactionDetails.receipt.transactionHash);
+      setIsTransactionModalOpen(true);
+      console.log('transactionDetails', transactionDetails);
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   if (transferData.length === 0) navigate("/dashboard");

@@ -92,17 +92,22 @@ export const constructFinalUserOp: any = async (smartAccountInstance: any, parti
   let finalUserOp = await smartAccountInstance.buildTokenPaymasterUserOp(partialUserOp, { feeQuote: requiredFeeQuotes, spender, maxApproval: false });
   let paymasterServiceData = { mode: 'ERC20', feeTokenAddress: requiredFeeQuotes.tokenAddress };
 
-  const paymasterAndDataWithLimits = await paymaster.getPaymasterAndData(finalUserOp, paymasterServiceData);
-  finalUserOp.paymasterAndData = paymasterAndDataWithLimits.paymasterAndData;
-
-  if (paymasterAndDataWithLimits.callGasLimit && paymasterAndDataWithLimits.verificationGasLimit && paymasterAndDataWithLimits.preVerificationGas) {
-    finalUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
-    finalUserOp.verificationGasLimit = paymasterAndDataWithLimits.verificationGasLimit;
-    finalUserOp.preVerificationGas = paymasterAndDataWithLimits.preVerificationGas;
+  try {
+    const paymasterAndDataWithLimits = await paymaster.getPaymasterAndData(finalUserOp, paymasterServiceData);
+    finalUserOp.paymasterAndData = paymasterAndDataWithLimits.paymasterAndData;
+  
+    if (paymasterAndDataWithLimits.callGasLimit && paymasterAndDataWithLimits.verificationGasLimit && paymasterAndDataWithLimits.preVerificationGas) {
+      finalUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
+      finalUserOp.verificationGasLimit = paymasterAndDataWithLimits.verificationGasLimit + 15000;
+      finalUserOp.preVerificationGas = paymasterAndDataWithLimits.preVerificationGas;
+    }
+  
+    console.log('finalUserOp', finalUserOp);
+    return finalUserOp;
+  } catch (e) {
+    console.log('error in constructing final user op : ', e);
+    return null;
   }
-
-  console.log('finalUserOp', finalUserOp);
-  return finalUserOp;
 }
 
 const isValidContract = async (address: string, provider: any) => {
