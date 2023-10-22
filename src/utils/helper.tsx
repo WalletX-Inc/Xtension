@@ -130,7 +130,7 @@ export const getTokenData = async (tokenAddress: string, provider: any, userAddr
     return null;
   }
 
-  const contract = new ethers.Contract(tokenAddress, Erc20ABI, provider);
+  const contract = new ethers.Contract(tokenAddress, erc20ABI, provider);
 
   const name = await contract.name();
   const symbol = await contract.symbol();
@@ -140,4 +140,14 @@ export const getTokenData = async (tokenAddress: string, provider: any, userAddr
   balance = ethers.utils.formatUnits(balance, decimals);
 
   return { name, symbol, balance, decimals };
+}
+
+export const getTokenBalance = async (tokenAddress: string, provider: any, userAddress: string) => {
+  const contract = new ethers.Contract(tokenAddress, erc20ABI, provider);
+  const decimals = await contract.decimals();
+
+  let balance = await contract.balanceOf(userAddress);
+  balance = ethers.utils.formatUnits(balance, decimals);
+
+  return balance.toString();
 }
