@@ -21,11 +21,12 @@ import send from "../../assets/arrow-up.png";
 
 import copyAndPaste from "../../assets/copy.svg";
 
-import toast,  { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(null);
+  const [showLoader, setShowLoader] = useState(false);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
@@ -36,7 +37,7 @@ function Dashboard() {
   const [SCW] = useState(item || null);
   const [chainId] = useState(chain || null);
 
-  const { smartAccountAddress, provider, init } = useConfig();
+  const { smartAccountAddress, provider, init, pushUser } = useConfig();
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
@@ -81,6 +82,27 @@ function Dashboard() {
   }, [smartAccountAddress, smartWalletAddress]);
 
   useEffect(() => {
+
+    setTimeout(async () => {
+
+      console.log("IN DAHBOARD")
+
+      // Send notification, provided userAlice has a channel
+      const response = await pushUser.channel.send(['*'], {
+        notification: {
+          title: 'You awesome notification',
+          body: 'from your amazing protocol'
+        }
+      })
+
+      // To listen to real time notifications
+      pushUser.stream.on('STREAM.NOTIF', (data: any) => {
+        console.log(data)
+      })
+    }, 2000);
+  })
+
+  useEffect(() => {
     if (storageChainId) {
       const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);
@@ -95,6 +117,9 @@ function Dashboard() {
 
   return (
     <>
+      {
+        showLoader && <h1> loading</h1>
+      }
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
           <img

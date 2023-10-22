@@ -11,6 +11,7 @@ const ConfigProvider = ({ children }) => {
     provider: initParams.provider,
     getSmartWalletHandler: initParams.getSmartWalletHandler,
     getEOA: initParams.getEOA,
+    getPushInitializer: initParams.getPushInitializer,
     isLoggedIn: initParams.isLoggedIn,
     init: initParams.init,
     EOA: initParams.EOA,

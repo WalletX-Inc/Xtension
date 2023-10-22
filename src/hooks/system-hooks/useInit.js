@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
+import { initiatePush } from "./initiatePush";
 import { initiateEOA } from "./initiateEOA";
 import { getItemFromStorage } from "../../utils/helper";
 import { useAuth } from "./useAuth";
@@ -11,6 +12,7 @@ export default function useInit() {
   const [signer, setSigner] = useState(null);
   const [smartAccountProvider, setSmartAccountProvider] = useState(null);
   const [smartAccountAddress, setSmartAccountAddress] = useState(null);
+  const [pushUser, setPushUser] = useState(null);
   const [provider, setProvider] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
   const [rpcUrl, setRpcUrl] = useState(null);
@@ -26,6 +28,9 @@ export default function useInit() {
   useEffect(() => {
     if (deviceId || chainId) {
       getEOA();
+      setTimeout(async () => {
+        await getPushInitializer()
+      }, 2000);
     }
   }, [deviceId, chainId]);
 
@@ -52,6 +57,7 @@ export default function useInit() {
 
   const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider, setEOA);
   const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress);
+  const getPushInitializer = initiatePush(signer, setPushUser);
 
   return {
     isLoggedIn,
@@ -60,6 +66,7 @@ export default function useInit() {
     provider,
     getSmartWalletHandler,
     getEOA,
+    getPushInitializer,
     init,
     EOA,
     chainId,
