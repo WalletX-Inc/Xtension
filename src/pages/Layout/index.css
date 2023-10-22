@@ -1,0 +1,17 @@
+.landing_wrapper {
+  /*  */
+
+  background: #1f1f20;
+
+
+  .content {
+        /* background: transparent; */
+          /* background: url("../../assets/icons/bgImage.jpeg")  no-repeat; */
+
+    /* backdrop-filter: blur(19px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: grey 0px 0px 10px 10px; */
+    
+  }
+}

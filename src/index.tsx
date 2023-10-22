@@ -1,9 +1,18 @@
-import React from 'react';
+import React from "react";
 import ReactDOM from "react-dom/client";
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import localforage from "localforage";
 
+
+localforage.config({
+  driver: localforage.INDEXEDDB, // This will use indexedDB
+  name: "WalletX", // Name of your database.
+  storeName: "tokensData", // Name of your object store.
+});
 
 const root = document.createElement("div");
 root.className = "root";
