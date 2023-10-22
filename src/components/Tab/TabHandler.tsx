@@ -48,7 +48,7 @@ const TabHandler = () => {
       const data = await localforage.getItem(key);
       console.log("Retrieved data for key", key, data);
       setTokenListFromIndexedDB(data);
-      return data || []; 
+      return data || [];
     } catch (error) {
       console.error("Error getting token data:", error);
       return [];
@@ -58,14 +58,13 @@ const TabHandler = () => {
   useEffect(() => {
     const tokenList = Tokens[chainId] || [];
     setTokens(tokenList);
-    
+
     async function fetchData() {
       const retrievedData = await getTokenDataForKey(chainId);
       setTokenListFromIndexedDB(retrievedData);
     }
     fetchData();
-
-  }, [chainId]);
+  }, [chainId, tokenListFromIndexedDB]);
 
   return (
     <div>
@@ -84,7 +83,7 @@ const TabHandler = () => {
                 </>
               ))}
             {tokenListFromIndexedDB &&
-              tokenListFromIndexedDB.map((tokens:tokenDataT ) => (
+              tokenListFromIndexedDB.map((tokens: tokenDataT) => (
                 <>
                   <TokenCard
                     tokenIcon={tokens.tokenLogoUrl}
