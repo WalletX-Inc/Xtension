@@ -15,6 +15,11 @@ const ConfigProvider = ({ children }) => {
     init: initParams.init,
     EOA: initParams.EOA,
     chainId: initParams.chainId,
+    balance: {
+      EOA: initParams.EOABalance,
+      SCW: initParams.SCWBalance,
+    },
+    isConnected: initParams.isConnected,
   };
 
   console.log("Context : ", { providerValues });

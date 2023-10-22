@@ -1,7 +1,8 @@
 import { ethers } from "ethers";
 import { setItemInStorage } from "../../utils/helper";
+import { useGetBalance } from "../functional-hooks/useGetBalance";
 
-export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any, setEOA: any) {
+export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any, setEOA: any, setBalance: any) {
   return () => {
     if (!credentialId) {
       console.log("[Hooks] No credentialId");
@@ -23,5 +24,7 @@ export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setP
     setSigner(signer);
     setProvider(provider);
     setEOA(eoa.address);
+
+    useGetBalance(provider, eoa.address, setBalance);
   }  
 }
