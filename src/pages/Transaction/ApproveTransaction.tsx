@@ -264,7 +264,7 @@ const ApproveTransacton = () => {
                 handleApprove();
               }}
             >
-              {transactionInProcess == true ? (
+              {transactionInProcess === true ? (
                 <div className="pt-2">
                   <SyncLoader
                     size={9}
