@@ -1,17 +1,9 @@
-<<<<<<< HEAD
 /* eslint-disable array-callback-return */
 import { toSvg } from "jdenticon";
 import { ethers } from "ethers";
 
 import Chains from '../constants/chains';
 import erc20ABI from "../constants/erc20ABI";
-=======
-import { ethers } from "ethers";
-import { toSvg } from "jdenticon";
-
-import Chains from "../constants/chains";
-import Erc20ABI from "../constants/erc20ABI";
->>>>>>> bf7887d121b637cf736be52a6778b0e4ae4a1eec
 
 export const getItemFromStorage: any = (
   key: string,
