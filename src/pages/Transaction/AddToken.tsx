@@ -239,7 +239,7 @@ const AddTokens = () => {
                               handelAmountChange(transferData.uid)
                             }
                           />
-                          <p className="text-sm ">$0.25</p>
+                          <p className="text-sm ">$ 00.00</p>
                         </div>
                       </div>
 
