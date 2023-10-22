@@ -46,7 +46,6 @@ const TabHandler = () => {
   const getTokenDataForKey = async (key: string) => {
     try {
       const data = await localforage.getItem(key);
-      console.log("Retrieved data for key", key, data);
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {
