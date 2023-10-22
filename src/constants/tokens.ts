@@ -101,22 +101,6 @@ const tokens: Tokens = {
             logoUri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7192.png',
         }
     ],
-    80001: [
-        {
-            name: 'Wrapped Matic',
-            symbol: 'WMATIC',
-            address: '0x9c3c9283d3e44854697cd22d3faa240cfb032889',
-            decimals: 18,
-            logoUri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8925.png',
-        },
-        {
-            name: 'Wrapped ETH',
-            symbol: 'WETH',
-            address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
-            decimals: 18,
-            logoUri: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2396.png',
-        }
-    ],
 }
 
 export default tokens;

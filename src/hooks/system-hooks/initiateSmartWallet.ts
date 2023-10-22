@@ -2,14 +2,15 @@ import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/acco
 import { Bundler } from '@biconomy/bundler';
 import { BiconomyPaymaster } from '@biconomy/paymaster';
 import { setItemInStorage } from "../../utils/helper";
+import { useGetBalance } from "../functional-hooks/useGetBalance";
 
-export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId: number, paymasterUrl: string, signer: any, login: any, setSmartAccountProvider: any, setSmartAccountAddress: any) {
+export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId: number, paymasterUrl: string, signer: any, login: any, setSmartAccountProvider: any, setSmartAccountAddress: any, provider: any, setBalance: any, setIsConnected: any) {
 
   return async () => {
     if (!signer) {
       console.log("[Hooks] No signer");
       return;
-    } 
+    }
  
     const bundler = new Bundler({ bundlerUrl:bundlerUrl, chainId, entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS });
     const paymaster = new BiconomyPaymaster({ paymasterUrl: paymasterUrl });
@@ -29,5 +30,9 @@ export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId:
     setItemInStorage("isLoggedIn", true);
     setSmartAccountProvider(smartAccount);
     setSmartAccountAddress(smartAccountAddress);
+
+    await useGetBalance(provider, smartAccountAddress, setBalance);
+
+    setIsConnected(true);
   }
 }

@@ -22,7 +22,10 @@ function Login() {
 
   async function authenticateDevice() {
     const dName = deviceName ? getItemFromStorage('device') : null;
-    
+    if(!dName){
+      toast.error('Please add an account first')
+      return
+    }
     if (dName.name.trim()?.toLowerCase() !== deviceName?.trim()?.toLowerCase()) {
       alert(`${deviceName} is not registered. Please register the device`);
       return;

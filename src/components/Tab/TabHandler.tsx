@@ -6,6 +6,11 @@ import TokenCard from "../TokenCard";
 import Tokens from "../../constants/tokens";
 import { useConfig } from "../../context/ConfigProvider";
 
+import { Plus } from "react-feather";
+import ImportTokenDrawer from "../ImportTokenDrawer";
+import localforage from "localforage";
+import { getItemFromStorage } from "../../utils/helper";
+
 type Token = {
   name: string;
   symbol: string;
@@ -13,16 +18,52 @@ type Token = {
   decimals: number | string;
   logoUri: string;
 };
-
+type tokenDataT = {
+  tokenAddress: string;
+  tokenSymbol: string;
+  tokenName: string;
+  tokenLogoUrl: string;
+  tokenDecimal: number;
+};
 const TabHandler = () => {
   const [tokens, setTokens] = useState<Token[] | null>(null);
+  const [isImportTokenDrawerOpen, setIsImportTokenDrawerOpen] =
+    useState<boolean>(false);
+  const [tokenListFromIndexedDB, setTokenListFromIndexedDB] = useState<any>([]);
 
-  const { chainId } = useConfig();
+  const openImportTokenModal = () => {
+    setIsImportTokenDrawerOpen(true);
+  };
+
+  const closeImportTokenDrawer = () => {
+    setIsImportTokenDrawerOpen(false);
+  };
+
+  const chain = getItemFromStorage("network");
+  const chainId = chain.toString();
+
+  // function to fetch the data form Indexed DB using localFORage
+  const getTokenDataForKey = async (key: string) => {
+    try {
+      const data = await localforage.getItem(key);
+      setTokenListFromIndexedDB(data);
+      return data || [];
+    } catch (error) {
+      console.error("Error getting token data:", error);
+      return [];
+    }
+  };
 
   useEffect(() => {
     const tokenList = Tokens[chainId] || [];
     setTokens(tokenList);
-  }, [chainId]);
+
+    async function fetchData() {
+      const retrievedData = await getTokenDataForKey(chainId);
+      setTokenListFromIndexedDB(retrievedData);
+    }
+    fetchData();
+  }, [chainId, tokenListFromIndexedDB]);
 
   return (
     <div>
@@ -30,7 +71,7 @@ const TabHandler = () => {
         <Tab label="Tokens">
           <div className="max-h-[235px] overflow-y-scroll py-2 px-3">
             {tokens &&
-              tokens.map((token: any) => (
+              tokens.map((token: Token) => (
                 <>
                   <TokenCard
                     tokenIcon={token.logoUri}
@@ -40,7 +81,34 @@ const TabHandler = () => {
                   />
                 </>
               ))}
+            {tokenListFromIndexedDB &&
+              tokenListFromIndexedDB.map((tokens: tokenDataT) => (
+                <>
+                  <TokenCard
+                    tokenIcon={tokens.tokenLogoUrl}
+                    tokenName={tokens.tokenName}
+                    tokenSymbol={tokens.tokenSymbol}
+                    tokenBalance={0}
+                  />
+                </>
+              ))}
+
+            <div className="flex flex-col gap-2 my-5">
+              <button
+                onClick={() => openImportTokenModal()}
+                className="flex gap-1 justify-center items-center"
+              >
+                <Plus />
+                <p className="hover:border-b border-gray-300 text-[17px] font-semibold">
+                  Import Tokens
+                </p>
+              </button>
+            </div>
           </div>
+          <ImportTokenDrawer
+            isOpen={isImportTokenDrawerOpen}
+            onClose={closeImportTokenDrawer}
+          />
         </Tab>
         <Tab label="NFTs">
           <div className="py-4">

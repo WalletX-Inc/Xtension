@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../src/state/TransferState";
-import {Search} from 'react-feather'
+import { Search } from 'react-feather'
 import Tokens from "../constants/tokens";
 import { useConfig } from "../context/ConfigProvider";
 

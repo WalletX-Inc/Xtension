@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
 
 import {
   generateAddressIcon,
@@ -21,14 +20,15 @@ import send from "../../assets/arrow-up.png";
 
 import copyAndPaste from "../../assets/copy.svg";
 
-import toast,  { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import Loader from "../../components/common/Loader";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [balance, setBalance] = useState(0);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const item = getItemFromStorage("smartAccount");
   const chain = getItemFromStorage("network");
@@ -36,7 +36,13 @@ function Dashboard() {
   const [SCW] = useState(item || null);
   const [chainId] = useState(chain || null);
 
-  const { smartAccountAddress, provider, init } = useConfig();
+  const {
+    smartAccountAddress,
+    provider,
+    init,
+    balance: { SCW: SCWBalance },
+    isConnected,
+  } = useConfig();
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
@@ -52,7 +58,7 @@ function Dashboard() {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(smartAccountAddress);
+      await navigator.clipboard.writeText(SCW || smartAccountAddress);
       toast.success("Text Copied To clipboard");
     } catch (error) {
       console.error("Copy failed due to: ", error);
@@ -63,11 +69,6 @@ function Dashboard() {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
         init(chainId);
-      } else {
-        let balance = await provider.getBalance(SCW || smartAccountAddress);
-        balance = ethers.utils.formatEther(balance);
-
-        setBalance(balance);
       }
     }
 
@@ -78,6 +79,8 @@ function Dashboard() {
     // This is to clear the state if the user restarts the app and is on the dashboard.
     // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.
     setTransferData([]);
+
+    if (provider && smartAccountAddress) setIsLoading(false);
   }, [smartAccountAddress, smartWalletAddress]);
 
   useEffect(() => {
@@ -107,28 +110,28 @@ function Dashboard() {
           </h2>
           <img
             onClick={() => copyToClipboard()}
-            className="h-5 ml-1"
+            className="h-5 ml-1 cursor-pointer"
             src={copyAndPaste}
             alt="copy"
           />
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {balance} {currentCoinName}
+          {SCWBalance} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
         <div className="flex gap-8 justify-center item-center mt-10 text-center">
-          <div className="flex flex-col justify-center item-center gap-2">
+          <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => openQrModal()}
-              className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
+              className="h-8 bg-white rounded-full  p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={receive}
               alt="receiveButton"
             />
             <h1 className="text-{15px} font-thin tracking-wider">Receive</h1>
           </div>
-          <div className="flex flex-col justify-center item-center gap-2">
+          <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => sendTx()}
               className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
@@ -160,6 +163,8 @@ function Dashboard() {
         onClose={closeQrModal}
         walletAddress={smartWalletAddress}
       />
+
+      {isLoading || !isConnected ? <Loader /> : <></>}
     </>
   );
 }

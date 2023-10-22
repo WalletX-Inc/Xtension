@@ -19,7 +19,7 @@ const TokenCard = ({
           <p className="font-semibold tracking-wide">{tokenName}</p>
           <p className="text-sm font-semibold tracking-wide">{tokenSymbol}</p>
         </div>
-        <p className="font-semibold">{tokenBalance}</p>
+        <p className="font-semibold place-self-center">{tokenBalance}</p>
       </div>
     </div>
   );

@@ -75,7 +75,6 @@ const AddAddresses = () => {
 
   // Search Box functions
   const isEthereumAddress = (address: string) => {
-    console.log("chekcking the addresses");
     try {
       const validAddress = ethers.utils.isAddress(address);
       return validAddress;
@@ -124,7 +123,6 @@ const AddAddresses = () => {
   const handleFocus = () => {
     setSendToAddresses("");
     handleCardClick(null);
-    console.log("focused hu");
   };
 
   const handelProceed = () => {

@@ -92,7 +92,23 @@ const ApproveTransaction = () => {
     setIsGasDrawerVisible(!isGasDrawerVisible);
   };
 
-  const supportedTokensForGas = async (txns: any) => {
+  const supportedTokensForGas = async (transferData: any) => {
+    console.log('Fetching the gas data');
+    let rawTransaction: any[] = [];
+
+    transferData.forEach((data: any) => {
+      let obj: any = {};
+      const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+
+      obj.to = isCoin ? data.address : data.tokenAddress;
+      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
+      obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
+      obj.from = smartAccountAddress;
+
+      rawTransaction.push(obj);
+    });
+
+    const txns = constructTransactionData(rawTransaction);
     const userOp = await smartAccountProvider.buildUserOp(txns);
 
     const paymaster = smartAccountProvider.paymaster;
@@ -101,16 +117,15 @@ const ApproveTransaction = () => {
     let supportedTokens: any = [];
 
     feeQuotesResponse.feeQuotes.map((token: any) => {
-      const tokenObj = { symbol: token.symbol, tokenAddress: token.tokenAddress, maxGasFee: token.maxGasFee, maxGasFeeUSD: token.maxGasFeeUSD };
+      const tokenObj = { name: token.symbol, symbol: token.symbol, address: token.tokenAddress, logoUri: token.logoUrl, maxGasFee: token.maxGasFee, maxGasFeeUSD: token.maxGasFeeUSD };
 
       return supportedTokens.push(tokenObj);
     });
-  }
 
-  const updateTokenData = () => {
+    console.log('Fee Quotes : ', supportedTokens);
+
     const uuid = crypto.randomUUID();
-
-    const updatedTokenData = tokenData[chainId].map((token) => {
+    const gasDataWithValues = supportedTokens.map((token: any) => {
       return {
         tokenUID: uuid,
         tokenLogo: token.logoUri,
@@ -118,12 +133,33 @@ const ApproveTransaction = () => {
         tokenSymbol: token.symbol,
         tokenAddress: token.address,
         tokenBalance: 0,
-        tokenGas: 0,
-        tokenGasValue: 0,
+        tokenGas: token.maxGasFee.toFixed(5),
+        tokenGasValue: token.maxGasFeeUSD.toFixed(5),
       };
     });
-    setGasData(updatedTokenData);
-  };
+
+    setGasData(gasDataWithValues);
+
+    console.log('Gas Data : ', gasData);
+  }
+
+  // const updateTokenData = () => {
+  //   const uuid = crypto.randomUUID();
+
+  //   const updatedTokenData = tokenData[chainId].map((token) => {
+  //     return {
+  //       tokenUID: uuid,
+  //       tokenLogo: token.logoUri,
+  //       tokenName: token.name,
+  //       tokenSymbol: token.symbol,
+  //       tokenAddress: token.address,
+  //       tokenBalance: 0,
+  //       tokenGas: token.maxGasFee,
+  //       tokenGasValue: token.maxGasFeeUSD,
+  //     };
+  //   });
+  //   setGasData(updatedTokenData);
+  // };
 
   // This is a dummy data for the gas of the tokens it should be passed in the below function
   // Just change the name of before the map function
@@ -165,9 +201,11 @@ const ApproveTransaction = () => {
   };
 
   useEffect(() => {
-    updateTokenData(); // it update the icon, name , address, give uiid
+    // updateTokenData(); // it update the icon, name , address, give uiid
+    console.log('Transfer Data is here : ', { transferData });
+    supportedTokensForGas(transferData);
 
-    updateGasData(); // it update the gas, gasValue in dollars and
+    // updateGasData(); // it update the gas, gasValue in dollars and
   }, [transferData]);
 
   async function sendBatchTransaction(transferData: any) {
@@ -344,7 +382,7 @@ const ApproveTransaction = () => {
             Select Token For Gas
           </h1>
 
-          <div className="mt-5">
+          <div className="mt-5 overflow-y-scroll h-[250px]">
             {gasData.map((token) => {
               const tokenData: selectedTokenForGas = {
                 icon: token.tokenLogo,

@@ -39,7 +39,6 @@ export default function Header() {
   const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
   const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
-  const [balance, setBalance] = useState(0);
   const [defaultChainId] = useState<number>(80001);
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
@@ -51,7 +50,7 @@ export default function Header() {
   const [SCW] = useState(item || null);
   const [chainId, setChainId] = useState(storageChainId);
 
-  const { smartAccountAddress, provider, init, EOA } = useConfig();
+  const { smartAccountAddress, init, EOA, balance: { SCW: SCWBalance, EOA: EOABalance } } = useConfig();
 
   useEffect(() => {
     if (storageChainId) {
@@ -68,11 +67,6 @@ export default function Header() {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
         init(chainId || defaultChainId);
-      } else {
-        let balance = await provider.getBalance(SCW || smartAccountAddress);
-        balance = ethers.utils.formatEther(balance);
-
-        setBalance(balance);
       }
     }
 
@@ -86,7 +80,7 @@ export default function Header() {
     setChainId(chainId);
     setCurrentCoinName(nativeAsset);
     init(chainId);
-    setItemInStorage('network',chainId)
+    setItemInStorage('network', chainId);
   }
 
   const navigate = useNavigate();
@@ -96,7 +90,7 @@ export default function Header() {
     if (key === "/logout") {
       logout();
       setItemInStorage("isLoggedIn", false);
-      navigate("/register");
+      navigate("/login");
     }
     setToggle(!toggle);
   };
@@ -189,7 +183,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {balance} {currentCoinName}
+                {SCWBalance} {currentCoinName}
               </div>
             </div>
           </div>
@@ -210,7 +204,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {balance} {currentCoinName}
+                {EOABalance} {currentCoinName}
               </div>
             </div>
           </div>
