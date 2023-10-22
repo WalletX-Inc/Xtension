@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ethers } from "ethers";
 
 import {
   generateAddressIcon,
@@ -22,14 +21,14 @@ import send from "../../assets/arrow-up.png";
 import copyAndPaste from "../../assets/copy.svg";
 
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "../../components/common/Loader";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [balance, setBalance] = useState(null);
-  const [showLoader, setShowLoader] = useState(false);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const item = getItemFromStorage("smartAccount");
   const chain = getItemFromStorage("network");
@@ -37,7 +36,14 @@ function Dashboard() {
   const [SCW] = useState(item || null);
   const [chainId] = useState(chain || null);
 
-  const { smartAccountAddress, provider, init, pushUser } = useConfig();
+  const {
+    smartAccountAddress,
+    provider,
+    init,
+    balance: { SCW: SCWBalance },
+    isConnected,
+    pushUser
+  } = useConfig();
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
@@ -64,11 +70,6 @@ function Dashboard() {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
         init(chainId);
-      } else {
-        let balance = await provider.getBalance(SCW || smartAccountAddress);
-        balance = ethers.utils.formatEther(balance);
-
-        setBalance(balance);
       }
     }
 
@@ -79,6 +80,8 @@ function Dashboard() {
     // This is to clear the state if the user restarts the app and is on the dashboard.
     // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.
     setTransferData([]);
+
+    if (provider && smartAccountAddress) setIsLoading(false);
   }, [smartAccountAddress, smartWalletAddress]);
 
   useEffect(() => {
@@ -117,9 +120,6 @@ function Dashboard() {
 
   return (
     <>
-      {
-        showLoader && <h1> loading</h1>
-      }
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
           <img
@@ -139,7 +139,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {balance} {currentCoinName}
+          {SCWBalance} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
@@ -185,6 +185,8 @@ function Dashboard() {
         onClose={closeQrModal}
         walletAddress={smartWalletAddress}
       />
+
+      {isLoading || !isConnected ? <Loader /> : <></>}
     </>
   );
 }
