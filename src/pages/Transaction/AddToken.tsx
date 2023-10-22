@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Trash } from "react-feather";
 
-import {
-  generateAddressIcon,
-  getShortDisplayString,
-  getChainDetails,
-} from "../../utils/helper";
+import { generateAddressIcon, getShortDisplayString, getChainDetails } from "../../utils/helper";
 import addMoreAddress from "../../assets/add-user.svg";
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
-import maticLogo from "../../assets/matic-logo.png";
 import { useConfig } from "../../context/ConfigProvider";
 import { transferState } from "../../state/TransferState";
-import { ArrowLeft, Trash } from "react-feather";
 
 const AddTokens = () => {
   const { smartAccountAddress, chainId } = useConfig();
