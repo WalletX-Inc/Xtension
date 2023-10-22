@@ -36,7 +36,13 @@ function Dashboard() {
   const [SCW] = useState(item || null);
   const [chainId] = useState(chain || null);
 
-  const { smartAccountAddress, provider, init, balance: { SCW: SCWBalance }, isConnected } = useConfig();
+  const {
+    smartAccountAddress,
+    provider,
+    init,
+    balance: { SCW: SCWBalance },
+    isConnected,
+  } = useConfig();
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
@@ -58,14 +64,6 @@ function Dashboard() {
       console.error("Copy failed due to: ", error);
     }
   };
-
-  useEffect(() => {
-    console.log({ isConnected });
-    if (isConnected) {
-      setIsLoading(false);
-      console.log('CHANGED : ', { isConnected });
-    }
-  }, [isConnected]);
 
   useEffect(() => {
     async function initializeSmartWallet() {
@@ -166,7 +164,7 @@ function Dashboard() {
         walletAddress={smartWalletAddress}
       />
 
-      {isLoading ? <Loader /> : <></>}
+      {isLoading || !isConnected ? <Loader /> : <></>}
     </>
   );
 }

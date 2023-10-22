@@ -39,6 +39,7 @@ export default function useInit() {
   }, [provider]);
 
   function init(chainId) {
+    setIsConnected(false)
     const chainData = getChainDetails(chainId);
 
     setRpcUrl(chainData.rpc);
