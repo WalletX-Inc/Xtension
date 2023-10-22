@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import WormholeBridge from '@wormhole-foundation/wormhole-connect';
 import {
   generateAddressIcon,
   getItemFromStorage,
@@ -26,6 +26,7 @@ import Loader from "../../components/common/Loader";
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
+  const [showBridge, setShowBridge] = useState<boolean>(false);
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -96,6 +97,10 @@ function Dashboard() {
     navigate(`/dashboard/transaction/add-address`);
   }
 
+  const openWormholeBridge = () => {
+    setShowBridge(!showBridge)
+  }
+
   return (
     <>
       <div className=" text-white mt-24 min-h-[210px]">
@@ -148,7 +153,7 @@ function Dashboard() {
             />
             <h1 className="text-{15px} font-thin tracking-wider">Swap</h1>
           </div>
-          <div className="flex flex-col justify-center item-center gap-2">
+          <div className="flex flex-col justify-center item-center gap-2" onClick={() => {openWormholeBridge()}}>
             <img
               className="h-8 bg-white rounded-full p-1 shadow-lg border hover:bg-gray-100 hover:bg-opacity-90"
               src={bridge}
@@ -163,6 +168,8 @@ function Dashboard() {
         onClose={closeQrModal}
         walletAddress={smartWalletAddress}
       />
+      {showBridge && 
+        <WormholeBridge />}
 
       {isLoading || !isConnected ? <Loader /> : <></>}
     </>
