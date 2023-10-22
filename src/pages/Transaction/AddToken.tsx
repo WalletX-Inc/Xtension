@@ -113,7 +113,7 @@ const AddTokens = () => {
     setIsRemoveAddressModalOpen(false);
 
     // Check this line and remove it
-    if (transferData.length == 0) {
+    if (transferData.length === 0) {
       navigate("/dashboard/transaction/add-address");
     }
   };

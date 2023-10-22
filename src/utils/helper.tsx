@@ -1,5 +1,8 @@
+import { ethers } from "ethers";
 import { toSvg } from "jdenticon";
+
 import Chains from "../constants/chains";
+import Erc20ABI from "../constants/erc20ABI";
 
 export const getItemFromStorage: any = (
   key: string,
@@ -61,4 +64,33 @@ export const getChainDetails: any = (chainId: number) => {
   });
 
   return chainData;
+}
+
+const isValidContract = async (address: string, provider: any) => {
+  const code = await provider.getCode(address);
+
+  if (code === "0x") {
+    return false;
+  }
+
+  return true;
+}
+
+export const getTokenData = async (tokenAddress: string, provider: any, userAddress: string) => {
+  const isValid = await isValidContract(tokenAddress, provider);
+
+  if (!isValid) {
+    return null;
+  }
+
+  const contract = new ethers.Contract(tokenAddress, Erc20ABI, provider);
+
+  const name = await contract.name();
+  const symbol = await contract.symbol();
+  const decimals = await contract.decimals();
+
+  let balance = await contract.balanceOf(userAddress);
+  balance = ethers.utils.formatUnits(balance, decimals);
+
+  return { name, symbol, balance, decimals };
 }

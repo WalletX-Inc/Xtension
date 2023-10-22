@@ -4,7 +4,6 @@ import Tab from "./";
 import TabContainer from "./Tabs";
 import TokenCard from "../TokenCard";
 import Tokens from "../../constants/tokens";
-import { useConfig } from "../../context/ConfigProvider";
 
 import { Plus } from "react-feather";
 import ImportTokenDrawer from "../ImportTokenDrawer";
