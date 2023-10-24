@@ -3,7 +3,11 @@ import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash } from "react-feather";
 
-import { generateAddressIcon, getShortDisplayString, getChainDetails } from "../../utils/helper";
+import {
+  generateAddressIcon,
+  getShortDisplayString,
+  getChainDetails,
+} from "../../utils/helper";
 import addMoreAddress from "../../assets/add-user.svg";
 import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
@@ -126,7 +130,6 @@ const AddTokens = () => {
   };
 
   useEffect(() => {
-
     const propertyName = "tokenSymbol";
     const tokenIsAddedForAll = transferData.every(
       (address) => !!address[propertyName]
@@ -229,9 +232,7 @@ const AddTokens = () => {
                             className="bg-transparent  border-black outline-none max-w-[80px] text-right"
                             type="number"
                             placeholder="0"
-                            defaultValue={`${
-                              enteredAmount ? transferData.amount : ""
-                            }`}
+                            defaultValue={transferData.amount}
                             onChange={(e: any) => {
                               setEnteredAmount(e.target.value);
                             }}
