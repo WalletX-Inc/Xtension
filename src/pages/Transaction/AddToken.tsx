@@ -12,7 +12,7 @@ import {
 import RemoveModal from "../../components/Modal";
 import { useConfig } from "../../context/ConfigProvider";
 import { transferState } from "../../state/TransferState";
-import addMoreAddress from "../../assets/addUsers.svg";
+import addMoreAddress from "../../assets/addUser.svg";
 
 const AddTokens = () => {
   const { smartAccountAddress, chainId } = useConfig();
