@@ -8,7 +8,7 @@ import { BeatLoader } from "react-spinners";
 import TokenCard from "./TokenCard";
 import { useConfig } from "../context/ConfigProvider";
 import { getTokenData } from "../utils/helper";
-import { getItemFromStorage } from "../utils/helper";
+import { getItemFromStorage, generateSHA256Hash } from "../utils/helper";
 
 type importTokenParam = {
   onClose: Function;
@@ -105,10 +105,10 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
 
   const setTokenDataForKey = async (key: any, data: Array<{}>) => {
     try {
-      const currentData: Array<{}> = (await localforage.getItem(key)) || [];
+      const currentData: Array<{}> = (await localforage.getItem(generateSHA256Hash(key.toString()))) || [];
       const newTokenData = [...currentData, ...data];
 
-      await localforage.setItem(key, newTokenData);
+      await localforage.setItem(generateSHA256Hash(key.toString()), newTokenData);
       console.log("tokenData added", newTokenData);
     } catch (error) {
       console.error("Error setting token data:", error);

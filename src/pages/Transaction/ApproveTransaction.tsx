@@ -16,7 +16,7 @@ import maticLogo from "../../assets/matic-logo.png";
 import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import TransactionModal from "../../components/TransactionModal";
-import { getItemFromStorage } from "../../utils/helper";
+import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
 import { validateBiometric } from "../../hooks/functional-hooks";
 
 type selectedTokenForGas = {
@@ -39,7 +39,7 @@ const ApproveTransaction = () => {
   const [gasData, setGasData] = useRecoilState(gasState);
   const biometricAuth = validateBiometric();
 
-  const dName = getItemFromStorage('device');
+  const dName = getItemFromStorage(generateSHA256Hash('device'));
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
     useState<selectedTokenForGas>({

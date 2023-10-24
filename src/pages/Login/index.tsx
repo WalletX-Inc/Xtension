@@ -7,7 +7,7 @@ import { v4 } from "uuid";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { useAuth } from "../../hooks/system-hooks/useAuth";
-import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
+import { getItemFromStorage, setItemInStorage, generateSHA256Hash } from "../../utils/helper";
 import icon128 from "../../assets/icons/mainLogo.png";
 
 function Login() {
@@ -21,7 +21,7 @@ function Login() {
   };
 
   async function authenticateDevice() {
-    const dName = deviceName ? getItemFromStorage('device') : null;
+    const dName = deviceName ? getItemFromStorage(generateSHA256Hash('device')) : null;
     if(!dName){
       toast.error('Please add an account first')
       return

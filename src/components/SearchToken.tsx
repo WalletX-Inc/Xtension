@@ -6,7 +6,7 @@ import Tokens from "../constants/tokens";
 import { useConfig } from "../context/ConfigProvider";
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
-import { getTokenBalance } from "../utils/helper";
+import { generateSHA256Hash } from "../utils/helper";
 import TokenCardTransaction from "./TokenCardTransaction";
 
 type searchTokenPara = {
@@ -80,13 +80,10 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
     onClose();
   };
 
-  const chain = getItemFromStorage("network");
-  const chainID = chain.toString();
-
   // function to fetch the data form Indexed DB using localFORage
   const getTokenDataForKey = async (key: string) => {
     try {
-      const data = await localforage.getItem(key);
+      const data = await localforage.getItem(generateSHA256Hash(key.toString()));
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {

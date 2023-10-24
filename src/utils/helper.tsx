@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import { toSvg } from "jdenticon";
 import { ethers } from "ethers";
+import { sha256 } from 'js-sha256';
 
 import Chains from '../constants/chains';
 import erc20ABI from "../constants/erc20ABI";
@@ -147,4 +148,8 @@ export const getTokenBalance = async (tokenAddress: string, provider: any, userA
   balance = ethers.utils.formatUnits(balance, decimals);
 
   return balance.toString();
+}
+
+export const generateSHA256Hash = (data: string) => {
+  return sha256(data);
 }

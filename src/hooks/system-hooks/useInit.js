@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
 import { initiateEOA } from "./initiateEOA";
-import { getItemFromStorage } from "../../utils/helper";
+import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
 import { useAuth } from "./useAuth";
 import { getChainDetails } from "../../utils/helper";
 
@@ -47,7 +47,7 @@ export default function useInit() {
     setChainId(chainData.chainId);
     setPaymasterUrl(chainData.paymasterUrl);
 
-    const device = getItemFromStorage('device');
+    const device = getItemFromStorage(generateSHA256Hash('device'));
 
     if (device?.id) {
       setDeviceId(device.id);

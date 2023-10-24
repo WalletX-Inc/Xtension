@@ -1,7 +1,9 @@
 import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
 import { Bundler } from '@biconomy/bundler';
 import { BiconomyPaymaster } from '@biconomy/paymaster';
-import { setItemInStorage } from "../../utils/helper";
+import localforage from "localforage";
+
+import { setItemInStorage, getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
 import { useGetBalance } from "../functional-hooks/useGetBalance";
 
 export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId: number, paymasterUrl: string, signer: any, login: any, setSmartAccountProvider: any, setSmartAccountAddress: any, provider: any, setBalance: any, setIsConnected: any) {
@@ -11,9 +13,27 @@ export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId:
       console.log("[Hooks] No signer");
       return;
     }
+
+    const SCWProvider: any = await localforage.getItem(generateSHA256Hash('smartAccountProvider'));
+    const storageChainId: any = getItemFromStorage('network');
+
+    if (SCWProvider && storageChainId && storageChainId === chainId) {
+      const smartAccountAddress: any = getItemFromStorage('smartAccount');
+
+      setItemInStorage("network", chainId);
+      setItemInStorage("isLoggedIn", true);
+      setSmartAccountProvider(JSON.parse(SCWProvider));
+      setSmartAccountAddress(smartAccountAddress);
+
+      useGetBalance(provider, smartAccountAddress, setBalance);
+
+      setIsConnected(true);
+
+      return;
+    }
  
-    const bundler = new Bundler({ bundlerUrl:bundlerUrl, chainId, entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS });
-    const paymaster = new BiconomyPaymaster({ paymasterUrl: paymasterUrl });
+    const bundler = new Bundler({ bundlerUrl, chainId, entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS });
+    const paymaster = new BiconomyPaymaster({ paymasterUrl });
 
     const smartAccountConfig: any = { signer, chainId, rpcUrl, bundler, paymaster };
 
@@ -31,6 +51,7 @@ export function initiateSmartWallet(rpcUrl: string, bundlerUrl: string, chainId:
     setSmartAccountProvider(smartAccount);
     setSmartAccountAddress(smartAccountAddress);
 
+    await localforage.setItem(generateSHA256Hash('smartAccountProvider'), JSON.stringify(smartAccount));
     await useGetBalance(provider, smartAccountAddress, setBalance);
 
     setIsConnected(true);
