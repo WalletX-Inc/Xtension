@@ -84,7 +84,7 @@ const TokenCardTransaction = ({
             </p>
           </div>
           <div className="items-end">
-            <p title="current Balance">{balance}</p>
+            <p title="current Balance">{Number(balance).toFixed(5)}</p>
             <p title="balance in dollars"></p>
           </div>
         </div>
