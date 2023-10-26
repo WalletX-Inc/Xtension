@@ -217,29 +217,27 @@ export default function Header() {
         headerText="Select an Network"
       >
         <div
-          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer max-h-60 overflow-auto"
+          className="py-3 px-3 sm:py-4 cursor-pointer max-h-60 overflow-auto"
           onClick={() => {
             setOpenNetworkModal(false);
           }}
         >
 
           { Chains.map((chain) => {
-            return (
+            return (!chain.isEnabled) ? null : (
               <button
+                className={`flex items-center space-x-4 ${chain.chainId === storageChainId ? "border-l-4 rounded border-gray-400" : ""}`}
+                style={{ width: "100%", paddingTop: "7px", marginBottom: "5px", marginTop: "5px", paddingBottom: "7px", textAlign: "left", boxShadow: "2px 0px 1px 1px rgba(0, 0, 0, 0.1)" }}
                 onClick={() =>
                   handleNetworkSwitch(chain.chainId, chain.chainUri, chain.nativeAsset)
                 }
               >
                 <div
-                  className={`flex items-center space-x-4 ${
-                    chain.chainId === storageChainId
-                      ? "border-l-4 rounded border-gray-400"
-                      : ""
-                  } `}
+                  className={`flex items-center space-x-4`}
                 >
                   <div className="flex-shrink-0 ml-2">
                     <img
-                      className="w-8 h-8 rounded-full"
+                      className="w-7 h-7 rounded-full"
                       src={chain.chainUri}
                       alt="ETH"
                     />
