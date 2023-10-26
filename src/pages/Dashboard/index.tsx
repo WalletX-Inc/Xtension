@@ -96,6 +96,15 @@ function Dashboard() {
     navigate(`/dashboard/transaction/add-address`);
   }
 
+  const fetchBalance = () => {
+    let balance;
+    if (SCWBalance && Number(SCWBalance) === 0) {
+      balance = 0;
+    } else if (SCWBalance > 0) {
+      balance = Number(SCWBalance).toFixed(5);
+    }
+    return balance;
+  };
   return (
     <>
       <div className=" text-white mt-24 min-h-[210px]">
@@ -117,7 +126,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {SCWBalance && Number(SCWBalance).toFixed(5).toString()} {currentCoinName}
+          {fetchBalance()} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
