@@ -56,6 +56,16 @@ function Dashboard() {
     setQrcodemodal(false);
   };
 
+  const fetchBalance = () => {
+    let balance;
+    if (SCWBalance && Number(SCWBalance) === 0) {
+      balance = 0;
+    } else if (SCWBalance > 0) {
+      balance = Number(SCWBalance).toFixed(5);
+    }
+    return balance;
+  };
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(SCW || smartAccountAddress);
@@ -117,7 +127,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {SCWBalance && Number(SCWBalance).toFixed(5).toString()} {currentCoinName}
+          {fetchBalance()} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
