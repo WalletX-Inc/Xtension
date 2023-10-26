@@ -37,6 +37,7 @@ function Dashboard() {
   const [chainId] = useState(chain || null);
 
   const {
+    getSmartWalletHandler,
     smartAccountAddress,
     provider,
     init,
@@ -94,6 +95,7 @@ function Dashboard() {
 
   async function sendTx() {
     navigate(`/dashboard/transaction/add-address`);
+    getSmartWalletHandler();
   }
 
   const fetchBalance = () => {

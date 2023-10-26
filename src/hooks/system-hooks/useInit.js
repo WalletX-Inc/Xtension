@@ -21,6 +21,7 @@ export default function useInit() {
   const [EOABalance, setEOABalance] = useState(null);
   const [SCWBalance, setSCWBalance] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isInitialised, setIsInitialised] = useState(false)
 
   const auth = useAuth();
 
@@ -34,6 +35,7 @@ export default function useInit() {
 
   useEffect(() => {
     if (provider) {
+      setIsInitialised(true)
       getSmartWalletHandler();
     }
   }, [provider]);
@@ -55,7 +57,7 @@ export default function useInit() {
   }
 
   const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider, setEOA, setEOABalance);
-  const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress, provider, setSCWBalance, setIsConnected);
+  const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress, provider, setSCWBalance, setIsConnected,isInitialised);
 
   return {
     isLoggedIn,
@@ -70,5 +72,6 @@ export default function useInit() {
     EOABalance,
     SCWBalance,
     isConnected,
+    isInitialised, 
   };
 }

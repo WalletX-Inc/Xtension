@@ -101,7 +101,7 @@ const ApproveTransaction = () => {
       const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
       obj.to = isCoin ? data.address : data.tokenAddress;
-      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
+      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount.toString(), data.tokenDecimal).toString()];
       obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
       obj.from = smartAccountAddress;
 
