@@ -13,11 +13,8 @@ function Registration() {
 
   const navigate = useNavigate();
 
-  const { smartAccountAddress } = useConfig();
-
   const smartAddress = getItemFromStorage("smartAccount");
 
-  console.log({ smartAddress, smartAccountAddress });
   const handleRemoveData = (id: string) => {
     localStorage.clear();
     setShowRegister(true);

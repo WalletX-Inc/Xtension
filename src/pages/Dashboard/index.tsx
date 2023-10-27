@@ -57,6 +57,16 @@ function Dashboard() {
     setQrcodemodal(false);
   };
 
+  const fetchBalance = () => {
+    let balance;
+    if (SCWBalance && Number(SCWBalance) === 0) {
+      balance = 0;
+    } else if (SCWBalance > 0) {
+      balance = Number(SCWBalance).toFixed(5);
+    }
+    return balance;
+  };
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(SCW || smartAccountAddress);
@@ -76,6 +86,7 @@ function Dashboard() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
+    getSmartWalletHandler();
 
     // This is to clear the state if the user restarts the app and is on the dashboard.
     // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.
@@ -95,18 +106,8 @@ function Dashboard() {
 
   async function sendTx() {
     navigate(`/dashboard/transaction/add-address`);
-    getSmartWalletHandler();
   }
 
-  const fetchBalance = () => {
-    let balance;
-    if (SCWBalance && Number(SCWBalance) === 0) {
-      balance = 0;
-    } else if (SCWBalance > 0) {
-      balance = Number(SCWBalance).toFixed(5);
-    }
-    return balance;
-  };
   return (
     <>
       <div className=" text-white mt-24 min-h-[210px]">

@@ -109,14 +109,12 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
       const newTokenData = [...currentData, ...data];
 
       await localforage.setItem(generateSHA256Hash(key.toString()), newTokenData);
-      console.log("tokenData added", newTokenData);
     } catch (error) {
       console.error("Error setting token data:", error);
     }
   };
 
   const addToken = () => {
-    console.log("tokenAdded");
     setTokenDataForKey(chainId, [tokenData]);
     toast.success("Token Added Sucessfully");
     setTokenData({

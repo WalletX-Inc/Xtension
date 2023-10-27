@@ -33,7 +33,7 @@ function LandingPage() {
               {details.title}
             </h2>
             <p className="p-8 ">{details.description}</p>
-            {currentSlide === 1 && (
+            {details.isFinal && (
               <Button
                 className="min-w-[300px] mt-[70px] text-white bg-gray-900 border hover:bg-gray-950 rounded-lg flex justify-center m-auto
         transition duration-500 hover:scale-110 p-3"

@@ -31,8 +31,6 @@ const Register = () => {
 
   useEffect(() => {
     if (smartAccountAddress) {
-      console.log("Smart Account Is Initialized : ", smartAccountAddress);
-
       setButtonTitle("Done");
       login();
       toast.success("Account Created Successfully !", {

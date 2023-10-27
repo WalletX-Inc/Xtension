@@ -1,16 +1,9 @@
-import {
-  BiconomySmartAccount,
-  DEFAULT_ENTRYPOINT_ADDRESS,
-} from "@biconomy/account";
+import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
 import { Bundler } from "@biconomy/bundler";
 import { BiconomyPaymaster } from "@biconomy/paymaster";
 import localforage from "localforage";
 
-import {
-  setItemInStorage,
-  getItemFromStorage,
-  generateSHA256Hash,
-} from "../../utils/helper";
+import { setItemInStorage, getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
 import { useGetBalance } from "../functional-hooks/useGetBalance";
 
 export function initiateSmartWallet(
@@ -38,15 +31,8 @@ export function initiateSmartWallet(
     );
     const storageChainId: any = getItemFromStorage("network");
 
-    if (
-      isInitialised == false &&
-      SCWProvider &&
-      storageChainId &&
-      storageChainId === chainId
-    ) {
+    if (isInitialised === false && SCWProvider && storageChainId && storageChainId === chainId) {
       const smartAccountAddress: any = getItemFromStorage("smartAccount");
-      console.log("Im form the if statement ");
-      console.log("isInitialised", isInitialised);
 
       setItemInStorage("network", chainId);
       setItemInStorage("isLoggedIn", true);
@@ -60,20 +46,10 @@ export function initiateSmartWallet(
       return;
     }
 
-    const bundler = new Bundler({
-      bundlerUrl,
-      chainId,
-      entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
-    });
+    const bundler = new Bundler({ bundlerUrl, chainId, entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS });
     const paymaster = new BiconomyPaymaster({ paymasterUrl });
 
-    const smartAccountConfig: any = {
-      signer,
-      chainId,
-      rpcUrl,
-      bundler,
-      paymaster,
-    };
+    const smartAccountConfig: any = { signer, chainId, rpcUrl, bundler, paymaster };
 
     const account = new BiconomySmartAccount(smartAccountConfig);
     const smartAccount = await account.init();
@@ -89,10 +65,7 @@ export function initiateSmartWallet(
     setSmartAccountProvider(smartAccount);
     setSmartAccountAddress(smartAccountAddress);
 
-    await localforage.setItem(
-      generateSHA256Hash("smartAccountProvider"),
-      JSON.stringify(smartAccount)
-    );
+    await localforage.setItem(generateSHA256Hash("smartAccountProvider"), JSON.stringify(smartAccount));
     await useGetBalance(provider, smartAccountAddress, setBalance);
 
     setIsConnected(true);

@@ -3,12 +3,16 @@ import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash } from "react-feather";
 
-import { generateAddressIcon, getShortDisplayString, getChainDetails } from "../../utils/helper";
-import addMoreAddress from "../../assets/add-user.svg";
-import RemoveModal from "../../components/Modal";
 import SearchToken from "../../components/SearchToken";
+import {
+  generateAddressIcon,
+  getShortDisplayString,
+  getChainDetails,
+} from "../../utils/helper";
+import RemoveModal from "../../components/Modal";
 import { useConfig } from "../../context/ConfigProvider";
 import { transferState } from "../../state/TransferState";
+import addMoreAddress from "../../assets/addUser.svg";
 
 const AddTokens = () => {
   const { smartAccountAddress, chainId } = useConfig();
@@ -25,6 +29,8 @@ const AddTokens = () => {
 
   const [isTokenAddedForAddresses, setIsTokenAddedForAddresses] =
     useState(false);
+  const [isTokenAmountValidForAddresses, setIsTokenAmountValidForAddresses] =
+    useState<boolean>(false);
   const [uidToRemoveAddress, setUidToRemoveAddress] = useState<string>("");
   const [uidToAddTokenToAddress, setUidToAddTokenToAddress] =
     useState<string>("");
@@ -33,8 +39,48 @@ const AddTokens = () => {
   const [uidToRemoveToken, setUidToRemoveToken] = useState<string>("");
 
   const [enteredAmount, setEnteredAmount] = useState<any>();
+  const [isEnteredAmountValid, setIsEnteredAmountValid] = useState({
+    valid: false,
+    uid: "",
+  });
 
-  const handelAmountChange = (uid: string) => {
+  // ADD TOKEN FUNCTIONS
+  const openAddTokenModal = (uid: string) => {
+    setUidToAddTokenToAddress(uid);
+    setTokenModalOpen(true);
+  };
+
+  const closeAddTokenModal = () => {
+    setTokenModalOpen(false);
+  };
+
+  // Adding Amount
+
+  const handelAmountChange = (e: any, uid: string) => {
+    setIsEnteredAmountValid({
+      valid: true,
+      uid: uid,
+    });
+    const enteredAmount = e.target.value;
+
+    const isAmountValid = transferData.some(
+      (transferDetails) =>
+        transferDetails.uid === uid &&
+        transferDetails.tokenBalance &&
+        transferDetails.tokenBalance >= enteredAmount
+    );
+
+    if (isAmountValid) {
+      setEnteredAmount(enteredAmount);
+    } else {
+      setIsEnteredAmountValid({
+        valid: false,
+        uid: uid,
+      });
+    }
+  };
+
+  const updateAmount = (uid: string) => {
     setTransferData((prevData) =>
       prevData.map((transferDetails) =>
         transferDetails.uid === uid
@@ -47,19 +93,8 @@ const AddTokens = () => {
     );
   };
 
-  // ADD TOKEN FUNCTIONS
-  const openAddTokenModal = (uid: string) => {
-    setUidToAddTokenToAddress(uid);
-    setTokenModalOpen(true);
-  };
-
-  const closeAddTokenModal = () => {
-    setTokenModalOpen(false);
-  };
-
   //  REMOVE TOKEN FUNCIOTNS
   const openRemoveTokenModal = (uid: string) => {
-    //
     setUidToRemoveToken(uid);
     setIsRemoveTokenModalOpen(true);
   };
@@ -84,7 +119,6 @@ const AddTokens = () => {
           : transferDetails
       )
     );
-    console.log(transferData);
     setIsRemoveTokenModalOpen(false);
   };
 
@@ -92,7 +126,6 @@ const AddTokens = () => {
   const openRemoveAddressModal = (uid: string) => {
     setUidToRemoveAddress(uid);
     setIsRemoveAddressModalOpen(true);
-    console.log("Model Should Open");
   };
 
   const closeRemoveAddressModal = () => {
@@ -114,24 +147,33 @@ const AddTokens = () => {
   };
 
   const handelProceedButton = () => {
-    const propertyName = "tokenSymbol";
-    const tokenIsAddedForAll = transferData.every(
-      (address) => !!address[propertyName]
-    ); // this array method is to check if the property tokenSymbol has truthy value or not
-    // console.log(tokenIsAddedForAll)
-    if (transferData.length > 0 && isTokenAddedForAddresses) {
+    if (
+      transferData.length > 0 &&
+      isTokenAddedForAddresses &&
+      isTokenAmountValidForAddresses
+    ) {
       navigate("/dashboard/transaction/approve-transactions");
     }
-    // console.log("it passed")
   };
 
-  useEffect(() => {
-
+  const validateTransferDetails = () => {
     const propertyName = "tokenSymbol";
+    const property2Name = "amount";
+
     const tokenIsAddedForAll = transferData.every(
       (address) => !!address[propertyName]
     );
+
+    const tokenAmountIsGreaterThanZero = transferData.every(
+      (address) => address[property2Name] > 0
+    );
+
     setIsTokenAddedForAddresses(tokenIsAddedForAll);
+    setIsTokenAmountValidForAddresses(tokenAmountIsGreaterThanZero);
+  };
+
+  useEffect(() => {
+    validateTransferDetails();
   }, [transferData]);
 
   if (transferData.length === 0) navigate("/dashboard/transaction/add-address");
@@ -201,6 +243,22 @@ const AddTokens = () => {
                       <Trash className="h-6 w-6" />
                     </button>
                   </div>
+                  {/* Amount exceeds available balance. Please adjust 
+                  Balance too low for the requested amount.
+                  Insufficient balance. Please enter a valid amount.
+                  Your entered amount exceeds your available balance.
+                  */}
+
+                  {isEnteredAmountValid.valid === false &&
+                  isEnteredAmountValid.uid == transferData.uid ? (
+                    <div>
+                      <h1 className="font-semibold text-sm text-red-500 px-2 tracking-wide  text-center">
+                        Amount exceeds available balance. Please adjust.
+                      </h1>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
 
                   {/* TOKEN CARD SECTION */}
                   {transferData.tokenSymbol ? (
@@ -228,16 +286,17 @@ const AddTokens = () => {
                           <input
                             className="bg-transparent  border-black outline-none max-w-[80px] text-right"
                             type="number"
+                            min={0}
                             placeholder="0"
                             defaultValue={`${
-                              enteredAmount ? transferData.amount : ""
+                              transferData.amount === 0
+                                ? ""
+                                : transferData.amount
                             }`}
-                            onChange={(e: any) => {
-                              setEnteredAmount(e.target.value);
-                            }}
-                            onBlurCapture={() =>
-                              handelAmountChange(transferData.uid)
+                            onChange={(e: any) =>
+                              handelAmountChange(e, transferData.uid)
                             }
+                            onBlurCapture={() => updateAmount(transferData.uid)}
                           />
                           <p className="text-sm ">$ 00.00</p>
                         </div>
@@ -273,7 +332,6 @@ const AddTokens = () => {
                       </div>
                     </>
                   )}
-
                   {/* MODAL FOR SELECTING THE TOKENS  */}
                   <SearchToken
                     isOpen={isTokenModalOpen}
@@ -292,7 +350,7 @@ const AddTokens = () => {
               }}
             >
               <img
-                className="h-16 "
+                className="h-12 "
                 src={addMoreAddress}
                 alt="add more addresses"
               />
@@ -320,17 +378,18 @@ const AddTokens = () => {
       {/* ######################## PROCEED SECTION ######################## */}
       <button
         onClick={handelProceedButton}
-        disabled={isTokenAddedForAddresses ? false : true}
+        disabled={
+          isTokenAddedForAddresses && isTokenAmountValidForAddresses
+            ? false
+            : true
+        }
         className={`${
-          !isTokenAddedForAddresses ? "text-opacity-50 " : " border-white"
+          isTokenAddedForAddresses && isTokenAmountValidForAddresses
+            ? "border-white"
+            : "text-opacity-50 "
         } bg-gray-950 border-gray-500 hover:bg-black fixed left-1/2 translate-x-[-50%] bottom-4  flex justify-center items-center shadow-lg  text-white  border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  `}
       >
-        <h1 className="text-xl font-semibold tracking-wider">
-          {/* {isValid === false && enteredAddresses
-            ? " Invalid Address"
-            : " Next "} */}
-          Review
-        </h1>
+        <h1 className="text-xl font-semibold tracking-wider">Review</h1>
       </button>
     </>
   );

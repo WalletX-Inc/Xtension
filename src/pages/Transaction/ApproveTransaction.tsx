@@ -93,7 +93,6 @@ const ApproveTransaction = () => {
   };
 
   const supportedTokensForGas = async (transferData: any) => {
-    console.log('Fetching the gas data');
     let rawTransaction: any[] = [];
 
     transferData.forEach((data: any) => {
@@ -144,9 +143,7 @@ const ApproveTransaction = () => {
   }
 
   useEffect(() => {
-    console.log('Transfer Data is here : ', { transferData });
     supportedTokensForGas(transferData);
-
   }, [transferData]);
 
   async function sendBatchTransaction(transferData: any) {
@@ -172,17 +169,14 @@ const ApproveTransaction = () => {
       rawTransaction.push(obj);
     });
 
-    console.log({ rawTransaction });
     const txns = constructTransactionData(rawTransaction);
 
     const partialUserOp = await smartAccountProvider.buildUserOp(txns);
     let finalUserOp = partialUserOp;
 
-    console.log('TOKEN FOR GAS : ', selectedTokenForGas);
+    console.log('Selected token For gas : ', selectedTokenForGas);
 
     if (selectedTokenForGas.tokenAddress.toString() !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
-      console.log("Token for gas is not ETH");
-      console.log('selectedTokenForGas', selectedTokenForGas);
       finalUserOp = await constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
       console.log('FINAL USEROP : ', finalUserOp);
     }
@@ -193,9 +187,8 @@ const ApproveTransaction = () => {
   
       setTransactionHash(transactionDetails.receipt.transactionHash);
       setIsTransactionModalOpen(true);
-      console.log('transactionDetails', transactionDetails);
     } catch(e) {
-      console.log(e);
+      console.log('Error while sending batch txn : ', e);
     }
   }
 
