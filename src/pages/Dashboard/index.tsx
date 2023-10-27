@@ -111,7 +111,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {balance} {currentCoinName}
+          {(!balance ? 0 : balance)} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
@@ -132,7 +132,7 @@ function Dashboard() {
               src={send}
               alt="sendButton"
             />
-            <h1 className="text-{15px} font-thin tracking-wider">Send</h1>
+            <h1 className="text-{15px} font-thin tracking-wider">Transfer</h1>
           </div>
           <div className="flex flex-col justify-center item-center gap-2">
             <img
