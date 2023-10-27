@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 
 export async function useGetBalance(provider: any, address: string, setBalance: any) {
     if (!provider) {
-        console.log("[Functional Hooks: useGetBalance()] No provider");
         return;
     }
 

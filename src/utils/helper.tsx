@@ -1,6 +1,7 @@
 /* eslint-disable array-callback-return */
 import { toSvg } from "jdenticon";
 import { ethers } from "ethers";
+import { sha256 } from 'js-sha256';
 
 import Chains from '../constants/chains';
 import erc20ABI from "../constants/erc20ABI";
@@ -78,14 +79,12 @@ export const constructTransactionData: any = (transactions: any) => {
     txns.push(txn);
   });
 
-  console.log('txns', txns);
   return txns;
 }
 
 export const constructFinalUserOp: any = async (smartAccountInstance: any, partialUserOp: any, gasFeeAddress: string) => {
   const paymaster = smartAccountInstance.paymaster;
   const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(partialUserOp, { mode: 'ERC20', tokenList: [gasFeeAddress] });
-  console.log('feeQuotesResponse', feeQuotesResponse);
   const requiredFeeQuotes = feeQuotesResponse.feeQuotes[0];
   const spender = feeQuotesResponse.tokenPaymasterAddress || '';
 
@@ -102,10 +101,9 @@ export const constructFinalUserOp: any = async (smartAccountInstance: any, parti
       finalUserOp.preVerificationGas = paymasterAndDataWithLimits.preVerificationGas;
     }
   
-    console.log('finalUserOp', finalUserOp);
     return finalUserOp;
   } catch (e) {
-    console.log('error in constructing final user op : ', e);
+    console.log('Error in constructing final user op : ', e);
     return null;
   }
 }
@@ -147,4 +145,8 @@ export const getTokenBalance = async (tokenAddress: string, provider: any, userA
   balance = ethers.utils.formatUnits(balance, decimals);
 
   return balance.toString();
+}
+
+export const generateSHA256Hash = (data: string) => {
+  return sha256(data);
 }

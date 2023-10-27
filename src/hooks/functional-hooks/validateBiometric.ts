@@ -12,11 +12,11 @@ export function validateBiometric() {
       });
   
       if(authentication.credentialId){
-        console.log("Biometric validated");
+        console.log("[validateBiometric Hook] Biometric validated");
         return true;
       }
 
-      console.log("Biometric failed");
+      console.log("[validateBiometric Hook] Biometric failed");
       return false;
   }  
 }

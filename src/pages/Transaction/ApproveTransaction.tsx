@@ -16,7 +16,7 @@ import maticLogo from "../../assets/matic-logo.png";
 import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import TransactionModal from "../../components/TransactionModal";
-import { getItemFromStorage } from "../../utils/helper";
+import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
 import { validateBiometric } from "../../hooks/functional-hooks";
 
 type selectedTokenForGas = {
@@ -39,7 +39,7 @@ const ApproveTransaction = () => {
   const [gasData, setGasData] = useRecoilState(gasState);
   const biometricAuth = validateBiometric();
 
-  const dName = getItemFromStorage('device');
+  const dName = getItemFromStorage(generateSHA256Hash('device'));
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
     useState<selectedTokenForGas>({
@@ -93,7 +93,6 @@ const ApproveTransaction = () => {
   };
 
   const supportedTokensForGas = async (transferData: any) => {
-    console.log('Fetching the gas data');
     let rawTransaction: any[] = [];
 
     transferData.forEach((data: any) => {
@@ -101,7 +100,7 @@ const ApproveTransaction = () => {
       const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
       obj.to = isCoin ? data.address : data.tokenAddress;
-      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
+      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount.toString(), data.tokenDecimal).toString()];
       obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
       obj.from = smartAccountAddress;
 
@@ -144,9 +143,7 @@ const ApproveTransaction = () => {
   }
 
   useEffect(() => {
-    console.log('Transfer Data is here : ', { transferData });
     supportedTokensForGas(transferData);
-
   }, [transferData]);
 
   async function sendBatchTransaction(transferData: any) {
@@ -172,17 +169,14 @@ const ApproveTransaction = () => {
       rawTransaction.push(obj);
     });
 
-    console.log({ rawTransaction });
     const txns = constructTransactionData(rawTransaction);
 
     const partialUserOp = await smartAccountProvider.buildUserOp(txns);
     let finalUserOp = partialUserOp;
 
-    console.log('TOKEN FOR GAS : ', selectedTokenForGas);
+    console.log('Selected token For gas : ', selectedTokenForGas);
 
     if (selectedTokenForGas.tokenAddress.toString() !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
-      console.log("Token for gas is not ETH");
-      console.log('selectedTokenForGas', selectedTokenForGas);
       finalUserOp = await constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
       console.log('FINAL USEROP : ', finalUserOp);
     }
@@ -193,9 +187,8 @@ const ApproveTransaction = () => {
   
       setTransactionHash(transactionDetails.receipt.transactionHash);
       setIsTransactionModalOpen(true);
-      console.log('transactionDetails', transactionDetails);
     } catch(e) {
-      console.log(e);
+      console.log('Error while sending batch txn : ', e);
     }
   }
 

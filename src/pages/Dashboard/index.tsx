@@ -37,6 +37,7 @@ function Dashboard() {
   const [chainId] = useState(chain || null);
 
   const {
+    getSmartWalletHandler,
     smartAccountAddress,
     provider,
     init,
@@ -85,6 +86,7 @@ function Dashboard() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
+    getSmartWalletHandler();
 
     // This is to clear the state if the user restarts the app and is on the dashboard.
     // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.

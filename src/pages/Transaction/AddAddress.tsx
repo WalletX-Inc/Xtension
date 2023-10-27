@@ -28,7 +28,6 @@ const AddAddresses = () => {
   const openBackModal = () => {
     if (transferData.length > 0) {
       setIsBackModalOpen(true);
-      console.log("transactons are there should not revert back to dashboard");
     } else {
       navigate("/dashboard");
     }
@@ -85,12 +84,10 @@ const AddAddresses = () => {
 
   // this function is not beign use cause of manifest v3 problem on build
   const pasteAddresses = async () => {
-    console.log("pasting address");
     try {
       setSendToAddresses("");
       handleCardClick(null);
       const address: string = await navigator.clipboard.readText();
-      console.log("pastedAdress" + address);
       setEnteredAddresses(address);
       setIsValid(isEthereumAddress(address));
     } catch (error) {
@@ -142,7 +139,7 @@ const AddAddresses = () => {
         tokenLogo: "",
       },
     ]);
-    console.log(transferData);
+    console.log('Transfer Data : ', transferData);
     navigate("/dashboard/transaction/add-tokens");
   };
 
