@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
-export default function useCoinBalance(address: string, isActive: true, wssRpc: string) {
+export default function useCoinBalance(address: string, isActive: boolean, wssRpc: string) {
     const [balance, setBalance] = useState("");
 
     useEffect(() => {

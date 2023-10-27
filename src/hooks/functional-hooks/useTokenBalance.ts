@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 
 import { getTokenBalance } from '../../utils/helper';
 
-export default function useTokenBalance(tokenAddress: string, userAddress: string, isActive: true, wssRpc: string) {
+export default function useTokenBalance(tokenAddress: string, userAddress: string, isActive: boolean, wssRpc: string) {
     const [balance, setBalance] = useState("");
 
     useEffect(() => {

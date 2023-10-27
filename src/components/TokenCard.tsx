@@ -1,7 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { getItemFromStorage, getTokenBalance, getChainDetails } from "../utils/helper";
-import { useConfig } from "../context/ConfigProvider";
+import { getItemFromStorage, getChainDetails } from "../utils/helper";
 import { useTokenBalance } from "../hooks/functional-hooks";
 
 type tokenCardParams = {
@@ -19,25 +18,11 @@ const TokenCard = ({
   tokenAddress,
   userAddress,
 }: tokenCardParams) => {
-  // const [balance, setBalance] = useState<any>(0);
-  // const { provider } = useConfig();
 
   const storageChainId = getItemFromStorage("network");
   const chainDetails = getChainDetails(storageChainId);
 
   const { balance } = useTokenBalance(tokenAddress, userAddress, true, chainDetails.wssRpc);
-
-  // useEffect(() => {
-  //   async function getBalance() {
-  //     if (provider) {
-  //       const balance = await getTokenBalance(tokenAddress, provider, userAddress);
-  //       setBalance(balance);
-  //     }
-  //   }
-
-  //   getBalance();
-  // }, [provider])
-
 
   return (
     <div className="flex border item-center py-2 px-3 gap-3 bg-gray-800 rounded-xl text-white border-gray-500 hover:bg-black mt-2">

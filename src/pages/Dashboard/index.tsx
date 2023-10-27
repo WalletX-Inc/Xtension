@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { generateAddressIcon, getItemFromStorage, getShortDisplayString, getChainDetails } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
-import { useRecoilState } from "recoil";
-import { transferState } from "../../state/TransferState";
 import QRCodeModal from "../../components/QRCodeModal";
 import { useCoinBalance } from "../../hooks/functional-hooks"
 
@@ -21,7 +19,6 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 
 function Dashboard() {
-  const [transferData, setTransferData] = useRecoilState(transferState);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
@@ -76,10 +73,6 @@ function Dashboard() {
 
     initializeSmartWallet();
     getSmartWalletHandler();
-
-    // This is to clear the state if the user restarts the app and is on the dashboard.
-    // Optimize it for better UX by using a chorme hook and calling a modal for cancel confirmation.
-    setTransferData([]);
 
     if (provider && smartAccountAddress) setIsLoading(false);
   }, [smartAccountAddress, smartWalletAddress]);
