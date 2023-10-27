@@ -9,7 +9,7 @@ import { useConfig } from "../../context/ConfigProvider";
 import { Plus } from "react-feather";
 import ImportTokenDrawer from "../ImportTokenDrawer";
 import localforage from "localforage";
-import { getItemFromStorage } from "../../utils/helper";
+import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
 
 type Token = {
   name: string;
@@ -48,7 +48,7 @@ const TabHandler = () => {
   // function to fetch the data form Indexed DB using localFORage
   const getTokenDataForKey = async (key: string) => {
     try {
-      const data = await localforage.getItem(key);
+      const data = await localforage.getItem(generateSHA256Hash(key.toString()));
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {

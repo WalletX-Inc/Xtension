@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 import Config from "../../config";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
-import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
+import { getItemFromStorage, setItemInStorage, generateSHA256Hash } from "../../utils/helper";
 import { useAuth } from "../../hooks/system-hooks/useAuth";
 import { useConfig } from "../../context/ConfigProvider";
 
@@ -31,8 +31,6 @@ const Register = () => {
 
   useEffect(() => {
     if (smartAccountAddress) {
-      console.log("Smart Account Is Initialized : ", smartAccountAddress);
-
       setButtonTitle("Done");
       login();
       toast.success("Account Created Successfully !", {
@@ -67,7 +65,7 @@ const Register = () => {
   };
 
   async function registerDevice() {
-    const device = deviceName ? getItemFromStorage("device") : null;
+    const device = deviceName ? getItemFromStorage(generateSHA256Hash("device")) : null;
 
     if (device?.name === deviceName) {
       alert(`${deviceName} is already registered. Please choose another name`);
@@ -87,7 +85,7 @@ const Register = () => {
       : null;
 
     if (deviceName && registration) {
-      setItemInStorage("device", {
+      setItemInStorage(generateSHA256Hash("device"), {
         name: deviceName?.toString(),
         id: registration?.credential.id,
       });

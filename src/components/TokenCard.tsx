@@ -41,7 +41,7 @@ const TokenCard = ({
           <p className="font-semibold tracking-wide">{tokenName}</p>
           <p className="text-sm font-semibold tracking-wide">{tokenSymbol}</p>
         </div>
-        <p className="font-semibold place-self-center">{balance}</p>
+        <p className="font-semibold place-self-center">{balance >0 ? Number(balance).toFixed(8): 0}</p>
       </div>
     </div>
   );

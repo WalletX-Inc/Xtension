@@ -119,7 +119,6 @@ const AddTokens = () => {
           : transferDetails
       )
     );
-    console.log(transferData);
     setIsRemoveTokenModalOpen(false);
   };
 
@@ -127,7 +126,6 @@ const AddTokens = () => {
   const openRemoveAddressModal = (uid: string) => {
     setUidToRemoveAddress(uid);
     setIsRemoveAddressModalOpen(true);
-    console.log("Model Should Open");
   };
 
   const closeRemoveAddressModal = () => {
