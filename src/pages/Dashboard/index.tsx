@@ -2,16 +2,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  generateAddressIcon,
-  getItemFromStorage,
-  getShortDisplayString,
-} from "../../utils/helper";
+import { generateAddressIcon, getItemFromStorage, getShortDisplayString, getChainDetails } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
 import QRCodeModal from "../../components/QRCodeModal";
+import { useCoinBalance } from "../../hooks/functional-hooks"
 
 import swap from "../../assets/swap.png";
 import bridge from "../../assets/rainbow.png";
@@ -41,12 +38,14 @@ function Dashboard() {
     smartAccountAddress,
     provider,
     init,
-    balance: { SCW: SCWBalance },
     isConnected,
   } = useConfig();
   const navigate = useNavigate();
 
   const storageChainId = getItemFromStorage("network");
+  const chainDetails = getChainDetails(storageChainId);
+
+  const { balance } = useCoinBalance(SCW || smartAccountAddress, true, chainDetails.wssRpc);
 
   // Receve Button functions
   const openQrModal = () => {
@@ -55,16 +54,6 @@ function Dashboard() {
 
   const closeQrModal = () => {
     setQrcodemodal(false);
-  };
-
-  const fetchBalance = () => {
-    let balance;
-    if (SCWBalance && Number(SCWBalance) === 0) {
-      balance = 0;
-    } else if (SCWBalance > 0) {
-      balance = Number(SCWBalance).toFixed(5);
-    }
-    return balance;
   };
 
   const copyToClipboard = async () => {
@@ -129,7 +118,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {fetchBalance()} {currentCoinName}
+          {balance} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}

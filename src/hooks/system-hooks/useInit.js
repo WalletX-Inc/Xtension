@@ -21,7 +21,8 @@ export default function useInit() {
   const [EOABalance, setEOABalance] = useState(null);
   const [SCWBalance, setSCWBalance] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isInitialised, setIsInitialised] = useState(false)
+  const [isInitialised, setIsInitialised] = useState(false);
+  const [chainData, setChainData] = useState(null);
 
   const auth = useAuth();
 
@@ -48,6 +49,7 @@ export default function useInit() {
     setBundlerUrl(chainData.bundlerUrl);
     setChainId(chainData.chainId);
     setPaymasterUrl(chainData.paymasterUrl);
+    setChainData(chainData);
 
     const device = getItemFromStorage(generateSHA256Hash('device'));
 
@@ -72,6 +74,7 @@ export default function useInit() {
     EOABalance,
     SCWBalance,
     isConnected,
-    isInitialised, 
+    isInitialised,
+    chainData,
   };
 }

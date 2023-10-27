@@ -1,32 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
-export default function useCoinBalance() {
-    const [balance, setBalance] = useState(0);
-    const [provider, setProvider] = useState(null);
-    const [address, setAddress] = useState(null);
+export default function useCoinBalance(address: string, isActive: true, wssRpc: string) {
+    const [balance, setBalance] = useState("");
 
     useEffect(() => {
-        if (!provider) return;
+        const provider = new ethers.providers.WebSocketProvider(wssRpc);
 
-        const updateBalance = async (provider: any) => {
-            const blockNumber = await provider.getBlockNumber();
-            const rawBalance = await provider.getBalance(address, blockNumber);
-            setBalance(parseFloat(ethers.utils.formatEther(rawBalance)));
-        };
+        if (!isActive) {
+            provider.removeAllListeners('block');
+            return;
+        }
 
-        // provider && provider.on('block', updateBalance(provider));
+        provider.on("block", async () => {
+            const balance = await provider.getBalance(address);
+            const balanceInEther = ethers.utils.formatEther(balance);
 
-        return () => {
-            // provider.off('block', updateBalance(provider));
-        };
-    }, [address, provider]);
+            setBalance(balanceInEther);
+        });
+    }, [address, isActive]);
 
-    async function getBalance(provider: any, address: any) {
-        setProvider(provider);
-        setAddress(address);
-    }
-
-return { balance, getBalance };
+    return { balance };
 }
