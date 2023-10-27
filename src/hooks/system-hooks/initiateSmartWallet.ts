@@ -38,7 +38,7 @@ export function initiateSmartWallet(
       setSmartAccountProvider(JSON.parse(SCWProvider));
       setSmartAccountAddress(smartAccountAddress);
 
-      await getCoinBalance(smartAccountAddress, provider, setBalance);
+      getCoinBalance(smartAccountAddress, provider, setBalance);
 
       setIsConnected(true);
 
