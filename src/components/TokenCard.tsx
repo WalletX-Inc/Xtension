@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { getTokenBalance } from "../utils/helper";
+import { getItemFromStorage, getTokenBalance, getChainDetails } from "../utils/helper";
 import { useConfig } from "../context/ConfigProvider";
+import { useTokenBalance } from "../hooks/functional-hooks";
 
 type tokenCardParams = {
   tokenIcon:string;
@@ -18,19 +19,24 @@ const TokenCard = ({
   tokenAddress,
   userAddress,
 }: tokenCardParams) => {
-  const [balance, setBalance] = useState<any>(0);
-  const { provider } = useConfig();
+  // const [balance, setBalance] = useState<any>(0);
+  // const { provider } = useConfig();
 
-  useEffect(() => {
-    async function getBalance() {
-      if (provider) {
-        const balance = await getTokenBalance(tokenAddress, provider, userAddress);
-        setBalance(balance);
-      }
-    }
+  const storageChainId = getItemFromStorage("network");
+  const chainDetails = getChainDetails(storageChainId);
 
-    getBalance();
-  }, [provider])
+  const { balance } = useTokenBalance(tokenAddress, userAddress, true, chainDetails.wssRpc);
+
+  // useEffect(() => {
+  //   async function getBalance() {
+  //     if (provider) {
+  //       const balance = await getTokenBalance(tokenAddress, provider, userAddress);
+  //       setBalance(balance);
+  //     }
+  //   }
+
+  //   getBalance();
+  // }, [provider])
 
 
   return (
@@ -41,7 +47,7 @@ const TokenCard = ({
           <p className="font-semibold tracking-wide">{tokenName}</p>
           <p className="text-sm font-semibold tracking-wide">{tokenSymbol}</p>
         </div>
-        <p className="font-semibold place-self-center">{balance >0 ? Number(balance).toFixed(8): 0}</p>
+        <p className="font-semibold place-self-center">{(Number(balance) > 0) ? (Number(balance).toFixed(8)) : 0}</p>
       </div>
     </div>
   );
