@@ -147,6 +147,11 @@ export const getTokenBalance = async (tokenAddress: string, provider: any, userA
   return balance.toString();
 }
 
+export const getCoinBalance = async (userAddress: string, provider: any, setBalance: any) => {
+  const balance = await provider.getBalance(userAddress);
+  setBalance(ethers.utils.formatEther(balance));
+};
+
 export const generateSHA256Hash = (data: string) => {
   return sha256(data);
 }

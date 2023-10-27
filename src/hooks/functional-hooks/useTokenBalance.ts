@@ -2,7 +2,9 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 
-export default function useCoinBalance(address: string, isActive: boolean, wssRpc: string) {
+import { getTokenBalance } from '../../utils/helper';
+
+export default function useTokenBalance(tokenAddress: string, userAddress: string, isActive: boolean, wssRpc: string) {
     const [balance, setBalance] = useState("");
 
     useEffect(() => {
@@ -14,12 +16,11 @@ export default function useCoinBalance(address: string, isActive: boolean, wssRp
         }
 
         provider.on("block", async () => {
-            const balance = await provider.getBalance(address);
-            const balanceInEther = ethers.utils.formatEther(balance);
+            const balance = await getTokenBalance(tokenAddress, provider, userAddress)
 
-            setBalance(balanceInEther);
+            setBalance(balance);
         });
-    }, [address, isActive]);
+    }, [tokenAddress, isActive]);
 
     return { balance };
 }

@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
-import { setItemInStorage } from "../../utils/helper";
-import { useGetBalance } from "../functional-hooks/useGetBalance";
+import { setItemInStorage, getCoinBalance } from "../../utils/helper";
 
 export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any, setEOA: any, setBalance: any) {
   return () => {
@@ -22,6 +21,6 @@ export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setP
     setProvider(provider);
     setEOA(eoa.address);
 
-    useGetBalance(provider, eoa.address, setBalance);
+    getCoinBalance(eoa.address, provider, setBalance);
   }  
 }
