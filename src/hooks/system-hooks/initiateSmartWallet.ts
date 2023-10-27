@@ -3,8 +3,7 @@ import { Bundler } from "@biconomy/bundler";
 import { BiconomyPaymaster } from "@biconomy/paymaster";
 import localforage from "localforage";
 
-import { setItemInStorage, getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
-import { useGetBalance } from "../functional-hooks/useGetBalance";
+import { setItemInStorage, getItemFromStorage, generateSHA256Hash, getCoinBalance } from "../../utils/helper";
 
 export function initiateSmartWallet(
   rpcUrl: string,
@@ -39,7 +38,7 @@ export function initiateSmartWallet(
       setSmartAccountProvider(JSON.parse(SCWProvider));
       setSmartAccountAddress(smartAccountAddress);
 
-      useGetBalance(provider, smartAccountAddress, setBalance);
+      await getCoinBalance(smartAccountAddress, provider, setBalance);
 
       setIsConnected(true);
 
@@ -66,7 +65,7 @@ export function initiateSmartWallet(
     setSmartAccountAddress(smartAccountAddress);
 
     await localforage.setItem(generateSHA256Hash("smartAccountProvider"), JSON.stringify(smartAccount));
-    await useGetBalance(provider, smartAccountAddress, setBalance);
+    await getCoinBalance(smartAccountAddress, provider, setBalance);
 
     setIsConnected(true);
   };
