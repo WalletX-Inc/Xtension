@@ -116,7 +116,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
 
   const addToken = () => {
     setTokenDataForKey(chainId, [tokenData]);
-    toast.success("Token Added Sucessfully");
+    toast.success("Token Added Successfully");
     setTokenData({
       tokenAddress: "",
       tokenSymbol: "",
