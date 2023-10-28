@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
+import { transferState } from "../../state/TransferState";
 import { generateAddressIcon, getItemFromStorage, getShortDisplayString, getChainDetails } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
@@ -19,6 +21,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 
 function Dashboard() {
+  const [transferData, setTransferData] = useRecoilState(transferState);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
@@ -70,6 +73,8 @@ function Dashboard() {
     }
 
     setSmartWalletAddress(SCW || smartAccountAddress);
+
+    setTransferData([]);
 
     initializeSmartWallet();
     getSmartWalletHandler();

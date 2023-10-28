@@ -223,7 +223,7 @@ const ApproveTransaction = () => {
           <div className="relative  mt-5">
             <hr className="border rounded-lg border-white opacity-70 " />
             <h1 className="absolute top-[-15px] bg-[#1f1f20]  px-4 rounded-lg left-1/2 transform -translate-x-1/2 font-semibold text-xl text-white">
-              OverView
+              Review
             </h1>
           </div>
           <div className="mt-5 overflow-y-scroll  max-h-[375px] px-2">
