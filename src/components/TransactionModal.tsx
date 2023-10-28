@@ -17,7 +17,7 @@ const TransactionModal = ({ isOpen, transactionHash }: transactionModalParams) =
     >
       <div className=" flex flex-col gap-3 justify-center item-center text-white  py-10  ">
         <img className="h-28" src={approved} alt="approved" />
-        <h1 className="text-2xl font-semibold">Transaction Sucessful</h1>
+        <h1 className="text-2xl font-semibold">Transaction Successful</h1>
         <div className="flex flex-col px-2 justify-center items-start max-w-[300px] ">
           <p className="font-semibold text-xl">Transaction hash:</p>
           <p className="overflow-x-scroll text-sm max-w-[95%] py-1">
