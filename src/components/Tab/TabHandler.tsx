@@ -17,19 +17,12 @@ type Token = {
   address: string;
   decimals: number | string;
   logoUri: string;
-};
-type tokenDataT = {
-  tokenAddress: string;
-  tokenSymbol: string;
-  tokenName: string;
-  tokenLogoUrl: string;
-  tokenDecimal: number;
+  balance: number;
 };
 const TabHandler = () => {
   const [tokens, setTokens] = useState<Token[] | null>(null);
   const [isImportTokenDrawerOpen, setIsImportTokenDrawerOpen] =
     useState<boolean>(false);
-  const [tokenListFromIndexedDB, setTokenListFromIndexedDB] = useState<any>([]);
 
   const openImportTokenModal = () => {
     setIsImportTokenDrawerOpen(true);
@@ -39,64 +32,68 @@ const TabHandler = () => {
     setIsImportTokenDrawerOpen(false);
   };
 
-  const chain = getItemFromStorage("network");
-  const chainId = chain.toString();
+  // const chain = getItemFromStorage("network");
+  // const chainId = chain.toString();
 
-  const { smartAccountAddress } = useConfig();
-  const SCW = getItemFromStorage('smartAccount');
+  const { smartAccountAddress, chainId } = useConfig();
+  const SCW = getItemFromStorage("smartAccount");
 
   // function to fetch the data form Indexed DB using localFORage
-  const getTokenDataForKey = async (key: string) => {
-    try {
-      const data = await localforage.getItem(generateSHA256Hash(key.toString()));
-      setTokenListFromIndexedDB(data);
-      return data || [];
-    } catch (error) {
-      console.error("Error getting token data:", error);
-      return [];
-    }
+  // Tokens Data array
+  const addTokensInIndexedDB = () => {
+    localforage.getItem("TokensList").then((tokensList: any) => {
+      if (tokensList) {
+        if (tokensList[chainId]) {
+          return;
+        } else {
+          tokensList[chainId] = Tokens[chainId];
+
+          localforage.setItem("TokensList", tokensList).then(() => {
+            console.log(
+              "Tokens for the new chainId have been added to TokensList in IndexedDB."
+            );
+          });
+        }
+      } else {
+        // Create a new TokensList object if it doesn't exist
+        const newTokensList = { [chainId]: Tokens[chainId] };
+
+        // Set TokensList in IndexedDB
+        localforage.setItem("TokensList", newTokensList).then(() => {
+          console.log("TokensList created and tokens added to IndexedDB.");
+        });
+      }
+    });
   };
 
   useEffect(() => {
-    const tokenList = Tokens[chainId] || [];
-    setTokens(tokenList);
+    addTokensInIndexedDB();
 
-    async function fetchData() {
-      const retrievedData = await getTokenDataForKey(chainId);
-      setTokenListFromIndexedDB(retrievedData);
-    }
-    fetchData();
-  }, [chainId, tokenListFromIndexedDB]);
+    localforage.getItem("TokensList").then((tokensList: any) => {
+      setTokens(tokensList[chainId]);
+    });
+  }, [chainId, tokens]);
 
   return (
     <div>
       <TabContainer>
         <Tab label="Tokens">
           <div className="max-h-[235px] overflow-y-scroll py-2 px-3">
-            {tokens &&
-              tokens.map((token: Token) => (
-                <>
-                  <TokenCard
-                    tokenIcon={token.logoUri}
-                    tokenName={token.name}
-                    tokenSymbol={token.symbol}
-                    tokenAddress={token.address}
-                    userAddress={SCW || smartAccountAddress}
-                  />
-                </>
-              ))}
-            {tokenListFromIndexedDB &&
-              tokenListFromIndexedDB.map((tokens: tokenDataT) => (
-                <>
-                  <TokenCard
-                    tokenIcon={tokens.tokenLogoUrl}
-                    tokenName={tokens.tokenName}
-                    tokenSymbol={tokens.tokenSymbol}
-                    tokenAddress={tokens.tokenAddress}
-                    userAddress={SCW || smartAccountAddress}
-                  />
-                </>
-              ))}
+            <>
+              {tokens &&
+                tokens.map((token: Token) => (
+                  <>
+                    <TokenCard
+                      tokenIcon={token.logoUri}
+                      tokenName={token.name}
+                      tokenSymbol={token.symbol}
+                      tokenAddress={token.address}
+                      tokenBalance={token.balance}
+                      userAddress={SCW || smartAccountAddress}
+                    />
+                  </>
+                ))}
+            </>
 
             <div className="flex flex-col gap-2 my-5">
               <button

@@ -15,12 +15,12 @@ type importTokenParam = {
   isOpen: boolean;
 };
 
-type tokenDataT = {
-  tokenAddress: string;
-  tokenSymbol: string;
-  tokenName: string;
-  tokenLogoUrl: string;
-  tokenDecimal: number;
+type tokenData = {
+  name: string;
+  symbol: string;
+  address: string;
+  decimals: number;
+  logoUri: string;
   balance: string;
 };
 
@@ -30,16 +30,25 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const [isValidTokenContract, setIsValidTokenContract] = useState<any>(null);
 
   const { chainId, provider, smartAccountAddress } = useConfig();
-  const SCW = getItemFromStorage('smartAccount')
+  const SCW = getItemFromStorage("smartAccount");
 
-  const [tokenData, setTokenData] = useState<tokenDataT>({
-    tokenAddress: "",
-    tokenSymbol: "",
-    tokenName: "",
-    tokenLogoUrl: "",
-    tokenDecimal: 0,
+  const [tokenData, setTokenData] = useState<tokenData>({
+    name: "",
+    symbol: "",
+    address: "",
+    decimals: 0,
+    logoUri: "",
     balance: "",
   });
+
+  const emptyTokenData = {
+    name: "",
+    symbol: "",
+    address: "",
+    decimals: 0,
+    logoUri: "",
+    balance: "",
+  };
 
   const isEthereumAddress = (address: string) => {
     try {
@@ -52,17 +61,10 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
 
   const closeDrawer = () => {
     onClose();
-    setTokenData({
-      tokenAddress: "",
-      tokenSymbol: "",
-      tokenName: "",
-      tokenLogoUrl: "",
-      tokenDecimal: 0,
-      balance: "",
-    });
+    setTokenData(emptyTokenData);
     setTokenAddress("");
     setIsValidTokenContract(null);
-    setIsValidAddress(null)
+    setIsValidAddress(null);
   };
 
   const handelContractAddressInput = async (e: any) => {
@@ -89,42 +91,40 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
     } else {
       setIsValidTokenContract(true);
       setTokenData({
-        tokenAddress: inputAddress,
-        tokenSymbol: tokenData.symbol,
-        tokenName: tokenData.name,
-        tokenLogoUrl: `https://ui-avatars.com/api/?background=fff&color=000&rounded=true&bold=true&name=${tokenData.symbol}`,
-        tokenDecimal: tokenData.decimals,
+        name: tokenData.name,
+        symbol: tokenData.symbol,
+        address: inputAddress,
+        decimals: tokenData.decimals,
+        logoUri: `https://ui-avatars.com/api/?background=fff&color=000&rounded=true&bold=true&name=${tokenData.symbol}`,
         balance: tokenData.balance,
       });
     }
-
-    
   };
 
   /// ADDING TOKEN IN THE CURRENT CHAIN ID
 
-  const setTokenDataForKey = async (key: any, data: Array<{}>) => {
-    try {
-      const currentData: Array<{}> = (await localforage.getItem(generateSHA256Hash(key.toString()))) || [];
-      const newTokenData = [...currentData, ...data];
+  const updateTokensInIndexedDB = (data: {}) => {
+    localforage.getItem("TokensList").then((tokensList: any) => {
+      console.log("This is data in importtokenDrawer", data);
+      if (tokensList && tokensList[chainId]) {
+        const currentTokens = tokensList[chainId];
+        currentTokens.push(data);
+        tokensList[chainId] = currentTokens;
 
-      await localforage.setItem(generateSHA256Hash(key.toString()), newTokenData);
-    } catch (error) {
-      console.error("Error setting token data:", error);
-    }
+        localforage.setItem("TokensList", tokensList);
+      } else {
+        // Ig it should through an error for the chain where we dont have any tokens seeded as it will show an error of undefined
+        console.log(
+          "TokensList or specified chainId does not exist in IndexedDB."
+        );
+      }
+    });
   };
 
   const addToken = () => {
-    setTokenDataForKey(chainId, [tokenData]);
+    updateTokensInIndexedDB(tokenData);
     toast.success("Token Added Successfully");
-    setTokenData({
-      tokenAddress: "",
-      tokenSymbol: "",
-      tokenName: "",
-      tokenLogoUrl: "",
-      tokenDecimal: 0,
-      balance: "",
-    });
+    setTokenData(emptyTokenData);
     onClose();
     setTokenAddress("");
     setIsValidTokenContract(null);
@@ -132,14 +132,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   };
 
   useEffect(() => {
-    setTokenData({
-      tokenAddress: "",
-      tokenSymbol: "",
-      tokenName: "",
-      tokenLogoUrl: "",
-      tokenDecimal: 0,
-      balance: "",
-    });
+    setTokenData(emptyTokenData);
   }, [isValidAddress]);
 
   return (
@@ -169,12 +162,13 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
             value={tokenAddress}
           />
         </div>
-        {tokenData.tokenSymbol && isValidTokenContract === true ? (
+        {tokenData.symbol && isValidTokenContract === true ? (
           <TokenCard
-            tokenIcon={tokenData.tokenLogoUrl}
-            tokenName={tokenData.tokenName}
-            tokenSymbol={tokenData.tokenSymbol}
-            tokenAddress={tokenData.tokenAddress}
+            tokenIcon={tokenData.logoUri}
+            tokenName={tokenData.name}
+            tokenSymbol={tokenData.symbol}
+            tokenAddress={tokenData.address}
+            tokenBalance={Number(tokenData.balance)}
             userAddress={SCW || smartAccountAddress}
           />
         ) : (
@@ -197,11 +191,11 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
           <h1 className="text-xl font-semibold tracking-wider">
             {isValidTokenContract === "LOADING" ? (
               <BeatLoader size={5} loading={true} color="#ffffff" />
-            ) : isValidAddress === false && tokenData.tokenAddress ? (
+            ) : isValidAddress === false && tokenData.address ? (
               " Invalid Address"
-            ) : isValidTokenContract === false ||isValidAddress === false  ? (
+            ) : isValidTokenContract === false || isValidAddress === false ? (
               "Invalid Token"
-            ) :(
+            ) : (
               " Add Token "
             )}
           </h1>
