@@ -1,8 +1,3 @@
-import { useEffect, useState } from "react";
-
-import { getTokenBalance } from "../utils/helper";
-import { useConfig } from "../context/ConfigProvider";
-
 type tokenCardParams = {
   tokenIcon: string;
   tokenName: string;
@@ -31,14 +26,14 @@ const TokenCardTransaction = ({
   return (
     <div
       onClick={() => {
-        clickedTokenData([
+        clickedTokenData({
           tokenName,
           tokenSymbol,
           tokenAddress,
           tokenDecimal,
           tokenIcon,
           tokenBalance,
-        ]);
+      });
       }}
       className="max-w-[95%] mx-auto m-3"
     >

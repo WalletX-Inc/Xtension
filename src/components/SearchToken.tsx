@@ -52,6 +52,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
     const tokenLogo = logoUri;
     const tokenBalance = balance;
 
+
     setTransferData((prevData) =>
       prevData.map((transferDetails) =>
         transferDetails.uid === uid
@@ -69,6 +70,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
     );
     setTokenIsSelected(false);
     onClose();
+
   };
 
   // function to fetch the data form Indexed DB using localFORage
@@ -134,7 +136,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
                   tokenBalance={token.balance}
                   isSelected={selectedTokenIndex == index}
                   index={index}
-                  clickedTokenData={addToken}
+                  clickedTokenData={() => addToken(token)}
                 />
               </>
             );
