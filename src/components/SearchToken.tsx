@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../src/state/TransferState";
 import { Search } from "react-feather";
-import Tokens from "../constants/tokens";
 import { useConfig } from "../context/ConfigProvider";
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
@@ -15,21 +14,13 @@ type searchTokenPara = {
   uid: string;
 };
 
-type Token = [
-  name: string,
-  symbol: string,
-  address: string,
-  decimals: number | string,
-  logoUri: string,
-  balance: number | undefined
-];
-
-type tokenDataT = {
-  tokenAddress: string;
-  tokenSymbol: string;
-  tokenName: string;
-  tokenLogoUrl: string;
-  tokenDecimal: number;
+type Token = {
+  name: string;
+  symbol: string;
+  address: string;
+  decimals: number | string;
+  logoUri: string;
+  balance: number;
 };
 
 const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
@@ -46,20 +37,20 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   const { smartAccountAddress } = useConfig();
   const SCW = getItemFromStorage("smartAccount");
 
-  const addToken = ([
-    _tokenName,
-    _tokenSymbol,
-    _tokenAddress,
-    _tokenDecimal,
-    _tokenLogoUri,
-    _tokenBalance,
-  ]: Token) => {
-    const tokenName = _tokenName;
-    const tokenSymbol = _tokenSymbol;
-    const tokenAddress = _tokenAddress;
-    const tokenDecimal = _tokenDecimal;
-    const tokenLogo = _tokenLogoUri;
-    const tokenBalance = _tokenBalance;
+  const addToken = ({
+    name,
+    symbol,
+    address,
+    decimals,
+    logoUri,
+    balance,
+  }: Token) => {
+    const tokenName = name;
+    const tokenSymbol = symbol;
+    const tokenAddress = address;
+    const tokenDecimal = decimals;
+    const tokenLogo = logoUri;
+    const tokenBalance = balance;
 
     setTransferData((prevData) =>
       prevData.map((transferDetails) =>
@@ -83,9 +74,8 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   // function to fetch the data form Indexed DB using localFORage
   const getTokenDataForKey = async (key: string) => {
     try {
-      const data = await localforage.getItem(generateSHA256Hash(key.toString()));
-      setTokenListFromIndexedDB(data);
-      return data || [];
+      const data: any = await localforage.getItem(key);
+      return data[chainId] || [];
     } catch (error) {
       console.error("Error getting token data:", error);
       return [];
@@ -94,7 +84,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
 
   useEffect(() => {
     async function fetchData() {
-      const retrievedData = await getTokenDataForKey(chainId); // put chainID
+      const retrievedData = await getTokenDataForKey("TokensList");
       setTokenListFromIndexedDB(retrievedData);
     }
     fetchData();
@@ -131,34 +121,17 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       {/* TOKEN CARD  */}
 
       <div className="overflow-y-scroll  max-h-[315px]">
-        {Tokens[chainId].map((token, index) => {
-          return (
-            <>
-              <TokenCardTransaction
-                tokenIcon={token.logoUri}
-                tokenName={token.name}
-                tokenSymbol={token.symbol}
-                tokenAddress={token.address}
-                tokenDecimal={token?.decimals}
-                userAddress={SCW || smartAccountAddress}
-                isSelected={selectedTokenIndex == index}
-                index={index}
-                clickedTokenData={addToken}
-              />
-            </>
-          );
-        })}
         {tokenListFromIndexedDB &&
-          tokenListFromIndexedDB.map((tokens: tokenDataT, index: any) => {
+          tokenListFromIndexedDB.map((token: Token, index: any) => {
             return (
               <>
                 <TokenCardTransaction
-                  tokenIcon={tokens.tokenLogoUrl}
-                  tokenName={tokens.tokenName}
-                  tokenSymbol={tokens.tokenSymbol}
-                  tokenAddress={tokens.tokenAddress}
-                  tokenDecimal={tokens?.tokenDecimal}
-                  userAddress={SCW || smartAccountAddress}
+                  tokenIcon={token.logoUri}
+                  tokenName={token.name}
+                  tokenSymbol={token.symbol}
+                  tokenAddress={token.address}
+                  tokenDecimal={token.decimals}
+                  tokenBalance={token.balance}
                   isSelected={selectedTokenIndex == index}
                   index={index}
                   clickedTokenData={addToken}

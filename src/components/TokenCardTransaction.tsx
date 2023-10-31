@@ -9,8 +9,7 @@ type tokenCardParams = {
   tokenSymbol: string;
   tokenAddress: string;
   tokenDecimal: string | number;
-
-  userAddress: string;
+  tokenBalance: number;
 
   clickedTokenData: Function;
   isSelected: boolean;
@@ -23,31 +22,12 @@ const TokenCardTransaction = ({
   tokenSymbol,
   tokenAddress,
   tokenDecimal,
-
-  userAddress,
+  tokenBalance,
 
   isSelected,
   clickedTokenData,
   index,
 }: tokenCardParams) => {
-  const [balance, setBalance] = useState<any>(0);
-  const { provider } = useConfig();
-
-  useEffect(() => {
-    async function getBalance() {
-      if (provider) {
-        const balance = await getTokenBalance(
-          tokenAddress,
-          provider,
-          userAddress
-        );
-        setBalance(balance);
-      }
-    }
-
-    getBalance();
-  }, [provider]);
-
   return (
     <div
       onClick={() => {
@@ -57,7 +37,7 @@ const TokenCardTransaction = ({
           tokenAddress,
           tokenDecimal,
           tokenIcon,
-          balance
+          tokenBalance,
         ]);
       }}
       className="max-w-[95%] mx-auto m-3"
@@ -84,7 +64,7 @@ const TokenCardTransaction = ({
             </p>
           </div>
           <div className="items-end">
-            <p title="current Balance">{Number(balance).toFixed(5)}</p>
+            <p title="current Balance">{Number(tokenBalance).toFixed(5)}</p>
             <p title="balance in dollars"></p>
           </div>
         </div>
