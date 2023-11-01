@@ -13,6 +13,7 @@ import RemoveModal from "../../components/Modal";
 import { useConfig } from "../../context/ConfigProvider";
 import { transferState } from "../../state/TransferState";
 import addMoreAddress from "../../assets/addUser.svg";
+import addMoreAddressBlue from "../../assets/addUserBlue.svg";
 
 const AddTokens = () => {
   const { smartAccountAddress, chainId } = useConfig();
@@ -189,9 +190,10 @@ const AddTokens = () => {
     const tokenAmountIsGreaterThanZeroAndValid = transferData.every(
       (address) => address.amount > 0 && address.isAmountValid === true
     );
-   
+
     setIsTokenAddedForAddresses(tokenIsAddedForAll);
     setIsTokenAmountValidForAddresses(tokenAmountIsGreaterThanZeroAndValid);
+    setIsAdddingAddressPossible(tokenAmountIsGreaterThanZeroAndValid);
   };
 
   useEffect(() => {
@@ -371,14 +373,19 @@ const AddTokens = () => {
           {/* Add more addresses  */}
           <div className="flex justify-center item-center mt-10 pb-28  ">
             <button
-              disabled={isAdddingAddressPossible}
+              disabled={!isAdddingAddressPossible ? true : false}
               onClick={() => {
                 navigate("/dashboard/transaction/add-address");
               }}
             >
               <img
                 className="h-12 "
-                src={addMoreAddress}
+                // this can be optimized with just having one svg as component which receives a param of color
+                src={
+                  !isAdddingAddressPossible
+                    ? addMoreAddress
+                    : addMoreAddressBlue
+                }
                 alt="add more addresses"
               />
             </button>
@@ -406,8 +413,7 @@ const AddTokens = () => {
       <button
         onClick={handelProceedButton}
         disabled={
-          isTokenAddedForAddresses &&
-          isTokenAmountValidForAddresses 
+          isTokenAddedForAddresses && isTokenAmountValidForAddresses
             ? false
             : true
         }
