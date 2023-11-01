@@ -53,3 +53,7 @@ Once the installation is complete, you'll find the WalletX icon in your browser'
 4. You will see the WalletX icon in the extensions tab.
 
 You can submit your feedback or any improvements on our [X (Twitter) Account](https://x.com/walletx_inc) or raise an issue in this GitHub repository.
+
+## 📊 Repo Activity
+
+<img width="100%" src="https://repobeats.axiom.co/api/embed/09281fe38d2dd8fce3248ee0adc43956b7a0d907.svg" alt="Repobeats analytics" />
