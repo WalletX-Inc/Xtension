@@ -14,6 +14,7 @@ type transferData = {
   tokenBalance: number | undefined;
   tokenLogo: string;
   amount: number;
+  isAmountValid?:boolean;
 };
 
 export const transferState = atom<transferData[]>({

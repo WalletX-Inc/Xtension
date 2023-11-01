@@ -31,6 +31,7 @@ const AddTokens = () => {
     useState(false);
   const [isTokenAmountValidForAddresses, setIsTokenAmountValidForAddresses] =
     useState<boolean>(false);
+
   const [uidToRemoveAddress, setUidToRemoveAddress] = useState<string>("");
   const [uidToAddTokenToAddress, setUidToAddTokenToAddress] =
     useState<string>("");
@@ -40,9 +41,12 @@ const AddTokens = () => {
 
   const [enteredAmount, setEnteredAmount] = useState<any>();
   const [isEnteredAmountValid, setIsEnteredAmountValid] = useState({
-    valid: false,
+    valid: true,
     uid: "",
   });
+
+  const [isAdddingAddressPossible, setIsAdddingAddressPossible] =
+    useState<boolean>(false);
 
   // ADD TOKEN FUNCTIONS
   const openAddTokenModal = (uid: string) => {
@@ -54,6 +58,22 @@ const AddTokens = () => {
     setTokenModalOpen(false);
   };
 
+  // Adding Address Functions
+  const setIsAmountValidInTransferData = (isValid: boolean, uid: string) => {
+    if (isEnteredAmountValid.valid === false) {
+      setTransferData((prevData) =>
+        prevData.map((transferDetails) =>
+          transferDetails.uid === uid
+            ? {
+                ...transferDetails,
+                isAmountValid: isValid,
+              }
+            : transferDetails
+        )
+      );
+    }
+  };
+
   // Adding Amount
 
   const handelAmountChange = (e: any, uid: string) => {
@@ -61,6 +81,7 @@ const AddTokens = () => {
       valid: true,
       uid: uid,
     });
+    setIsAmountValidInTransferData(true, uid);
     const enteredAmount = e.target.value;
 
     const isAmountValid = transferData.some(
@@ -87,10 +108,12 @@ const AddTokens = () => {
           ? {
               ...transferDetails,
               amount: enteredAmount,
+              isAmountValid: isEnteredAmountValid.valid,
             }
           : transferDetails
       )
     );
+    setEnteredAmount(0);
   };
 
   //  REMOVE TOKEN FUNCIOTNS
@@ -115,10 +138,12 @@ const AddTokens = () => {
               tokenBalance: 0,
               tokenDecimal: 0,
               amount: 0,
+              isAmountValid: true,
             }
           : transferDetails
       )
     );
+    setIsEnteredAmountValid({ valid: true, uid: "" });
     setIsRemoveTokenModalOpen(false);
   };
 
@@ -157,19 +182,16 @@ const AddTokens = () => {
   };
 
   const validateTransferDetails = () => {
-    const propertyName = "tokenSymbol";
-    const property2Name = "amount";
-
     const tokenIsAddedForAll = transferData.every(
-      (address) => !!address[propertyName]
+      (address) => !!address.tokenSymbol
     );
 
-    const tokenAmountIsGreaterThanZero = transferData.every(
-      (address) => address[property2Name] > 0
+    const tokenAmountIsGreaterThanZeroAndValid = transferData.every(
+      (address) => address.amount > 0 && address.isAmountValid === true
     );
-
+   
     setIsTokenAddedForAddresses(tokenIsAddedForAll);
-    setIsTokenAmountValidForAddresses(tokenAmountIsGreaterThanZero);
+    setIsTokenAmountValidForAddresses(tokenAmountIsGreaterThanZeroAndValid);
   };
 
   useEffect(() => {
@@ -249,8 +271,9 @@ const AddTokens = () => {
                   Your entered amount exceeds your available balance.
                   */}
 
-                  {isEnteredAmountValid.valid === false &&
-                  isEnteredAmountValid.uid == transferData.uid ? (
+                  {(isEnteredAmountValid.valid === false &&
+                    isEnteredAmountValid.uid == transferData.uid) ||
+                  transferData.isAmountValid === false ? (
                     <div>
                       <h1 className="font-semibold text-sm text-red-500 px-2 tracking-wide  text-center">
                         Amount exceeds available balance. Please adjust.
@@ -288,6 +311,9 @@ const AddTokens = () => {
                             type="number"
                             min={0}
                             placeholder="0"
+                            onFocus={() =>
+                              setEnteredAmount(transferData.amount)
+                            }
                             defaultValue={`${
                               transferData.amount === 0
                                 ? ""
@@ -345,6 +371,7 @@ const AddTokens = () => {
           {/* Add more addresses  */}
           <div className="flex justify-center item-center mt-10 pb-28  ">
             <button
+              disabled={isAdddingAddressPossible}
               onClick={() => {
                 navigate("/dashboard/transaction/add-address");
               }}
@@ -379,7 +406,8 @@ const AddTokens = () => {
       <button
         onClick={handelProceedButton}
         disabled={
-          isTokenAddedForAddresses && isTokenAmountValidForAddresses
+          isTokenAddedForAddresses &&
+          isTokenAmountValidForAddresses 
             ? false
             : true
         }

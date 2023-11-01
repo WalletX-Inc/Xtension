@@ -137,9 +137,10 @@ const AddAddresses = () => {
         tokenDecimal: 0,
         tokenBalance: 0,
         tokenLogo: "",
+        isAmountValid: true,
       },
     ]);
-    console.log('Transfer Data : ', transferData);
+    console.log("Transfer Data : ", transferData);
     navigate("/dashboard/transaction/add-tokens");
   };
 
