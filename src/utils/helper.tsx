@@ -2,6 +2,7 @@
 import { toSvg } from "jdenticon";
 import { ethers } from "ethers";
 import { sha256 } from 'js-sha256';
+import chalk from 'chalk';
 
 import Chains from '../constants/chains';
 import erc20ABI from "../constants/erc20ABI";
@@ -154,4 +155,16 @@ export const getCoinBalance = async (userAddress: string, provider: any, setBala
 
 export const generateSHA256Hash = (data: string) => {
   return sha256(data);
+}
+
+export const log = (message: string, data: any, type: string = 'info') => {
+  if (type === 'info') {
+    console.log(chalk.blue(message), data);
+  } else if (type === 'error') {
+    console.log(chalk.red(message), data);
+  } else if (type === 'success') {
+    console.log(chalk.green(message), data);
+  } else if (type === 'warning') {
+    console.log(chalk.yellow(message), data);
+  }
 }
