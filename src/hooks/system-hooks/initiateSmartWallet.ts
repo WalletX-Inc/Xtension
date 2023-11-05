@@ -3,7 +3,7 @@ import { Bundler } from "@biconomy/bundler";
 import { BiconomyPaymaster } from "@biconomy/paymaster";
 import localforage from "localforage";
 
-import { setItemInStorage, getItemFromStorage, generateSHA256Hash, getCoinBalance } from "../../utils/helper";
+import { setItemInStorage, getItemFromStorage, generateSHA256Hash, getCoinBalance, log } from "../../utils/helper";
 
 export function initiateSmartWallet(
   rpcUrl: string,
@@ -21,7 +21,7 @@ export function initiateSmartWallet(
 ) {
   return async () => {
     if (!signer) {
-      console.log("[Hooks] No signer");
+      log("[Hooks] No signer", null, "error");
       return;
     }
 
@@ -55,7 +55,7 @@ export function initiateSmartWallet(
 
     const smartAccountAddress = await smartAccount.getSmartAccountAddress();
 
-    console.log("[Hooks] Smart Account Address: ", smartAccountAddress);
+    log("[Hooks] Smart Account Address: ", smartAccountAddress, "info");
 
     login();
     setItemInStorage("smartAccount", smartAccountAddress);

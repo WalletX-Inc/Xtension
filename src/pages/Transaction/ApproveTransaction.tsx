@@ -16,7 +16,7 @@ import maticLogo from "../../assets/matic-logo.png";
 import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import TransactionModal from "../../components/TransactionModal";
-import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
+import { getItemFromStorage, generateSHA256Hash, log } from "../../utils/helper";
 import { validateBiometric } from "../../hooks/functional-hooks";
 
 type selectedTokenForGas = {
@@ -121,7 +121,7 @@ const ApproveTransaction = () => {
       return supportedTokens.push(tokenObj);
     });
 
-    console.log('Fee Quotes : ', supportedTokens);
+    log('Fee Quotes : ', supportedTokens, 'info');
 
     const uuid = crypto.randomUUID();
     const gasDataWithValues = supportedTokens.map((token: any) => {
@@ -139,7 +139,7 @@ const ApproveTransaction = () => {
 
     setGasData(gasDataWithValues);
 
-    console.log('Gas Data : ', gasData);
+    log('Gas Data : ', gasData, 'info');
   }
 
   useEffect(() => {
@@ -174,11 +174,11 @@ const ApproveTransaction = () => {
     const partialUserOp = await smartAccountProvider.buildUserOp(txns);
     let finalUserOp = partialUserOp;
 
-    console.log('Selected token For gas : ', selectedTokenForGas);
+    log('Selected token For gas : ', selectedTokenForGas, 'info');
 
     if (selectedTokenForGas.tokenAddress.toString() !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
       finalUserOp = await constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
-      console.log('FINAL USEROP : ', finalUserOp);
+      log('FINAL USEROP : ', finalUserOp, 'info');
     }
 
     try {
@@ -186,9 +186,11 @@ const ApproveTransaction = () => {
       const transactionDetails = await userOpResponse.wait();
   
       setTransactionHash(transactionDetails.receipt.transactionHash);
+
+      log('Transaction Details : ', transactionDetails, 'success');
       setIsTransactionModalOpen(true);
     } catch(e) {
-      console.log('Error while sending batch txn : ', e);
+      log('Error while sending batch txn : ', e, 'error');
     }
   }
 

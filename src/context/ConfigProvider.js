@@ -1,6 +1,8 @@
 import { useContext } from "react";
+
 import useInit from "../hooks/system-hooks/useInit";
 import ConfigContext from "./ConfigContext";
+import { log } from "../utils/helper";
 
 const ConfigProvider = ({ children }) => {
   const initParams = useInit();
@@ -22,7 +24,7 @@ const ConfigProvider = ({ children }) => {
     isConnected: initParams.isConnected,
   };
 
-  console.log("Context : ", { providerValues });
+  log("Context : ", providerValues, "info");
 
   return (
     <>
