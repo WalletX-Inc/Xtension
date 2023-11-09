@@ -1,7 +1,12 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      boxShadow: {
+        myShadow1: "4.1px -3.75px 0 0 #1f1f20",
+        myShadow2: "-4.1px -3.75px 0 0 #1f1f20",
+      },
+    },
     fontSize: {
       sm: "0.575rem",
       base: "1rem",

@@ -4,14 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
 import { transferState } from "../../state/TransferState";
-import { generateAddressIcon, getItemFromStorage, getShortDisplayString, getChainDetails } from "../../utils/helper";
+import {
+  generateAddressIcon,
+  getItemFromStorage,
+  getShortDisplayString,
+  getChainDetails,
+} from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
 import QRCodeModal from "../../components/QRCodeModal";
-import { useCoinBalance } from "../../hooks/functional-hooks"
+import { useCoinBalance } from "../../hooks/functional-hooks";
 
 import swap from "../../assets/swap.png";
-import bridge from "../../assets/rainbow.png";
+import bridge from "../../assets/bridge.png";
 import receive from "../../assets/arrow-down.png";
 import send from "../../assets/arrow-up.png";
 
@@ -19,6 +24,8 @@ import copyAndPaste from "../../assets/copy.svg";
 
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
+import Footer from "../DashboardLayout/Footer";
+import Header from "../DashboardLayout/Header";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -45,7 +52,11 @@ function Dashboard() {
   const storageChainId = getItemFromStorage("network");
   const chainDetails = getChainDetails(storageChainId);
 
-  const { balance } = useCoinBalance(SCW || smartAccountAddress, true, chainDetails.wssRpc);
+  const { balance } = useCoinBalance(
+    SCW || smartAccountAddress,
+    true,
+    chainDetails.wssRpc
+  );
 
   // Receve Button functions
   const openQrModal = () => {
@@ -97,6 +108,8 @@ function Dashboard() {
 
   return (
     <>
+      <Header />
+
       <div className=" text-white mt-24 min-h-[210px]">
         <div className="flex justify-center mb-7 items-center">
           <img
@@ -116,7 +129,7 @@ function Dashboard() {
           <Toaster position="top-center" reverseOrder={false} />
         </div>
         <h3 className="text-center text-3xl font-extrabold">
-          {(!balance ? 0 : balance)} {currentCoinName}
+          {!balance ? 0 : balance} {currentCoinName}
         </h3>
 
         {/* Features Buttons  */}
@@ -164,6 +177,7 @@ function Dashboard() {
       />
 
       {isLoading || !isConnected ? <Loader /> : <></>}
+      <Footer />
     </>
   );
 }
