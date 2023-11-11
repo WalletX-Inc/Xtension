@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import AccountCard from "../../components/AccountCard";
+import AccountCard from "../../components/DashboardComponents/AccountCard";
 import SettingOptions from "./SettingOptions";
 
 const Settings = () => {

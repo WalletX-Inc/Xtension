@@ -15,14 +15,13 @@ import Chains from "../../constants/chains";
 import QRCodeModal from "../../components/QRCodeModal";
 import { useCoinBalance } from "../../hooks/functional-hooks";
 
-
 import copyAndPaste from "../../assets/copy.svg";
 
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 import Footer from "../DashboardLayout/Footer";
 import Header from "../DashboardLayout/Header";
-import AccountCard from "../../components/AccountCard";
+import AccountCard from "../../components/DashboardComponents/AccountCard";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -129,7 +128,7 @@ function Dashboard() {
           {!balance ? 0 : balance} {currentCoinName}
         </h3> */}
 
-      <AccountCard/>
+        <AccountCard />
         {/* Features Buttons  */}
         {/* <div className="flex gap-8 justify-center item-center mt-10 text-center">
           <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">

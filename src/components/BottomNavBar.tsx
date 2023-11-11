@@ -56,12 +56,12 @@ const BottomNavBar = () => {
             {/* left shadow box  */}
             <span
               className="w-3.5 h-3.5 bg-transparent absolute top-4 -left-[18px] 
-          rounded-tr-[9px] shadow-myShadow1"
+          rounded-tr-[9px] "
             ></span>
             {/* right shadow box  */}
             <span
               className="w-3.5 h-3.5 bg-transparent absolute top-4 -right-[18px] 
-          rounded-tl-[11px] shadow-myShadow2"
+          rounded-tl-[11px] "
             ></span>
           </span>
           {Menus.map((menu, i) => (

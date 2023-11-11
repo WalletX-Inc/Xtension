@@ -7,9 +7,13 @@ import logoIcon from "../../assets/icons/icon16.png";
 import menuIcon from "../../assets/icons/menu.png";
 import Button from "../../components/common/Button";
 import { useConfig } from "../../context/ConfigProvider";
-import { getItemFromStorage, getShortDisplayString, setItemInStorage } from "../../utils/helper";
+import {
+  getItemFromStorage,
+  getShortDisplayString,
+  setItemInStorage,
+} from "../../utils/helper";
 import Chains from "../../constants/chains";
-import {  ChevronDown, Plus } from "react-feather";
+import { ChevronDown, Plus } from "react-feather";
 
 const navbarData = [
   {
@@ -42,14 +46,19 @@ export default function Header() {
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
 
-  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
+  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
 
   const item = getItemFromStorage("smartAccount");
   const storageChainId = getItemFromStorage("network");
   const [SCW] = useState(item || null);
   const [chainId, setChainId] = useState(storageChainId);
 
-  const { smartAccountAddress, init, EOA, balance: { SCW: SCWBalance, EOA: EOABalance } } = useConfig();
+  const {
+    smartAccountAddress,
+    init,
+    EOA,
+    balance: { SCW: SCWBalance, EOA: EOABalance },
+  } = useConfig();
 
   useEffect(() => {
     if (storageChainId) {
@@ -72,15 +81,19 @@ export default function Header() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
-  },[smartAccountAddress, smartWalletAddress]);
+  }, [smartAccountAddress, smartWalletAddress]);
 
-  const handleNetworkSwitch=(chainId: number, chainUri: string, nativeAsset: string)=> {
+  const handleNetworkSwitch = (
+    chainId: number,
+    chainUri: string,
+    nativeAsset: string
+  ) => {
     setCurrentChainLogo(chainUri);
     setChainId(chainId);
     setCurrentCoinName(nativeAsset);
     init(chainId);
-    setItemInStorage('network', chainId);
-  }
+    setItemInStorage("network", chainId);
+  };
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -98,7 +111,7 @@ export default function Header() {
   return (
     <nav className="text-white fixed top-0 w-full bg-gray-700 items-center flex p-4">
       <div className="flex justify-between items-center w-full flex-wrap md:flex-nowrap">
-        <h1
+        {/* <h1
           className="flex align-center justify-center rounded text-xl font-bold cursor-pointer  hover:opacity-70 bg-black p-[5px]"
           onClick={() => {
             setOpenNetworkModal(true);
@@ -110,7 +123,7 @@ export default function Header() {
             alt="ETH"
           />
           <ChevronDown className="ml-2" />
-        </h1>
+        </h1> */}
         <h1
           className="text-xl font-bold flex items-center cursor-pointer hover:opacity-70  hover:border-1 hover:border-gray-600 hover:shadow-lg rounded p-[3px]"
           onClick={() => {
@@ -121,7 +134,7 @@ export default function Header() {
           <ChevronDown className="mx-3" />
         </h1>
 
-        <button
+        {/* <button
           className="flex justify-end  hover:opacity-70"
           onClick={() => showNav()}
         >
@@ -151,8 +164,9 @@ export default function Header() {
                 </li>
               );
             })}
-        </ul>
+        </ul> */}
       </div>
+      {/* This is for  account Selection  */}
       <Modal
         isOpen={openAccountModal}
         onClose={() => {
@@ -166,7 +180,10 @@ export default function Header() {
             setOpenAccountModal(false);
           }}
         >
-          <div className="flex items-center space-x-4" style={{paddingTop: "20px", paddingBottom: "20px"}}>
+          <div
+            className="flex items-center space-x-4"
+            style={{ paddingTop: "20px", paddingBottom: "20px" }}
+          >
             <div className="flex-shrink-0">
               <img
                 className="w-8 h-8 rounded-full"
@@ -175,19 +192,25 @@ export default function Header() {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate dark:text-white" >Smart Account</p>
+              <p className="font-medium truncate dark:text-white">
+                Smart Account
+              </p>
               <p className="text-sm truncate dark:text-gray-400">
                 {getShortDisplayString(SCW || setSmartWalletAddress)}
               </p>
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {SCWBalance && Number(SCWBalance).toFixed(2).toString()} {currentCoinName}
+                {SCWBalance && Number(SCWBalance).toFixed(2).toString()}{" "}
+                {currentCoinName}
               </div>
             </div>
           </div>
           <hr />
-          <div className="flex items-center space-x-4" style={{paddingTop: "20px", paddingBottom: "20px"}}>
+          <div
+            className="flex items-center space-x-4"
+            style={{ paddingTop: "20px", paddingBottom: "20px" }}
+          >
             <div className="flex-shrink-0">
               <img
                 className="w-8 h-8 rounded-full"
@@ -203,12 +226,15 @@ export default function Header() {
             </div>
             <div className="flex flex-col text-right text-md">
               <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {EOABalance && Number(EOABalance).toFixed(2).toString()} {currentCoinName}
+                {EOABalance && Number(EOABalance).toFixed(2).toString()}{" "}
+                {currentCoinName}
               </div>
             </div>
           </div>
         </div>
       </Modal>
+
+      {/* This is for the network Selecton  */}
       <Modal
         isOpen={openNetworkModal}
         onClose={() => {
@@ -222,19 +248,32 @@ export default function Header() {
             setOpenNetworkModal(false);
           }}
         >
-
-          { Chains.map((chain) => {
-            return (!chain.isEnabled) ? null : (
+          {Chains.map((chain) => {
+            return !chain.isEnabled ? null : (
               <button
-                className={`flex items-center space-x-4 ${chain.chainId === storageChainId ? "border-l-4 rounded border-gray-400" : ""}`}
-                style={{ width: "100%", paddingTop: "7px", marginBottom: "5px", marginTop: "5px", paddingBottom: "7px", textAlign: "left", boxShadow: "2px 0px 1px 1px rgba(0, 0, 0, 0.1)" }}
+                className={`flex items-center space-x-4 ${
+                  chain.chainId === storageChainId
+                    ? "border-l-4 rounded border-gray-400"
+                    : ""
+                }`}
+                style={{
+                  width: "100%",
+                  paddingTop: "7px",
+                  marginBottom: "5px",
+                  marginTop: "5px",
+                  paddingBottom: "7px",
+                  textAlign: "left",
+                  boxShadow: "2px 0px 1px 1px rgba(0, 0, 0, 0.1)",
+                }}
                 onClick={() =>
-                  handleNetworkSwitch(chain.chainId, chain.chainUri, chain.nativeAsset)
+                  handleNetworkSwitch(
+                    chain.chainId,
+                    chain.chainUri,
+                    chain.nativeAsset
+                  )
                 }
               >
-                <div
-                  className={`flex items-center space-x-4`}
-                >
+                <div className={`flex items-center space-x-4`}>
                   <div className="flex-shrink-0 ml-2">
                     <img
                       className="w-7 h-7 rounded-full"
