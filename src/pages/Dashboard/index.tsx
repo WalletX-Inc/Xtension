@@ -15,10 +15,6 @@ import Chains from "../../constants/chains";
 import QRCodeModal from "../../components/QRCodeModal";
 import { useCoinBalance } from "../../hooks/functional-hooks";
 
-import swap from "../../assets/swap.png";
-import bridge from "../../assets/bridge.png";
-import receive from "../../assets/arrow-down.png";
-import send from "../../assets/arrow-up.png";
 
 import copyAndPaste from "../../assets/copy.svg";
 
@@ -26,6 +22,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 import Footer from "../DashboardLayout/Footer";
 import Header from "../DashboardLayout/Header";
+import AccountCard from "../../components/AccountCard";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -111,7 +108,7 @@ function Dashboard() {
       <Header />
 
       <div className=" text-white mt-24 min-h-[210px]">
-        <div className="flex justify-center mb-7 items-center">
+        {/* <div className="flex justify-center mb-7 items-center">
           <img
             className=" h-7 rounder mr-3 border rounded-lg "
             src={generateAddressIcon(SCW || smartWalletAddress)}
@@ -130,10 +127,11 @@ function Dashboard() {
         </div>
         <h3 className="text-center text-3xl font-extrabold">
           {!balance ? 0 : balance} {currentCoinName}
-        </h3>
+        </h3> */}
 
+      <AccountCard/>
         {/* Features Buttons  */}
-        <div className="flex gap-8 justify-center item-center mt-10 text-center">
+        {/* <div className="flex gap-8 justify-center item-center mt-10 text-center">
           <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => openQrModal()}
@@ -168,13 +166,13 @@ function Dashboard() {
             />
             <h1 className="text-{15px}  font-thin tracking-wider">Bridge</h1>
           </div>
-        </div>
+        </div> */}
       </div>
-      <QRCodeModal
+      {/* <QRCodeModal
         isOpen={qrcodemodal}
         onClose={closeQrModal}
         walletAddress={smartWalletAddress}
-      />
+      /> */}
 
       {isLoading || !isConnected ? <Loader /> : <></>}
       <Footer />

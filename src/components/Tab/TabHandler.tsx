@@ -142,7 +142,7 @@ const TabHandler = () => {
             </div>
           </div>
         </Tab>
-        <Tab label="Transactions">
+        {/* <Tab label="Transactions">
           <div className="py-4">
             <div className="relative mt-12">
               <h2 className="text-white text-3xl md:text-4xl font-bold flex flex-row justify-center items-center">
@@ -168,7 +168,7 @@ const TabHandler = () => {
               </h2>
             </div>
           </div>
-        </Tab>
+        </Tab> */}
       </TabContainer>
     </div>
   );
