@@ -83,7 +83,7 @@ const AccountCard = () => {
 
   return (
     <>
-      <div className="flex flex-col  border shadow-md bg-gray-800 rounded-xl px-2 py-2 max-w-[300px] mx-auto text-white ">
+      <div className="flex flex-col  border shadow-md bg-gray-800 rounded-xl px-2 py-2 max-w-[300px] mx-auto text-white  mb-7">
         {/* Account Details  */}
         <div className=" flex justify-between  mb-4 mt-1 ">
           <div className="w-[75%] flex gap-3 m-auto ">

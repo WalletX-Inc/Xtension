@@ -147,7 +147,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
       <div
         className={`${
           isOpen ? "bottom-0" : " translate-y-full"
-        }  fixed  bottom-0 left-1/2 translate-x-[-50%]  w-[95%] h-[80%] bg-[#1f1f20] border border-gray-400 rounded-t-3xl  text-white  mt-10 px-4 py-5 transition duration-1000  transform z-50 `}
+        }  fixed  bottom-0 left-1/2 translate-x-[-50%]  w-[95%] h-[80%] bg-[#1f1f20] border border-gray-400 rounded-t-3xl  text-white  mt-10 px-4 py-5 transition duration-1000  transform z-[100] `}
       >
         <div className=" flex items-center">
           <h1 className=" ml-5 text-2xl  font-semibold self-center  ">

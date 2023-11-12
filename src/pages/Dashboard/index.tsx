@@ -23,12 +23,14 @@ import Footer from "../DashboardLayout/Footer";
 import AccountCard from "../../components/DashboardComponents/AccountCard";
 import Header from "../DashboardLayout/Header";
 import TokenList from "../../components/DashboardComponents/TokenList";
+import ImportTokenDrawer from "../../components/ImportTokenDrawer";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const [qrcodemodal, setQrcodemodal] = useState<boolean>(false);
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const item = getItemFromStorage("smartAccount");
@@ -112,12 +114,14 @@ function Dashboard() {
       <div className="mt-20">
         <AccountCard />
       </div>
-      <div className="">
-        <h1>Tokens</h1>
-        <TokenList />
+      <div className=" pb-36 ">
+        <h1 className="text-xl font-semibold tracking-wider pb-2 px-5">Tokens</h1>
+
+        <TokenList isImportTokenDrawerAvaliable={true} />
       </div>
 
-      {/* <div className="flex justify-center mb-7 items-center">
+      <>
+        {/* <div className="flex justify-center mb-7 items-center">
           <img
             className=" h-7 rounder mr-3 border rounded-lg "
             src={generateAddressIcon(SCW || smartWalletAddress)}
@@ -138,8 +142,8 @@ function Dashboard() {
           {!balance ? 0 : balance} {currentCoinName}
         </h3> */}
 
-      {/* Features Buttons  */}
-      {/* <div className="flex gap-8 justify-center item-center mt-10 text-center">
+        {/* Features Buttons  */}
+        {/* <div className="flex gap-8 justify-center item-center mt-10 text-center">
           <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => openQrModal()}
@@ -175,13 +179,14 @@ function Dashboard() {
             <h1 className="text-{15px}  font-thin tracking-wider">Bridge</h1>
           </div>
         </div> */}
-      {/* <QRCodeModal
+        {/* <QRCodeModal
         isOpen={qrcodemodal}
         onClose={closeQrModal}
         walletAddress={smartWalletAddress}
       /> */}
+      </>
 
-      <Footer />
+      {/* <Footer /> */}
       {isLoading || !isConnected ? <Loader /> : <></>}
     </>
   );

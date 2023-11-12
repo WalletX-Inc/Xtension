@@ -43,12 +43,14 @@ const TabHandler = () => {
   const chainId = chain.toString();
 
   const { smartAccountAddress } = useConfig();
-  const SCW = getItemFromStorage('smartAccount');
+  const SCW = getItemFromStorage("smartAccount");
 
   // function to fetch the data form Indexed DB using localFORage
   const getTokenDataForKey = async (key: string) => {
     try {
-      const data = await localforage.getItem(generateSHA256Hash(key.toString()));
+      const data = await localforage.getItem(
+        generateSHA256Hash(key.toString())
+      );
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {
