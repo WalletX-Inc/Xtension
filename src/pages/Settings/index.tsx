@@ -8,11 +8,13 @@ const Settings = () => {
   return (
     <>
       <div className=" max-w-[350px] mx-auto  bg-[#1f1f20]">
-        <header className="flex justify-center items-center mb-4 text-white">
-          <h1 className="text-2xl font-semibold mx-auto">Settings</h1>
+        <header className="flex justify-center items-center  text-white">
+          <h1 className="text-2xl font-semibold mx-auto mt-4 mb-1 ">
+            Settings
+          </h1>
         </header>
         <div className="overflow-y-scroll max-h-screen ">
-          <AccountCard />
+          {/* <AccountCard /> */}
           <SettingOptions />
         </div>
       </div>

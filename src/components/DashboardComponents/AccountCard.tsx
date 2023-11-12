@@ -11,13 +11,11 @@ import toast from "react-hot-toast";
 import Chains from "../../../src/constants/chains";
 
 import copy from "../../../src/assets/copy.svg";
-import ChainSelectionDrawer from "../ChainSelectionDrawer";
 
 const AccountCard = () => {
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
-  const [isChainSelectionDrawerOpen, setIsChainSelectionDrawerOpen] =
-    useState<boolean>(false);
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const { getSmartWalletHandler, smartAccountAddress, provider, init } =
@@ -44,13 +42,6 @@ const AccountCard = () => {
     }
   };
 
-  const openChainSelectionDrawer = () => {
-    setIsChainSelectionDrawerOpen(!isChainSelectionDrawerOpen);
-  };
-
-  const closeChainSelectionDrawer = () => {
-    setIsChainSelectionDrawerOpen(false);
-  };
   useEffect(() => {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
@@ -92,10 +83,10 @@ const AccountCard = () => {
 
   return (
     <>
-      <div className="flex flex-col  border shadow-md bg-gray-800 rounded-xl px-2 py-2 max-w-[300px] mx-auto">
+      <div className="flex flex-col  border shadow-md bg-gray-800 rounded-xl px-2 py-2 max-w-[300px] mx-auto text-white ">
         {/* Account Details  */}
-        <div className=" flex justify-between mb-4 mt-1 ">
-          <div className="w-[75%] flex gap-3 ">
+        <div className=" flex justify-between  mb-4 mt-1 ">
+          <div className="w-[75%] flex gap-3 m-auto ">
             <div className="flex justify-center item-center">
               <img
                 className="h-10 border rounded-lg ml-2"
@@ -103,32 +94,19 @@ const AccountCard = () => {
                 alt="profile icon"
               />
             </div>
-            <div className="flex flex-col justify-center ">
-              <p className="text-xl font-semibold text-gray-200 ">Account 1</p>
-              <p className="flex text-xs font-semibold text-gray-300 ">
+            <div className="flex flex-col justify-center mx-auto">
+              <p className="flex text-xl font-semibold text-gray-200  ">
                 {getShortDisplayString(SCW || smartWalletAddress)}
-                <span>
+                <span className=" m-auto">
                   <img
                     onClick={() => copyToClipboard()}
-                    className="h-4 ml-1"
+                    className="h-6 ml-1 m-auto"
                     src={copy}
-                    alt="copya and paste"
+                    alt="copy and paste"
                   />
                 </span>
               </p>
             </div>
-          </div>
-          <div
-            onClick={() => {
-              openChainSelectionDrawer();
-            }}
-            className="w-[25%] flex justify-center items-center "
-          >
-            <img
-              className="h-9"
-              src={currentChainLogo}
-              alt="current Chain logo "
-            />
           </div>
         </div>
         <hr className="w-[95%] mx-auto" />
@@ -137,10 +115,6 @@ const AccountCard = () => {
           {!balance ? 0 : balance} {currentCoinName}
         </div>
       </div>
-      <ChainSelectionDrawer
-        isOpen={isChainSelectionDrawerOpen}
-        onSelectedClose={closeChainSelectionDrawer}
-      />
     </>
   );
 };

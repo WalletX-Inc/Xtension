@@ -20,8 +20,9 @@ import copyAndPaste from "../../assets/copy.svg";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 import Footer from "../DashboardLayout/Footer";
-import Header from "../DashboardLayout/Header";
 import AccountCard from "../../components/DashboardComponents/AccountCard";
+import Header from "../DashboardLayout/Header";
+import TokenList from "../../components/DashboardComponents/TokenList";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -104,10 +105,19 @@ function Dashboard() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
 
-      <div className=" text-white mt-24 min-h-[210px]">
-        {/* <div className="flex justify-center mb-7 items-center">
+      <Header />
+      {/* The below div is used because the accoutCard is called at 2 places and mt-20 breaks it there */}
+      <div className="mt-20">
+        <AccountCard />
+      </div>
+      <div className="">
+        <h1>Tokens</h1>
+        <TokenList />
+      </div>
+
+      {/* <div className="flex justify-center mb-7 items-center">
           <img
             className=" h-7 rounder mr-3 border rounded-lg "
             src={generateAddressIcon(SCW || smartWalletAddress)}
@@ -128,9 +138,8 @@ function Dashboard() {
           {!balance ? 0 : balance} {currentCoinName}
         </h3> */}
 
-        <AccountCard />
-        {/* Features Buttons  */}
-        {/* <div className="flex gap-8 justify-center item-center mt-10 text-center">
+      {/* Features Buttons  */}
+      {/* <div className="flex gap-8 justify-center item-center mt-10 text-center">
           <div className="flex flex-col justify-center item-center gap-2 cursor-pointer">
             <img
               onClick={() => openQrModal()}
@@ -166,15 +175,14 @@ function Dashboard() {
             <h1 className="text-{15px}  font-thin tracking-wider">Bridge</h1>
           </div>
         </div> */}
-      </div>
       {/* <QRCodeModal
         isOpen={qrcodemodal}
         onClose={closeQrModal}
         walletAddress={smartWalletAddress}
       /> */}
 
-      {isLoading || !isConnected ? <Loader /> : <></>}
       <Footer />
+      {isLoading || !isConnected ? <Loader /> : <></>}
     </>
   );
 }

@@ -34,7 +34,7 @@ const SettingOptions = () => {
 
   return (
     <>
-      <div className="max-w-[335px] mx-auto my-2 divide-y-2 divide-opacity-20 divide-gray-500 mt-4  ">
+      <div className="max-w-[335px] mx-auto mt-2 divide-y-2 divide-opacity-20 divide-gray-500  ">
         {settingOptions.map((options) => {
           return (
             <>
@@ -52,7 +52,7 @@ const SettingOptions = () => {
                     });
                   } else navigate(options.navigateTo);
                 }}
-                className="flex text-gray-100 py-3 hover:opacity-75"
+                className="flex text-gray-100 py-5 hover:opacity-75"
               >
                 <div className="w-[10%] flex justify-center items-center">
                   <img
@@ -76,7 +76,7 @@ const SettingOptions = () => {
         })}
       </div>
 
-      <div className="flex flex-col gap-2 justify-center item-center mb-32 ">
+      <div className="flex flex-col gap-2 justify-center item-center mb-36 ">
         <div className="flex gap-6 justify-center items-center">
           <a href="https://www.walletx.info/" target="_blank">
             <img className="h-8" src={websiteLogo} alt="twitter logo" />
