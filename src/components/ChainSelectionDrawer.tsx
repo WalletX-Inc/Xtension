@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useRef } from "react";
 import Chains from "../../src/constants/chains";
 import { getItemFromStorage, setItemInStorage } from "../utils/helper";
 import { useConfig } from "../context/ConfigProvider";
@@ -15,6 +15,7 @@ const ChainSelectionDrawer = ({
   onSelectedClose,
 }: ChainSelectionDrawerParams) => {
   const storageChainId = getItemFromStorage("network");
+  const drawer = useRef(null);
 
   const { init } = useConfig();
 
@@ -23,9 +24,23 @@ const ChainSelectionDrawer = ({
     await setItemInStorage("network", chainId);
   };
 
+  useEffect(() => {
+    const closeDrawerOnOutsideClick = (e: any) => {
+      if (!(drawer.current as any).contains(e.target)) {
+        onSelectedClose();
+      }
+    };
+
+    document.addEventListener("mousedown", closeDrawerOnOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", closeDrawerOnOutsideClick);
+    };
+  });
   return (
     <>
       <div
+        ref={drawer}
         className={`${
           isOpen ? "bottom-0" : " translate-y-full"
         }  fixed flex flex-col  justify-center items-center bottom-0 left-1/2 translate-x-[-50%]  w-full h-[370px] bg-slate-900  text-white  rounded-t-3xl  mt-10 px-4 py-5 transition duration-1000  transform z-[100] border border-gray-300  `}
