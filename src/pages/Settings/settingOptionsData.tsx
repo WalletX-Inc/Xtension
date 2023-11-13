@@ -23,58 +23,58 @@ type settingOptionsType = {
 export const settingOptions: settingOptionsType[] = [
   {
     logo: `${multiSig}`,
-    title: "Setup Mutli Sig",
+    title: "Setup Multisig",
     description: "Setup multiple owners for your wallet to enhance security.",
     navigateTo: "",
   },
   {
     logo: `${recovery}`,
-    title: "Set Up Recover",
-    description: "Set up recovery options for added account safety.",
+    title: "Setup Social Recovery",
+    description: "Setup recovery options for added account safety.",
     navigateTo: "",
   },
-  {
-    logo: `${connections}`,
-    title: "Connections",
-    description: "Connect with your favorite dApps and manage them here",
-    navigateTo: "",
-  },
-  {
-    logo: `${addressBook}`,
-    title: "Address Book",
-    description:
-      "Create and save your frequent contacts here for effortless transactions",
-    navigateTo: "",
-  },
-  {
-    logo: `${networks}`,
-    title: "Networks",
-    description: "Manage all available networks/chains",
-    navigateTo: "",
-  },
-  {
-    logo: `${currency}`,
-    title: "Currency",
-    description: "Current: USD $",
-    navigateTo: "",
-  },
+  // {
+  //   logo: `${connections}`,
+  //   title: "Connections",
+  //   description: "Connect with your favorite dApps and manage them here",
+  //   navigateTo: "",
+  // },
+  // {
+  //   logo: `${addressBook}`,
+  //   title: "Address Book",
+  //   description:
+  //     "Create and save your frequent contacts here for effortless transactions",
+  //   navigateTo: "",
+  // },
+  // {
+  //   logo: `${networks}`,
+  //   title: "Networks",
+  //   description: "Manage all available networks/chains",
+  //   navigateTo: "",
+  // },
+  // {
+  //   logo: `${currency}`,
+  //   title: "Currency",
+  //   description: "Current: USD $",
+  //   navigateTo: "",
+  // },
 
-  {
-    logo: `${termsOfServices}`,
-    title: "Terms Of Service",
-    description: "Terms of service and other legal informations",
-    navigateTo: "",
-  },
-  {
-    logo: `${privacyPolicy}`,
-    title: "Privacy Policy",
-    navigateTo: "",
-  },
-  {
-    logo: `${faq}`,
-    title: "FAQ",
-    navigateTo: "/dashboard",
-  },
+  // {
+  //   logo: `${termsOfServices}`,
+  //   title: "Terms Of Service",
+  //   description: "Terms of service and other legal informations",
+  //   navigateTo: "",
+  // },
+  // {
+  //   logo: `${privacyPolicy}`,
+  //   title: "Privacy Policy",
+  //   navigateTo: "",
+  // },
+  // {
+  //   logo: `${faq}`,
+  //   title: "FAQ",
+  //   navigateTo: "/dashboard",
+  // },
   {
     logo: `${logOut}`,
     title: "Log Out",

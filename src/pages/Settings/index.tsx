@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import AccountCard from "../../components/DashboardComponents/AccountCard";
 import SettingOptions from "./SettingOptions";
+import { settingOptions } from "./settingOptionsData";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -13,7 +14,11 @@ const Settings = () => {
             Settings
           </h1>
         </header>
-        <div className="overflow-y-scroll max-h-screen ">
+        <div
+          className={`${
+            settingOptions.length >= 5 ? "overflow-y-scroll max-h-screen " : ""
+          }`}
+        >
           {/* <AccountCard /> */}
           <SettingOptions />
         </div>

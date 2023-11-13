@@ -33,8 +33,12 @@ const SettingOptions = () => {
   };
 
   return (
-    <>
-      <div className="max-w-[335px] mx-auto mt-2 divide-y-2 divide-opacity-20 divide-gray-500  ">
+    <div className="">
+      <div
+        className={` ${
+          settingOptions.length === 4 ? "mb-9" : "mb-32"
+        } max-w-[335px] mx-auto mt-2 divide-y-2 divide-opacity-20 divide-gray-500 mb-24`}
+      >
         {settingOptions.map((options) => {
           return (
             <>
@@ -76,17 +80,17 @@ const SettingOptions = () => {
         })}
       </div>
 
-      <div className="flex flex-col gap-2 justify-center item-center mb-36 ">
-        <div className="flex gap-6 justify-center items-center">
+      <div className="flex flex-col gap-3 justify-center item-center   mb-32  ">
+        <div className="flex gap-10 justify-center items-center">
           <a href="https://www.walletx.info/" target="_blank">
-            <img className="h-8" src={websiteLogo} alt="twitter logo" />
+            <img className="h-6 mr-1" src={websiteLogo} alt="twitter logo" />
           </a>
           <a href="https://twitter.com/walletx_inc" target="_blank">
-            <img className="h-6" src={twitterLogo} alt="twitter logo" />
+            <img className="h-4" src={twitterLogo} alt="twitter logo" />
           </a>
         </div>
 
-        <span className="text-gray-400 text-xs">Version 1.1.0</span>
+        <span className="text-gray-400 text-xs ">Version 1.1.0</span>
       </div>
 
       <Modal
@@ -96,7 +100,7 @@ const SettingOptions = () => {
         actionBtnName="Log Out"
         onRemove={() => logOut()}
       />
-    </>
+    </div>
   );
 };
 
