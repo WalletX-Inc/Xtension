@@ -71,7 +71,7 @@ const BottomNavBar = () => {
                   setOpenTransactDrawer(false);
                   navigate(menu.navigate);
                 } else {
-                  setOpenTransactDrawer(true);
+                  setOpenTransactDrawer(!openTransactDrawer);
                 }
               }}
               key={i}
