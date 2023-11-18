@@ -13,8 +13,8 @@ type tokenCardParams = {
   userAddress: string;
 
   clickedTokenData: Function;
-  isSelected: boolean;
-  index: number;
+  isSelected?: boolean;
+  index?: number;
 };
 
 const TokenCardTransaction = ({

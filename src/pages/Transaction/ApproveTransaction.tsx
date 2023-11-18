@@ -10,14 +10,21 @@ import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 import { gasState } from "../../state/GasState";
 import RemoveModal from "../../components/Modal";
 import fingerPrint from "../../assets/biometric-identification.svg";
-import gas from "../../assets/gas.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
-import { constructTransactionData, constructFinalUserOp } from "../../utils/helper";
+import {
+  constructTransactionData,
+  constructFinalUserOp,
+} from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import TransactionModal from "../../components/TransactionModal";
-import { getItemFromStorage, generateSHA256Hash, log } from "../../utils/helper";
+import {
+  getItemFromStorage,
+  generateSHA256Hash,
+  log,
+} from "../../utils/helper";
 import { validateBiometric } from "../../hooks/functional-hooks";
+import GasTokenSelectionDrawer from "../../components/GasTokenSelectionDrawer";
 
 type selectedTokenForGas = {
   icon: string;
@@ -28,18 +35,21 @@ type selectedTokenForGas = {
 };
 
 const ApproveTransaction = () => {
-  const [transactionInProcess, setTransactionInProcess] = useState<boolean>(false);
-  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState<boolean>(false);
+  const [transactionInProcess, setTransactionInProcess] =
+    useState<boolean>(false);
+  const [isTransactionModalOpen, setIsTransactionModalOpen] =
+    useState<boolean>(false);
   const [transferData, setTransferData] = useRecoilState(transferState);
-  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] = useState<boolean>(false);
-  const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(true);
+  const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
+    useState<boolean>(false);
+  const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(false);
   const [transactionHash, setTransactionHash] = useState<string>("");
   const [authError, setAuthError] = useState<string | null>(null);
 
   const [gasData, setGasData] = useRecoilState(gasState);
   const biometricAuth = validateBiometric();
 
-  const dName = getItemFromStorage(generateSHA256Hash('device'));
+  const dName = getItemFromStorage(generateSHA256Hash("device"));
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
     useState<selectedTokenForGas>({
@@ -68,11 +78,15 @@ const ApproveTransaction = () => {
     setIsCancelAllTransactionModalOpen(false);
   };
 
-  const toggleGasDrawer = () => {
-    setIsGasDrawerVisible(!isGasDrawerVisible);
+  // FUNCTIONS RELATED TO GAS
+
+  const openGasSelectionDrawer = () => {
+    setIsGasDrawerVisible(true);
   };
 
-  // FUNCTIONS RELATED TO GAS
+  const closeGasSelectionDrawer = () => {
+    setIsGasDrawerVisible(false);
+  };
 
   const updateSelectedTokenForGas = ({
     icon,
@@ -89,7 +103,7 @@ const ApproveTransaction = () => {
       tokenAddress,
       tokenGasValue,
     });
-    setIsGasDrawerVisible(!isGasDrawerVisible);
+    closeGasSelectionDrawer();
   };
 
   const supportedTokensForGas = async (transferData: any) => {
@@ -97,11 +111,22 @@ const ApproveTransaction = () => {
 
     transferData.forEach((data: any) => {
       let obj: any = {};
-      const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+      const isCoin =
+        data.tokenAddress.toString() ===
+        "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 
       obj.to = isCoin ? data.address : data.tokenAddress;
-      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount.toString(), data.tokenDecimal).toString()];
-      obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
+      obj.args = isCoin
+        ? []
+        : [
+            data.address,
+            ethers.utils
+              .parseUnits(data.amount.toString(), data.tokenDecimal)
+              .toString(),
+          ];
+      obj.value = isCoin
+        ? ethers.utils.parseEther(data.amount).toString()
+        : "0";
       obj.from = smartAccountAddress;
 
       rawTransaction.push(obj);
@@ -111,17 +136,27 @@ const ApproveTransaction = () => {
     const userOp = await smartAccountProvider.buildUserOp(txns);
 
     const paymaster = smartAccountProvider.paymaster;
-    const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(userOp, { mode: 'ERC20', tokenList: [] });
+    const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(
+      userOp,
+      { mode: "ERC20", tokenList: [] }
+    );
 
     let supportedTokens: any = [];
 
     feeQuotesResponse.feeQuotes.map((token: any) => {
-      const tokenObj = { name: token.symbol, symbol: token.symbol, address: token.tokenAddress, logoUri: token.logoUrl, maxGasFee: token.maxGasFee, maxGasFeeUSD: token.maxGasFeeUSD };
+      const tokenObj = {
+        name: token.symbol,
+        symbol: token.symbol,
+        address: token.tokenAddress,
+        logoUri: token.logoUrl,
+        maxGasFee: token.maxGasFee,
+        maxGasFeeUSD: token.maxGasFeeUSD,
+      };
 
       return supportedTokens.push(tokenObj);
     });
 
-    log('Fee Quotes : ', supportedTokens, 'info');
+    log("Fee Quotes : ", supportedTokens, "info");
 
     const uuid = crypto.randomUUID();
     const gasDataWithValues = supportedTokens.map((token: any) => {
@@ -139,8 +174,8 @@ const ApproveTransaction = () => {
 
     setGasData(gasDataWithValues);
 
-    log('Gas Data : ', gasData, 'info');
-  }
+    log("Gas Data : ", gasData, "info");
+  };
 
   useEffect(() => {
     supportedTokensForGas(transferData);
@@ -150,20 +185,29 @@ const ApproveTransaction = () => {
     const isValid = await biometricAuth(dName.id);
 
     if (!isValid) {
-      setAuthError('Authentication Failed')
+      setAuthError("Authentication Failed");
       return;
-    };
+    }
 
     let rawTransaction: any[] = [];
     setTransactionInProcess(true);
 
     transferData.forEach((data: any) => {
       let obj: any = {};
-      const isCoin = data.tokenAddress.toString() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+      const isCoin =
+        data.tokenAddress.toString() ===
+        "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
 
       obj.to = isCoin ? data.address : data.tokenAddress;
-      obj.args = isCoin ? [] : [data.address, ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString()];
-      obj.value = isCoin ? ethers.utils.parseEther(data.amount).toString() : '0';
+      obj.args = isCoin
+        ? []
+        : [
+            data.address,
+            ethers.utils.parseUnits(data.amount, data.tokenDecimal).toString(),
+          ];
+      obj.value = isCoin
+        ? ethers.utils.parseEther(data.amount).toString()
+        : "0";
       obj.from = smartAccountAddress;
 
       rawTransaction.push(obj);
@@ -174,23 +218,30 @@ const ApproveTransaction = () => {
     const partialUserOp = await smartAccountProvider.buildUserOp(txns);
     let finalUserOp = partialUserOp;
 
-    log('Selected token For gas : ', selectedTokenForGas, 'info');
+    log("Selected token For gas : ", selectedTokenForGas, "info");
 
-    if (selectedTokenForGas.tokenAddress.toString() !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
-      finalUserOp = await constructFinalUserOp(smartAccountProvider, finalUserOp, selectedTokenForGas.tokenAddress);
-      log('FINAL USEROP : ', finalUserOp, 'info');
+    if (
+      selectedTokenForGas.tokenAddress.toString() !==
+      "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    ) {
+      finalUserOp = await constructFinalUserOp(
+        smartAccountProvider,
+        finalUserOp,
+        selectedTokenForGas.tokenAddress
+      );
+      log("FINAL USEROP : ", finalUserOp, "info");
     }
 
     try {
       const userOpResponse = await smartAccountProvider.sendUserOp(finalUserOp);
       const transactionDetails = await userOpResponse.wait();
-  
+
       setTransactionHash(transactionDetails.receipt.transactionHash);
 
-      log('Transaction Details : ', transactionDetails, 'success');
+      log("Transaction Details : ", transactionDetails, "success");
       setIsTransactionModalOpen(true);
-    } catch(e) {
-      log('Error while sending batch txn : ', e, 'error');
+    } catch (e) {
+      log("Error while sending batch txn : ", e, "error");
     }
   }
 
@@ -281,7 +332,7 @@ const ApproveTransaction = () => {
             <button
               className="flex  item-center gap-1"
               disabled={transactionInProcess}
-              onClick={() => toggleGasDrawer()}
+              onClick={() => openGasSelectionDrawer()}
             >
               <p className="font-sans text-sm  font-semibold">
                 {" "}
@@ -303,7 +354,9 @@ const ApproveTransaction = () => {
           <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center  text-xl text-white min-w-[325px] max-w-[350px] h-[55px] ">
             <button
               disabled={transactionInProcess}
-              onClick={() => { sendBatchTransaction(transferData) }}
+              onClick={() => {
+                sendBatchTransaction(transferData);
+              }}
             >
               {transactionInProcess === true ? (
                 <div className="pt-2">
@@ -325,75 +378,17 @@ const ApproveTransaction = () => {
           </div>
         </div>
 
-        {/* Select token for gas component andt it should be componetizeEd */}
-        <div
-          className={`${
-            !isGasDrawerVisible ? "bottom-0" : " translate-y-full"
-          }  fixed bottom-0   w-[350px] h-[350px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform `}
-        >
-          <h1 className="text-center font-semibold text-xl">
-            Select Token For Gas
-          </h1>
+        <GasTokenSelectionDrawer
+          isOpen={isGasDrawerVisible}
+          updateGasToken={updateSelectedTokenForGas}
+          selectedTokenForGas={selectedTokenForGas}
+          onClose={closeGasSelectionDrawer}
+        />
 
-          <div className="mt-5 overflow-y-scroll h-[250px]">
-            {gasData.map((token) => {
-              const tokenData: selectedTokenForGas = {
-                icon: token.tokenLogo,
-                tokenName: token.tokenName,
-                tokenSymbol: token.tokenSymbol,
-                tokenAddress: token.tokenAddress,
-                tokenGasValue: token.tokenGasValue,
-              };
-              return (
-                <div
-                  onClick={() => updateSelectedTokenForGas(tokenData)}
-                  className={` ${
-                    token.tokenAddress === selectedTokenForGas.tokenAddress
-                      ? "border-2 border-white"
-                      : ""
-                  } flex   mt-2 px-2 py-2 rounded-lg `}
-                >
-                  <div className="w-[20%] flex justify-center items-center">
-                    <img
-                      className="h-10"
-                      src={token.tokenLogo}
-                      alt="tokenImage"
-                    />
-                  </div>
-                  <div className="w-[80%] flex  justify-between items-center px-2">
-                    <div>
-                      <p className="text-lg">{token.tokenSymbol}</p>
-                      <p className="text-sm">{token.tokenBalance}</p>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <p>{`$ ${token.tokenGasValue}`}</p>
-                      <p className="flex item-center text-xs gap-1 ">
-                        <img
-                          className="h-4 opacity-70"
-                          src={gas}
-                          alt="gasCanImage"
-                        />
-                        {token.tokenGas > 0 ? (
-                          <>{token.tokenGas}</>
-                        ) : (
-                          <>
-                            <BeatLoader
-                              size={5}
-                              loading={true}
-                              color="#ffffff"
-                            />
-                          </>
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <TransactionModal isOpen={isTransactionModalOpen} transactionHash={transactionHash} />
+        <TransactionModal
+          isOpen={isTransactionModalOpen}
+          transactionHash={transactionHash}
+        />
         <RemoveModal
           isOpen={isCancelAllTransactionModalOpen}
           onCancel={closeCancelAllTransactionsModal}

@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
 
-import approved from "../../src/assets/approveTsx.svg"
+import approved from "../../src/assets/approveTsx.svg";
 
 type transactionModalParams = {
   isOpen: boolean;
   transactionHash: string;
 };
 
-const TransactionModal = ({ isOpen, transactionHash }: transactionModalParams) => {
-    const navigate = useNavigate()
+const TransactionModal = ({
+  isOpen,
+  transactionHash,
+}: transactionModalParams) => {
+  const navigate = useNavigate();
   return (
     <div
       className={`${
@@ -24,7 +27,10 @@ const TransactionModal = ({ isOpen, transactionHash }: transactionModalParams) =
             {transactionHash}
           </p>
         </div>
-        <button onClick={() => navigate("/dashboard")} className="bg-slate-800 px-2 py-1 rounded-lg border border-slate-400  font-semibold text-xl ">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="bg-slate-800 px-2 py-1 rounded-lg border border-slate-400  font-semibold text-xl "
+        >
           Go To Dashboard
         </button>
       </div>
