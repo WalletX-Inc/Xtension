@@ -17,8 +17,7 @@ html {
 }
 
 * {
-  font-family: monospace, "Euclid Circular B", Roboto, Helvetica, Arial,
-    sans-serif;
+  font-family:  "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
   color: var(--color-text-default);

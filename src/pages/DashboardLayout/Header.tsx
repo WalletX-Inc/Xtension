@@ -131,7 +131,7 @@ export default function Header() {
           <div
             className="justify-end"
             onClick={() => {
-              toast("Comming Soon", {
+              toast("Coming Soon", {
                 icon: "🔥",
               });
             }}
