@@ -51,7 +51,7 @@ const SettingOptions = () => {
                     options.navigateTo === "" &&
                     options.title !== "Log Out"
                   ) {
-                    toast("Comming Soon", {
+                    toast("Coming Soon", {
                       icon: "🔥",
                     });
                   } else navigate(options.navigateTo);
