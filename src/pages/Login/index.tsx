@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { client } from "@passwordless-id/webauthn";
@@ -7,46 +7,73 @@ import { v4 } from "uuid";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import { useAuth } from "../../hooks/system-hooks/useAuth";
-import { getItemFromStorage, setItemInStorage, generateSHA256Hash } from "../../utils/helper";
+import {
+  getItemFromStorage,
+  setItemInStorage,
+  generateSHA256Hash,
+} from "../../utils/helper";
 import icon128 from "../../assets/icons/mainLogo.png";
+import Select from "../../components/common/Select";
 
 function Login() {
   const [deviceName, setDeviceName] = useState<string | null>(null);
 
-  const navigate = useNavigate()
-  const { login } = useAuth()
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleInputChange = (event: any) => {
-    setDeviceName(event.target.value);
+  const handleInputChange = (val: any) => {
+    setDeviceName(val);
   };
 
+  const devicesFromStorage = getItemFromStorage("devices");
+
+  const allDevices = useMemo(() => {
+    if (devicesFromStorage) {
+      const resultedOption = devicesFromStorage.map((d: any) => ({
+        ...d,
+        label: d?.name,
+        value: d?.name,
+      }));
+      return resultedOption;
+    }
+    return [];
+  }, [devicesFromStorage]);
+
   async function authenticateDevice() {
-    const dName = deviceName ? getItemFromStorage(generateSHA256Hash('device')) : null;
-    if(!dName){
-      toast.error('Please add an account first')
-      return
-    }
-    if (dName.name.trim()?.toLowerCase() !== deviceName?.trim()?.toLowerCase()) {
-      alert(`${deviceName} is not registered. Please register the device`);
-      return;
-    }
+    if (deviceName) {
+      const filterDevice = allDevices.filter(
+        (d: any) => d.name === deviceName
+      )?.[0];
 
-    const challenge = v4();
+      const challenge = v4();
 
-    const authentication = await client.authenticate([dName.id], challenge, {
-      authenticatorType: "both",
-      userVerification: "required",
-      timeout: 60000,
-    });
+      const authentication = await client.authenticate(
+        [filterDevice?.id],
+        challenge,
+        {
+          authenticatorType: "both",
+          userVerification: "required",
+          timeout: 60000,
+        }
+      );
 
-    if(authentication.credentialId){
-      login()
-      setItemInStorage("isLoggedIn", true);
-      toast.success("Login Successful !", {
-        icon: "🚀",
-        duration: 3000,
+      filterDevice?.address
+        ? setItemInStorage("smartAccount", filterDevice.address)
+        : toast.error("Some error Occurred !");
+
+      if (authentication.credentialId) {
+        login();
+        setItemInStorage("isLoggedIn", true);
+        toast.success("Login Successful !", {
+          icon: "🚀",
+          duration: 3000,
+        });
+        navigate(`/dashboard`);
+      }
+    } else {
+      toast.error("Please select an option !", {
+        duration: 3000, // Duration in milliseconds
       });
-      navigate(`/dashboard`)
     }
   }
 
@@ -56,25 +83,27 @@ function Login() {
       <h1 className="font-bold  text-center text-2xl m-auto">Wallet X</h1>
       <div className="min-h-screen flex flex-col items-center justify-top gap-10">
         <div className="h-1/2 min-w-[75%]  flex flex-col items-center justify-center text-lg mt-[60px]">
-          <Input
+          {/* <Input
             className="min-w-[300px] placeholder:text-sm placeholder:italic placeholder:text-slate-400 max-w-xs text-center rounded-lg mb-4 outline-none"
             type="text"
             id="name"
             name="name"
             placeholder="Enter the Registered Username"
             onChange={(e) => handleInputChange(e)}
+          /> */}
+          <Select
+            label="Select name"
+            options={allDevices || []}
+            onChange={handleInputChange}
           />
           <Button
-            className="min-w-[300px] mt-[70px] text-white bg-gray-900 border hover:bg-gray-950 rounded-lg flex justify-center m-auto
+            className="min-w-[300px] mt-[70px] text-white bg-gray-900 hover:bg-gray-600 rounded-lg flex justify-center m-auto
         transition duration-500 hover:scale-110 p-2"
             onClick={authenticateDevice}
           >
             Login
           </Button>
-          <Link
-            className="mt-3 text-sm cursor-pointer"
-            to="/register"
-          >
+          <Link className="mt-3 text-sm cursor-pointer" to="/register">
             Don't have an account ? Register
           </Link>
         </div>

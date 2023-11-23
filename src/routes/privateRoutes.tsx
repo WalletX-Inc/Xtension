@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import { PrivateLayout } from "../pages/Layout/PrivateLayout";
 import AddAddresses from "../pages/Transaction/AddAddress";
@@ -10,8 +11,23 @@ import Settings from "../pages/Settings";
 import Bridge from "../pages/TransactDrawer/Bridge";
 import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
+import { getItemFromStorage } from "../utils/helper";
+import localforage from "localforage";
 
 function PrivateRoutes() {
+  const navigate = useNavigate();
+
+  const devices = getItemFromStorage("devices");
+
+  useEffect(() => {
+    if (devices.length <= 0) {
+      console.log("Clear all data from local storage");
+      localforage.clear();
+      localStorage.clear();
+      navigate("/login");
+    }
+  }, [devices.length]);
+
   return (
     <Routes>
       <Route element={<PrivateLayout />}>

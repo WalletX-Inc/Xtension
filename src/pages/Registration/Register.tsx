@@ -9,7 +9,11 @@ import { ethers } from "ethers";
 import Config from "../../config";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
-import { getItemFromStorage, setItemInStorage, generateSHA256Hash } from "../../utils/helper";
+import {
+  getItemFromStorage,
+  setItemInStorage,
+  generateSHA256Hash,
+} from "../../utils/helper";
 import { useAuth } from "../../hooks/system-hooks/useAuth";
 import { useConfig } from "../../context/ConfigProvider";
 
@@ -23,6 +27,8 @@ const Register = () => {
   const { login } = useAuth();
   const { init } = useConfig();
   const smartAccountAddress = getItemFromStorage("smartAccount");
+        const allDevicesData = getItemFromStorage("devices");
+
   useEffect(() => {
     if (signer) {
       getSmartWalletAddress();
@@ -41,7 +47,7 @@ const Register = () => {
     }
   }, [smartAccountAddress]);
 
-  function generateEOA(credentialId: any) {
+  function generateEOA(credentialId: any,data:any) {
     setButtonTitle("Registering...");
     const inputBytes = ethers.utils.toUtf8Bytes(credentialId);
     const hash = ethers.utils.keccak256(inputBytes);
@@ -49,15 +55,38 @@ const Register = () => {
     const mnemonic = ethers.utils.entropyToMnemonic(hash);
     const eoa = ethers.Wallet.fromMnemonic(mnemonic);
 
-    setItemInStorage("signer", eoa.address);
+    const newData={
+      ...data,
+      signer:eoa.address
+    }
+    console.log("allDevicesData generateEOA", allDevicesData);
+    if(allDevicesData){
+      setItemInStorage('devices',[newData, ...allDevicesData]);
+    }
+    else{
+      console.log('in else generateEOA ')
+      setItemInStorage('devices',[newData])
+    }
+    // setItemInStorage("signer", eoa.address);
 
     const provider = new ethers.providers.JsonRpcProvider(Config.RPC_MUMBAI);
     const signer = eoa.connect(provider);
+    //if device entered in storage
+    
     setSigner(signer);
+    console.log("signer execure");
   }
 
   async function getSmartWalletAddress() {
-    init(defaultChainId);
+    await init(defaultChainId,deviceName);
+    console.log("Register.jsx getSmartWalletAddress");
+    // setButtonTitle("Done");
+    // login();
+    // toast.success("Account Created Successfully !", {
+    //   icon: "🚀", // Custom icon
+    //   duration: 3000, // Duration in milliseconds
+    // });
+    // navigate(`/dashboard`);
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,12 +94,14 @@ const Register = () => {
   };
 
   async function registerDevice() {
-    const device = deviceName ? getItemFromStorage(generateSHA256Hash("device")) : null;
+    // const device = deviceName
+    //   ? getItemFromStorage(generateSHA256Hash("device"))
+    //   : null;
 
-    if (device?.name === deviceName) {
-      alert(`${deviceName} is already registered. Please choose another name`);
-      return;
-    }
+    // if (device?.name === deviceName) {
+    //   alert(`${deviceName} is already registered. Please choose another name`);
+    //   return;
+    // }
 
     const challenge = v4();
 
@@ -83,14 +114,22 @@ const Register = () => {
           debug: false,
         })
       : null;
-
+    console.log("deviceName ", deviceName, registration);
     if (deviceName && registration) {
-      setItemInStorage(generateSHA256Hash("device"), {
+      const deviceData = {
+        hashCode: generateSHA256Hash(deviceName?.toString()),
         name: deviceName?.toString(),
         id: registration?.credential.id,
-      });
+      };
+      console.log(deviceData, "Register deviceData");
+      // let allDevices = [deviceData];
+      // if (allDevicesData) {
+      //   allDevices = [deviceData, ...allDevicesData];
+      // }
+      // console.log(allDevices, allDevicesData, deviceData);
+      // setItemInStorage("devices", allDevices);
       setItemInStorage("isLoggedIn", true);
-      generateEOA(registration?.credential.id);
+      generateEOA(registration?.credential.id,deviceData);
     }
   }
 
@@ -107,7 +146,7 @@ const Register = () => {
             onChange={(e) => handleInputChange(e)}
           />
           <Button
-            className="min-w-[300px] mt-[70px] text-white bg-gray-900 border hover:bg-gray-950 rounded-lg flex justify-center m-auto
+            className="min-w-[300px] mt-[70px] text-white bg-gray-900 hover:bg-gray-600 rounded-lg flex justify-center m-auto
         transition duration-500 hover:scale-110 p-2 "
             onClick={registerDevice}
           >
