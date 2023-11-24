@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../hooks/system-hooks/useAuth";
-import { setItemInStorage } from "../../utils/helper";
+import { removeItemFromStorage, setItemInStorage } from "../../utils/helper";
 import { settingOptions } from "./settingOptionsData";
 
 import Modal from "../../../src/components/Modal";
@@ -29,6 +29,7 @@ const SettingOptions = () => {
 
     logout();
     setItemInStorage("isLoggedIn", false);
+    removeItemFromStorage("smartAccount");
     navigate("/login");
   };
 

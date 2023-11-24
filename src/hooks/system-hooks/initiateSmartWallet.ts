@@ -21,7 +21,9 @@ export function   initiateSmartWallet(
   deviceId:any
 ) {
   return async () => {
-    if (!signer) {
+    
+    const isLoggedIn=getItemFromStorage('isLoggedIn')
+    if (!signer||!isLoggedIn) {
       log("[Hooks] No signer", null, "error");
       return;
     }

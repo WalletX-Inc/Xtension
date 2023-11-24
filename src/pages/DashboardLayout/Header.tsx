@@ -11,6 +11,7 @@ import {
   generateAddressIcon,
   getItemFromStorage,
   getShortDisplayString,
+  removeItemFromStorage,
   setItemInStorage,
 } from "../../utils/helper";
 import Chains from "../../constants/chains";
@@ -91,6 +92,8 @@ export default function Header() {
     if (key === "/logout") {
       logout();
       setItemInStorage("isLoggedIn", false);
+      removeItemFromStorage("smartAccount");
+
       navigate("/login");
     }
     setToggle(!toggle);
@@ -215,7 +218,7 @@ export default function Header() {
                   Smart Account
                 </p>
                 <p className="text-sm truncate dark:text-gray-400">
-                  {getShortDisplayString(SCW || setSmartWalletAddress)}
+                  {getShortDisplayString(SCW || smartWalletAddress)}
                 </p>
               </div>
               <div className="flex flex-col text-right text-md">

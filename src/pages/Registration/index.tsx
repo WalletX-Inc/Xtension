@@ -27,7 +27,6 @@ function Registration() {
           className="min-w-[300px] mt-[150px] text-white bg-gray-900 hover:bg-gray-600 rounded-3xl flex justify-center m-auto
         transition duration-500 hover:scale-110 p-2"
           onClick={() => {
-            removeItemFromStorage("smartAccount");
             setShowRegister(true);
           }}
         >
