@@ -21,7 +21,7 @@ export default function useInit() {
   const [EOABalance, setEOABalance] = useState(null);
   const [SCWBalance, setSCWBalance] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isInitialised, setIsInitialised] = useState(false);
+  const [isInitialized, setisInitialized] = useState(false);
   const [chainData, setChainData] = useState(null);
 
   const auth = useAuth();
@@ -30,14 +30,13 @@ export default function useInit() {
 
   useEffect(() => {
     if (deviceId || chainId) {
-      console.log("in getEOA");
       getEOA();
     }
   }, [deviceId, chainId]);
 
   useEffect(() => {
     if (provider) {
-      setIsInitialised(true);
+      setisInitialized(true);
       getSmartWalletHandler();
     } else {
       // setIsL
@@ -81,8 +80,9 @@ export default function useInit() {
     provider,
     setSCWBalance,
     setIsConnected,
-    isInitialised,
-    deviceId
+    isInitialized,
+    deviceId,
+  
   );
 
   return {
@@ -98,7 +98,7 @@ export default function useInit() {
     EOABalance,
     SCWBalance,
     isConnected,
-    isInitialised,
+    isInitialized,
     chainData,
   };
 }

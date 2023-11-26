@@ -17,7 +17,7 @@ export function   initiateSmartWallet(
   provider: any,
   setBalance: any,
   setIsConnected: any,
-  isInitialised: boolean,
+  isInitialized: boolean,
   deviceId:any
 ) {
   return async () => {
@@ -34,7 +34,7 @@ export function   initiateSmartWallet(
       const smartAccountAdd: any = getItemFromStorage("smartAccount");
 
     //Need to work on 
-    if (isInitialised === false && SCWProvider && storageChainId && storageChainId === chainId && smartAccountAdd) {
+    if (isInitialized === false && SCWProvider && storageChainId && storageChainId === chainId && smartAccountAdd) {
       setItemInStorage("network", chainId);
       setItemInStorage("isLoggedIn", true);
       setSmartAccountProvider(JSON.parse(SCWProvider));

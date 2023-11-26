@@ -153,9 +153,7 @@ const Register = () => {
             {buttonTitle}
           </Button>
           <Link
-            className={`mt-3 text-sm ${
-              smartAccountAddress ? "" : "cursor-not-allowed opacity-50"
-            }`}
+            className={`mt-3 text-sm `}
             to={"/login"}
           >
             Already Have an account ? Login
