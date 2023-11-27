@@ -3,4 +3,8 @@ module.exports = {
     BUNDLER_MUMBAI: 'https://bundler.biconomy.io/api/v2/80001/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44',
     CHAINID_MUMBAI: 80001,
     RPC_MUMBAI: 'https://rpc.ankr.com/polygon_mumbai',
+
+    DAPP_CONNECTION_ENV: {
+        WALLET_WORD_SPLIT: 'eituweioutwtoei'
+    }
 }

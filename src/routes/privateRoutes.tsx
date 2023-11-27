@@ -4,6 +4,7 @@ import { PrivateLayout} from "../pages/Layout/PrivateLayout";
 import AddAddresses from "../pages/Transaction/AddAddress";
 import AddTokens from "../pages/Transaction/AddToken";
 import ApproveTransaction from "../pages/Transaction/ApproveTransaction";
+import SignMessage from "../pages/Dapp/SignMessage"
 
 function PrivateRoutes() {
 
@@ -23,6 +24,10 @@ function PrivateRoutes() {
         <Route
           path="/dashboard/transaction/approve-transactions"
           element={<ApproveTransaction/>}
+        />
+        <Route
+          path="/dashboard/dapp/sign-message"
+          element={<SignMessage/>}
         />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
