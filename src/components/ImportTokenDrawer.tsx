@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "react-feather";
 import { ethers } from "ethers";
 import localforage from "localforage";
@@ -30,7 +30,8 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
   const [isValidTokenContract, setIsValidTokenContract] = useState<any>(null);
 
   const { chainId, provider, smartAccountAddress } = useConfig();
-  const SCW = getItemFromStorage('smartAccount')
+  const SCW = getItemFromStorage("smartAccount");
+  const drawer = useRef(null);
 
   const [tokenData, setTokenData] = useState<tokenDataT>({
     tokenAddress: "",
@@ -62,7 +63,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
     });
     setTokenAddress("");
     setIsValidTokenContract(null);
-    setIsValidAddress(null)
+    setIsValidAddress(null);
   };
 
   const handelContractAddressInput = async (e: any) => {
@@ -97,18 +98,20 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
         balance: tokenData.balance,
       });
     }
-
-    
   };
 
   /// ADDING TOKEN IN THE CURRENT CHAIN ID
 
   const setTokenDataForKey = async (key: any, data: Array<{}>) => {
     try {
-      const currentData: Array<{}> = (await localforage.getItem(generateSHA256Hash(key.toString()))) || [];
+      const currentData: Array<{}> =
+        (await localforage.getItem(generateSHA256Hash(key.toString()))) || [];
       const newTokenData = [...currentData, ...data];
 
-      await localforage.setItem(generateSHA256Hash(key.toString()), newTokenData);
+      await localforage.setItem(
+        generateSHA256Hash(key.toString()),
+        newTokenData
+      );
     } catch (error) {
       console.error("Error setting token data:", error);
     }
@@ -142,12 +145,29 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
     });
   }, [isValidAddress]);
 
+  
+
+  useEffect(() => {
+    const closeDrawerOnOutsideClick = (e: any) => {
+      if (!(drawer.current as any).contains(e.target)) {
+        closeDrawer();
+      }
+    };
+
+    document.addEventListener("mousedown", closeDrawerOnOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", closeDrawerOnOutsideClick);
+    };
+  });
+
   return (
     <>
       <div
+        ref={drawer}
         className={`${
           isOpen ? "bottom-0" : " translate-y-full"
-        }  fixed  bottom-0 left-1/2 translate-x-[-50%]  w-[95%] h-[80%] bg-[#1f1f20] border border-gray-400 rounded-t-3xl  text-white  mt-10 px-4 py-5 transition duration-1000  transform z-50 `}
+        }  fixed  bottom-0 left-1/2 translate-x-[-50%]  w-[95%] h-[80%] bg-[#1f1f20] border border-gray-400 rounded-t-3xl  text-white  mt-10 px-4 py-5 transition duration-1000  transform z-[100] `}
       >
         <div className=" flex items-center">
           <h1 className=" ml-5 text-2xl  font-semibold self-center  ">
@@ -199,9 +219,9 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
               <BeatLoader size={5} loading={true} color="#ffffff" />
             ) : isValidAddress === false && tokenData.tokenAddress ? (
               " Invalid Address"
-            ) : isValidTokenContract === false ||isValidAddress === false  ? (
+            ) : isValidTokenContract === false || isValidAddress === false ? (
               "Invalid Token"
-            ) :(
+            ) : (
               " Add Token "
             )}
           </h1>

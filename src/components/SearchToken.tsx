@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
 import { transferState } from "../../src/state/TransferState";
 import { Search } from "react-feather";
@@ -42,6 +42,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(); // can also use token id for this
   const [balanceOfToken, setBalanceOfToken] = useState<number>(); // use it in handelAddButton
   const [tokenListFromIndexedDB, setTokenListFromIndexedDB] = useState<any>([]);
+  const drawer = useRef(null);
 
   const { smartAccountAddress } = useConfig();
   const SCW = getItemFromStorage("smartAccount");
@@ -83,7 +84,9 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   // function to fetch the data form Indexed DB using localFORage
   const getTokenDataForKey = async (key: string) => {
     try {
-      const data = await localforage.getItem(generateSHA256Hash(key.toString()));
+      const data = await localforage.getItem(
+        generateSHA256Hash(key.toString())
+      );
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {
@@ -100,8 +103,23 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const closeDrawerOnOutsideClick = (e: any) => {
+      if (!(drawer.current as any).contains(e.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", closeDrawerOnOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", closeDrawerOnOutsideClick);
+    };
+  });
+
   return (
     <div
+    ref={drawer}
       className={`${
         isOpen ? "bottom-0" : " translate-y-full"
       }  fixed bottom-0 left-1/2 translate-x-[-50%]  w-[350px] h-[455px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform z-50 `}

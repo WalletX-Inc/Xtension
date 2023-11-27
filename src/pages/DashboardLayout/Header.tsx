@@ -3,53 +3,51 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../hooks/system-hooks/useAuth";
 import Modal from "../../components/common/Modal";
-import logoIcon from "../../assets/icons/icon16.png";
-import menuIcon from "../../assets/icons/menu.png";
-import Button from "../../components/common/Button";
-import { useConfig } from "../../context/ConfigProvider";
-import { getItemFromStorage, getShortDisplayString, setItemInStorage } from "../../utils/helper";
-import Chains from "../../constants/chains";
-import {  ChevronDown, Plus } from "react-feather";
 
-const navbarData = [
-  {
-    title: "Setup Recovery",
-    subTitle: "coming soon",
-    href: "/",
-    cname:
-      "font-medium opacity-60 w-full flex justify-center p-2.5 md:border-none md:p-0 md:w-auto pointer-events-none",
-  },
-  {
-    title: "Setup MultiSig",
-    subTitle: "coming soon",
-    href: "/",
-    cname:
-      "font-medium opacity-60 w-full flex justify-center p-2.5 md:border-none md:p-0 md:w-auto pointer-events-none",
-  },
-  {
-    title: "Log Out",
-    href: "/logout",
-    cname:
-      "font-medium w-full flex justify-center p-2.5 md:border-none md:p-0 md:w-auto",
-  },
-];
+import { useConfig } from "../../context/ConfigProvider";
+import notificationIcon from "../../../src/assets/notifications.svg";
+
+import {
+  generateAddressIcon,
+  getItemFromStorage,
+  getShortDisplayString,
+  setItemInStorage,
+} from "../../utils/helper";
+import Chains from "../../constants/chains";
+import { ChevronDown, Plus } from "react-feather";
+import toast from "react-hot-toast";
+import ChainSelectionDrawer from "../../components/ChainSelectionDrawer";
 
 export default function Header() {
   const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
-  const [openNetworkModal, setOpenNetworkModal] = useState<boolean>(false);
   const [defaultChainId] = useState<number>(80001);
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
+  const [isChainSelectionDrawerOpen, setIsChainSelectionDrawerOpen] =
+    useState<boolean>(false);
 
-  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("")
+  const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
 
   const item = getItemFromStorage("smartAccount");
   const storageChainId = getItemFromStorage("network");
   const [SCW] = useState(item || null);
   const [chainId, setChainId] = useState(storageChainId);
 
-  const { smartAccountAddress, init, EOA, balance: { SCW: SCWBalance, EOA: EOABalance } } = useConfig();
+  const {
+    smartAccountAddress,
+    init,
+    EOA,
+    balance: { SCW: SCWBalance, EOA: EOABalance },
+  } = useConfig();
+
+  const openChainSelectionDrawer = () => {
+    setIsChainSelectionDrawerOpen(!isChainSelectionDrawerOpen);
+  };
+
+  const closeChainSelectionDrawer = () => {
+    setIsChainSelectionDrawerOpen(false);
+  };
 
   useEffect(() => {
     if (storageChainId) {
@@ -72,15 +70,19 @@ export default function Header() {
     setSmartWalletAddress(SCW || smartAccountAddress);
 
     initializeSmartWallet();
-  },[smartAccountAddress, smartWalletAddress]);
+  }, [smartAccountAddress, smartWalletAddress]);
 
-  const handleNetworkSwitch=(chainId: number, chainUri: string, nativeAsset: string)=> {
+  const handleNetworkSwitch = (
+    chainId: number,
+    chainUri: string,
+    nativeAsset: string
+  ) => {
     setCurrentChainLogo(chainUri);
     setChainId(chainId);
     setCurrentCoinName(nativeAsset);
     init(chainId);
-    setItemInStorage('network', chainId);
-  }
+    setItemInStorage("network", chainId);
+  };
 
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -96,120 +98,168 @@ export default function Header() {
 
   // start mobile first plus facile
   return (
-    <nav className="text-white fixed top-0 w-full bg-gray-700 items-center flex p-4">
-      <div className="flex justify-between items-center w-full flex-wrap md:flex-nowrap">
-        <h1
-          className="flex align-center justify-center rounded text-xl font-bold cursor-pointer  hover:opacity-70 bg-black p-[5px]"
-          onClick={() => {
-            setOpenNetworkModal(true);
-          }}
-        >
-          <img
-            className="w-4 h-4 m-auto rounded-full"
-            src={currentChainLogo}
-            alt="ETH"
-          />
-          <ChevronDown className="ml-2" />
-        </h1>
-        <h1
-          className="text-xl font-bold flex items-center cursor-pointer hover:opacity-70  hover:border-1 hover:border-gray-600 hover:shadow-lg rounded p-[3px]"
-          onClick={() => {
-            setOpenAccountModal(true);
-          }}
-        >
-          Wallets
-          <ChevronDown className="mx-3" />
-        </h1>
+    <>
+      <nav className="text-white fixed top-0 w-full p-2  bg-[#1f1f20]">
+        <div className="flex justify-between items-center w-full py-2 px-1">
+          {/* Network secection  */}
+          <div
+            className="flex align-center justify-center  cursor-pointer  hover:opacity-70 bg-black  border rounded-lg py-1 pl-2 pr-1 "
+            onClick={() => {
+              openChainSelectionDrawer();
+            }}
+          >
+            <img
+              className="h-5 m-auto rounded-full"
+              src={currentChainLogo}
+              alt={`${currentCoinName} logo`}
+            />
+            <ChevronDown className="ml-2" />
+          </div>
 
-        <button
-          className="flex justify-end  hover:opacity-70"
-          onClick={() => showNav()}
-        >
-          <img className="w-6" src={menuIcon} alt="X" />
-        </button>
-        <ul
-          className={`${
-            toggle
-              ? "fixed flex flex-col top-[61px] right-0 text-white bg-gray-700 rounded-md"
-              : " hidden"
-          }  `}
-        >
-          {toggle &&
-            navbarData.map((link, index) => {
-              return (
-                <li
-                  key={index}
-                  className={`relative flex flex-row items-center h-9 focus:outline-none  border-l-4 border-transparent pr-6 ${link.cname}`}
-                >
-                  <Link
-                    className="inline-flex justify-center items-center ml-4"
-                    to={link.href}
-                    onClick={() => showNav(link.href)}
-                  >
-                    {link.title}
-                  </Link>
-                </li>
-              );
-            })}
-        </ul>
-      </div>
-      <Modal
-        isOpen={openAccountModal}
-        onClose={() => {
-          setOpenAccountModal(false);
-        }}
-        headerText="Select an Account"
-      >
-        <div
-          className="py-3 px-3 sm:py-4 shadow-lg cursor-pointer"
-          onClick={() => {
+          {/* Account Type Selection  */}
+          <div
+            className=" justify-center text-base font-bold flex items-center cursor-pointer border rounded-lg bg-gray-800 border-gray-200 pl-2  h-8 text-gray-200"
+            onClick={() => {
+              setOpenAccountModal(true);
+            }}
+          >
+            Smart Wallet
+            <ChevronDown className="mx-1" />
+          </div>
+
+          {/* Notifications  */}
+          <div
+            className="justify-end"
+            onClick={() => {
+              toast("Coming Soon", {
+                icon: "🔥",
+              });
+            }}
+          >
+            <img
+              className="h-7"
+              src={notificationIcon}
+              alt="notification icon"
+            />
+          </div>
+
+          <>
+            {/* CURRENTLY NOT IN USE FUNCTIONS AND FEATURES  */}
+
+            {/* User & quick settings  */}
+            {/* <div className=" border rounded-lg ">
+                <img
+                  className="h-8"
+                  src={generateAddressIcon(smartAccountAddress)}
+                  alt="profile icon"
+                />
+              </div> */}
+
+            {/* <button
+                className="flex justify-end  hover:opacity-70"
+                onClick={() => showNav()}
+              >
+                <img className="w-6" src={menuIcon} alt="X" />
+              </button>
+              <ul
+                className={`${
+                  toggle
+                    ? "fixed flex flex-col top-[61px] right-0 text-white bg-gray-700 rounded-md"
+                    : " hidden"
+                }  `}
+              >
+                {toggle &&
+                  navbarData.map((link, index) => {
+                    return (
+                      <li
+                        key={index}
+                        className={`relative flex flex-row items-center h-9 focus:outline-none  border-l-4 border-transparent pr-6 ${link.cname}`}
+                      >
+                        <Link
+                          className="inline-flex justify-center items-center ml-4"
+                          to={link.href}
+                          onClick={() => showNav(link.href)}
+                        >
+                          {link.title}
+                        </Link>
+                      </li>
+                    );
+                  })}
+              </ul> */}
+          </>
+        </div>
+        {/* This is for  account Selection  */}
+        <Modal
+          isOpen={openAccountModal}
+          onClose={() => {
             setOpenAccountModal(false);
           }}
+          headerText="Select an Account"
         >
-          <div className="flex items-center space-x-4" style={{paddingTop: "20px", paddingBottom: "20px"}}>
-            <div className="flex-shrink-0">
-              <img
-                className="w-8 h-8 rounded-full"
-                src={logoIcon}
-                alt="Wallet x"
-              />
+          <div className="flex flex-col gap-2 ">
+            <div
+              className="flex items-center space-x-4 py-2 px-2 bg-gray-800 border rounded-lg border-gray-200 my-2 cursor-pointer"
+              onClick={() => {
+                setOpenAccountModal(false);
+              }}
+            >
+              <div className="border rounded-lg ">
+                <img
+                  className="w-8 h-8 rounded-full"
+                  src={generateAddressIcon(SCW)}
+                  alt="Wallet x"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-medium truncate dark:text-white">
+                  Smart Account
+                </p>
+                <p className="text-sm truncate dark:text-gray-400">
+                  {getShortDisplayString(SCW || setSmartWalletAddress)}
+                </p>
+              </div>
+              <div className="flex flex-col text-right text-md">
+                <div className="inline-flex items-center text-base font-semibold dark:text-white">
+                  {SCWBalance && Number(SCWBalance).toFixed(2).toString()}{" "}
+                  {currentCoinName}
+                </div>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate dark:text-white" >Smart Account</p>
-              <p className="text-sm truncate dark:text-gray-400">
-                {getShortDisplayString(SCW || setSmartWalletAddress)}
-              </p>
-            </div>
-            <div className="flex flex-col text-right text-md">
-              <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {SCWBalance && Number(SCWBalance).toFixed(2).toString()} {currentCoinName}
+
+            <div
+              className="flex items-center space-x-4 py-2 px-2 bg-gray-800 border rounded-lg border-gray-200 my-2 cursor-pointer"
+              onClick={() => {
+                setOpenAccountModal(false);
+              }}
+            >
+              <div className="border rounded-lg">
+                <img
+                  className="w-8 h-8 rounded-full"
+                  src={generateAddressIcon(EOA)}
+                  alt="Wallet x"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-base font-medium truncate dark:text-white">
+                  EOA
+                </p>
+                <p className="text-sm truncate dark:text-gray-400">
+                  {EOA && getShortDisplayString(EOA)}
+                </p>
+              </div>
+              <div className="flex flex-col text-right text-md">
+                <div className="inline-flex items-center text-base font-semibold dark:text-white">
+                  {EOABalance && Number(EOABalance).toFixed(2).toString()}{" "}
+                  {currentCoinName}
+                </div>
               </div>
             </div>
           </div>
-          <hr />
-          <div className="flex items-center space-x-4" style={{paddingTop: "20px", paddingBottom: "20px"}}>
-            <div className="flex-shrink-0">
-              <img
-                className="w-8 h-8 rounded-full"
-                src={logoIcon}
-                alt="Wallet x"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate dark:text-white">EOA</p>
-              <p className="text-sm truncate dark:text-gray-400">
-                {EOA && getShortDisplayString(EOA)}
-              </p>
-            </div>
-            <div className="flex flex-col text-right text-md">
-              <div className="inline-flex items-center text-base font-semibold dark:text-white">
-                {EOABalance && Number(EOABalance).toFixed(2).toString()} {currentCoinName}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Modal>
-      <Modal
+        </Modal>
+
+        <>
+          {/* This is for the network Selecton  */}
+          {/* <Modal
         isOpen={openNetworkModal}
         onClose={() => {
           setOpenNetworkModal(false);
@@ -222,19 +272,32 @@ export default function Header() {
             setOpenNetworkModal(false);
           }}
         >
-
-          { Chains.map((chain) => {
-            return (!chain.isEnabled) ? null : (
+          {Chains.map((chain) => {
+            return !chain.isEnabled ? null : (
               <button
-                className={`flex items-center space-x-4 ${chain.chainId === storageChainId ? "border-l-4 rounded border-gray-400" : ""}`}
-                style={{ width: "100%", paddingTop: "7px", marginBottom: "5px", marginTop: "5px", paddingBottom: "7px", textAlign: "left", boxShadow: "2px 0px 1px 1px rgba(0, 0, 0, 0.1)" }}
+                className={`flex items-center space-x-4 ${
+                  chain.chainId === storageChainId
+                    ? "border-l-4 rounded border-gray-400"
+                    : ""
+                }`}
+                style={{
+                  width: "100%",
+                  paddingTop: "7px",
+                  marginBottom: "5px",
+                  marginTop: "5px",
+                  paddingBottom: "7px",
+                  textAlign: "left",
+                  boxShadow: "2px 0px 1px 1px rgba(0, 0, 0, 0.1)",
+                }}
                 onClick={() =>
-                  handleNetworkSwitch(chain.chainId, chain.chainUri, chain.nativeAsset)
+                  handleNetworkSwitch(
+                    chain.chainId,
+                    chain.chainUri,
+                    chain.nativeAsset
+                  )
                 }
               >
-                <div
-                  className={`flex items-center space-x-4`}
-                >
+                <div className={`flex items-center space-x-4`}>
                   <div className="flex-shrink-0 ml-2">
                     <img
                       className="w-7 h-7 rounded-full"
@@ -264,7 +327,13 @@ export default function Header() {
             <Plus /> Add Network
           </div>
         </Button>
-      </Modal>
-    </nav>
+      </Modal> */}
+        </>
+      </nav>
+      <ChainSelectionDrawer
+        isOpen={isChainSelectionDrawerOpen}
+        onSelectedClose={closeChainSelectionDrawer}
+      />
+    </>
   );
 }

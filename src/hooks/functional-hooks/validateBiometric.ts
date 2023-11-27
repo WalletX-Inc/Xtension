@@ -1,6 +1,8 @@
 import { client } from "@passwordless-id/webauthn";
 import { v4 } from "uuid";
 
+import { log } from "../../utils/helper";
+
 export function validateBiometric() {
   return async (deviceId: string) => {
     const challenge = v4();
@@ -12,11 +14,11 @@ export function validateBiometric() {
       });
   
       if(authentication.credentialId){
-        console.log("[validateBiometric Hook] Biometric validated");
+        log("[validateBiometric Hook] Biometric validated", null, "success");
         return true;
       }
 
-      console.log("[validateBiometric Hook] Biometric failed");
+      log("[validateBiometric Hook] Biometric failed", null, "error");
       return false;
   }  
 }

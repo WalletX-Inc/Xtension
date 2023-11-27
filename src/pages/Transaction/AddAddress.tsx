@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import backIcon from "../../assets/angle.svg";
+import { ethers } from "ethers";
+import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight } from "react-feather";
+
 import AddressesCard from "../../components/AddressCard";
 import paste from "../../assets/paste.svg";
 import search from "../../assets/search.svg";
-import { ethers } from "ethers";
-import { useRecoilState } from "recoil";
 import { transferState } from "../../state/TransferState";
-import { useNavigate } from "react-router-dom";
 import RemoveModal from "../../components/Modal";
-import { ArrowLeft, ArrowRight } from "react-feather";
+import { log } from "../../utils/helper";
 
 const AddAddresses = () => {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -91,7 +92,7 @@ const AddAddresses = () => {
       setEnteredAddresses(address);
       setIsValid(isEthereumAddress(address));
     } catch (error) {
-      console.log("Copy failed due to: ", error);
+      log("Copy failed due to: ", error, "error");
     }
   };
   const generateAddressCard = (enteredAddresses: string) => {
@@ -139,7 +140,7 @@ const AddAddresses = () => {
         tokenLogo: "",
       },
     ]);
-    console.log('Transfer Data : ', transferData);
+    log('Transfer Data : ', transferData, "info");
     navigate("/dashboard/transaction/add-tokens");
   };
 
