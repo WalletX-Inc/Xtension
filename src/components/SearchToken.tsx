@@ -100,8 +100,8 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       const retrievedData = await getTokenDataForKey(chainId); // put chainID
       setTokenListFromIndexedDB(retrievedData);
     }
-    fetchData();
-  }, []);
+    if (!tokenListFromIndexedDB.length) fetchData();
+  }, [chainId]);
 
   useEffect(() => {
     const closeDrawerOnOutsideClick = (e: any) => {
@@ -159,7 +159,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
                 tokenAddress={token.address}
                 tokenDecimal={token?.decimals}
                 userAddress={SCW || smartAccountAddress}
-                isSelected={selectedTokenIndex == index}
+                isSelected={selectedTokenIndex === index}
                 index={index}
                 clickedTokenData={addToken}
               />
