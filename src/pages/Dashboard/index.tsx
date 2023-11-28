@@ -35,7 +35,6 @@ function Dashboard() {
 
   const item = getItemFromStorage("smartAccount");
   const chain = getItemFromStorage("network");
-
   const [SCW] = useState(item || null);
   const [chainId] = useState(chain || null);
 
@@ -47,10 +46,10 @@ function Dashboard() {
     isConnected,
   } = useConfig();
   const navigate = useNavigate();
-
   const storageChainId = getItemFromStorage("network");
   const chainDetails = getChainDetails(storageChainId);
-
+  const allDevices = getItemFromStorage("devices");
+  const smartAddress = getItemFromStorage("smartAccount");
   const { balance } = useCoinBalance(
     SCW || smartAccountAddress,
     true,
@@ -78,7 +77,10 @@ function Dashboard() {
   useEffect(() => {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
-        init(chainId);
+        const myDevice = allDevices?.filter(
+          (d: any) => d.address == smartAddress
+        )?.[0];
+        init(chainId, myDevice?.name);
       }
     }
 
@@ -115,7 +117,9 @@ function Dashboard() {
         <AccountCard />
       </div>
       <div className=" pb-36 ">
-        <h1 className="text-xl font-semibold tracking-wider pb-2 px-5">Tokens</h1>
+        <h1 className="text-xl font-semibold tracking-wider pb-2 px-5">
+          Tokens
+        </h1>
 
         <TokenList isImportTokenDrawerAvaliable={true} />
       </div>
