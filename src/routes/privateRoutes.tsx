@@ -13,6 +13,7 @@ import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
+import SignatureRequest from "../pages/Signature/SignatureRequest";
 
 function PrivateRoutes() {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ function PrivateRoutes() {
         <Route path="/dashboard/collectables" element={<Collectables />} />
         <Route path="/dashboard/activity" element={<Activity />} />
         <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path='/dashboard/signature'  element={<SignatureRequest/>}  />
       </Route>
 
       <Route path="/dashboard/receive" element={<Receive />} />
