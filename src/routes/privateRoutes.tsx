@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Dashboard from "../pages/Dashboard";
 import { PrivateLayout } from "../pages/Layout/PrivateLayout";
 import AddAddresses from "../pages/Transaction/AddAddress";
@@ -11,8 +12,24 @@ import Bridge from "../pages/TransactDrawer/Bridge";
 import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
 import SignMessage from "../pages/Dapp/SignMessage"
+import { getItemFromStorage } from "../utils/helper";
+import localforage from "localforage";
+import SignatureRequest from "../pages/Signature/SignatureRequest";
 
 function PrivateRoutes() {
+  const navigate = useNavigate();
+
+  const devices = getItemFromStorage("devices");
+
+  useEffect(() => {
+    if (devices.length <= 0) {
+      console.log("Clear all data from local storage");
+      localforage.clear();
+      localStorage.clear();
+      navigate("/login");
+    }
+  }, [devices.length]);
+
   return (
     <Routes>
       <Route element={<PrivateLayout />}>
@@ -20,6 +37,7 @@ function PrivateRoutes() {
         <Route path="/dashboard/collectables" element={<Collectables />} />
         <Route path="/dashboard/activity" element={<Activity />} />
         <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path='/dashboard/signature'  element={<SignatureRequest/>}  />
       </Route>
 
       <Route path="/dashboard/receive" element={<Receive />} />

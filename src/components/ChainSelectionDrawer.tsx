@@ -69,7 +69,7 @@ const ChainSelectionDrawer = ({
         </div>
 
         {/* Chain Details  */}
-        <div className=" flex flex-col gap-3 h-[300px] overflow-y-scroll">
+        <div className=" flex flex-col w-[95%] gap-3 h-[300px] overflow-y-scroll">
           {Chains.map((chain) => {
             return !chain.isEnabled ? null : (
               <>

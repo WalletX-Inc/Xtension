@@ -72,7 +72,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Arbitrum Nova Mainnet",
@@ -87,7 +87,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Polygon ZKEVM Mainnet",
@@ -102,7 +102,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "BSC Mainnet",
@@ -117,7 +117,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: false,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Optimism Mainnet",
@@ -132,7 +132,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Avalanche Mainnet",
@@ -147,7 +147,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: false,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Base Mainnet",
@@ -163,7 +163,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Moon Beam Mainnet",
@@ -178,7 +178,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Linea Mainnet",
@@ -193,7 +193,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Mantle Mainnet",
@@ -208,7 +208,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "opBNB Mainnet",
@@ -223,7 +223,7 @@ const supportedChains = [
     isMainnet: true,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "BSC Testnet",
@@ -238,7 +238,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: false,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Polygon ZKEVM Testnet",
@@ -253,7 +253,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Arbitrum Goerli Testnet",
@@ -268,7 +268,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Optimism Goerli Testnet",
@@ -283,7 +283,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Avalanche Testnet",
@@ -298,7 +298,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: false,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Base Goerli Testnet",
@@ -313,7 +313,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Linea Testnet",
@@ -328,7 +328,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Moonbase Alpha Testnet",
@@ -343,7 +343,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Mantle Testnet",
@@ -358,7 +358,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
   {
     name: "Optimism Binance Testnet",
@@ -373,7 +373,7 @@ const supportedChains = [
     isMainnet: false,
     isL2: true,
     isERC20GasPaymentSupported: true,
-    isEnabled: true,
+    isEnabled: false,
   },
 ];
 

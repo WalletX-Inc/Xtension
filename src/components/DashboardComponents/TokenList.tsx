@@ -66,15 +66,12 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
       const retrievedData = await getTokenDataForKey(chainId);
       setTokenListFromIndexedDB(retrievedData);
     }
-    fetchData();
-  }, [chainId, tokenListFromIndexedDB]);
+
+    if (!tokenListFromIndexedDB.length) fetchData();
+  }, [chainId]);
 
   return (
     <>
-      {/* <div>TokenList</div>
-    <p>"optimization-shakti" branch should be refered to create this page as there will be a lot of conflicts cause there will be new way to get the token list data</p>
-    <p>Token Card Should be componentisez</p> */}
-
       <div className="max-h-[275px] overflow-y-scroll  px-3">
         {tokens &&
           tokens.map((token: Token) => (
@@ -85,7 +82,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
                 tokenSymbol={token.symbol}
                 tokenAddress={token.address}
                 tokenDecimal={token.decimals}
-                userAddress={""}
+                userAddress={SCW || smartAccountAddress}
                 isSelected={false}
                 clickedTokenData={() => {}}
                 index={0}

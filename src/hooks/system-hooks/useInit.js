@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
 import { initiateEOA } from "./initiateEOA";
-import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
+import { getItemFromStorage } from "../../utils/helper";
 import { useAuth } from "./useAuth";
 import { getChainDetails } from "../../utils/helper";
 
@@ -21,13 +21,13 @@ export default function useInit() {
   const [EOABalance, setEOABalance] = useState(null);
   const [SCWBalance, setSCWBalance] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isInitialised, setIsInitialised] = useState(false);
+  const [isInitialized, setisInitialized] = useState(false);
   const [chainData, setChainData] = useState(null);
 
   const auth = useAuth();
 
   const isLoggedIn = auth.isLoggedIn;
-  
+
   useEffect(() => {
     if (deviceId || chainId) {
       getEOA();
@@ -36,30 +36,54 @@ export default function useInit() {
 
   useEffect(() => {
     if (provider) {
-      setIsInitialised(true)
+      setisInitialized(true);
       getSmartWalletHandler();
+    } else {
+      // setIsL
     }
   }, [provider]);
 
-  function init(chainId) {
-    setIsConnected(false)
+  function init(chainId, deviceName) {
+    setIsConnected(false);
     const chainData = getChainDetails(chainId);
-
     setRpcUrl(chainData.rpc);
     setBundlerUrl(chainData.bundlerUrl);
     setChainId(chainData.chainId);
     setPaymasterUrl(chainData.paymasterUrl);
     setChainData(chainData);
 
-    const device = getItemFromStorage(generateSHA256Hash('device'));
-
-    if (device?.id) {
-      setDeviceId(device.id);
+    const devices = getItemFromStorage("devices");
+    const filter = devices.filter((d) => d.name === deviceName)?.[0];
+    // const device = getItemFromStorage(generateSHA256Hash('device'));
+    if (filter?.id) {
+      setDeviceId(filter.id);
     }
   }
 
-  const getEOA = initiateEOA(deviceId, setSigner, rpcUrl, setProvider, setEOA, setEOABalance);
-  const getSmartWalletHandler = initiateSmartWallet(rpcUrl, bundlerUrl, chainId, paymasterUrl, signer, auth.login, setSmartAccountProvider, setSmartAccountAddress, provider, setSCWBalance, setIsConnected,isInitialised);
+  const getEOA = initiateEOA(
+    deviceId,
+    setSigner,
+    rpcUrl,
+    setProvider,
+    setEOA,
+    setEOABalance
+  );
+  const getSmartWalletHandler = initiateSmartWallet(
+    rpcUrl,
+    bundlerUrl,
+    chainId,
+    paymasterUrl,
+    signer,
+    auth.login,
+    setSmartAccountProvider,
+    setSmartAccountAddress,
+    provider,
+    setSCWBalance,
+    setIsConnected,
+    isInitialized,
+    deviceId,
+  
+  );
 
   return {
     isLoggedIn,
@@ -74,7 +98,7 @@ export default function useInit() {
     EOABalance,
     SCWBalance,
     isConnected,
-    isInitialised,
+    isInitialized,
     chainData,
   };
 }

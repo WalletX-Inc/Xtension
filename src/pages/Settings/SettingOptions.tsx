@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 
 import { useAuth } from "../../hooks/system-hooks/useAuth";
-import { setItemInStorage } from "../../utils/helper";
+import { removeItemFromStorage, setItemInStorage } from "../../utils/helper";
 import { settingOptions } from "./settingOptionsData";
 
 import Modal from "../../../src/components/Modal";
@@ -15,7 +15,6 @@ const SettingOptions = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [isLogOutModalOpen, setIsLogOutModalOpen] = useState<boolean>(false);
-
   const openLogOutModal = () => {
     setIsLogOutModalOpen(true);
   };
@@ -24,11 +23,11 @@ const SettingOptions = () => {
     setIsLogOutModalOpen(false);
   };
 
-  const logOut = () => {
-    console.log("running logout funciotn");
+  const logOut = async() => {
 
     logout();
     setItemInStorage("isLoggedIn", false);
+   await removeItemFromStorage("smartAccount");
     navigate("/login");
   };
 
@@ -56,7 +55,7 @@ const SettingOptions = () => {
                     });
                   } else navigate(options.navigateTo);
                 }}
-                className="flex text-gray-100 py-5 hover:opacity-75"
+                className={`flex text-gray-100 py-5 hover:opacity-75`}
               >
                 <div className="w-[10%] flex justify-center items-center">
                   <img
@@ -82,10 +81,14 @@ const SettingOptions = () => {
 
       <div className="flex flex-col gap-3 justify-center item-center   mb-32  ">
         <div className="flex gap-10 justify-center items-center">
-          <a href="https://www.walletx.info/" target="_blank">
+          <a href="https://www.walletx.info/" target="_blank" rel="noreferrer">
             <img className="h-6 mr-1" src={websiteLogo} alt="twitter logo" />
           </a>
-          <a href="https://twitter.com/walletx_inc" target="_blank">
+          <a
+            href="https://twitter.com/walletx_inc"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img className="h-4" src={twitterLogo} alt="twitter logo" />
           </a>
         </div>
