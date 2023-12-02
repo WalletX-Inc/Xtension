@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { BeatLoader } from "react-spinners";
 import { useRecoilState } from "recoil";
-import { gasState } from "../state/GasState";
+import gasState from "../state/GasState";
 import gas from "../assets/gas.svg";
 
 type selectedTokenForGasType = {

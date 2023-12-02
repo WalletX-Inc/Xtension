@@ -4,11 +4,11 @@
 
 import EventEmitter from "./EventEmitter";
 import RPCError from "./RPCError";
-import { log } from "../../../utils/helper";
 // import WalletProxi from "../services/WalletProxi";
 
 function customConsoleLog(lineNumber, data) {
-  log(`Inside Web3Provider.js :${lineNumber} `, data);
+  // eslint-disable-next-line no-console, security-node/detect-crlf
+  console.log(`Inside Web3Provider.js :${lineNumber} `, data);
 }
 
 class Web3Provider extends EventEmitter {
@@ -102,7 +102,7 @@ class Web3Provider extends EventEmitter {
         resp.data.type === "FROM_CS" &&
         resp.data.id === uniqid
       ) {
-        // log("IN HERE ", resp, response)
+        // console.log("IN HERE ", resp, response)
 
         if (
           (resp?.data?.payload?.method !== "wallet_switchEthereumChain" ||
