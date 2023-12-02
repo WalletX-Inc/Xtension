@@ -3,8 +3,8 @@ import { getItemFromStorage } from "../../utils/helper";
 
 const AuthContext = React.createContext({
   isLoggedIn: false,
-  login: () => {},
-  logout: () => {},
+  login: () => null,
+  logout: () => null,
 });
 
 export const AuthProvider = (props: any) => {
@@ -21,8 +21,10 @@ export const AuthProvider = (props: any) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 };

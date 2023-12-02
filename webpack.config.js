@@ -1,8 +1,20 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require("webpack");
 const path = require("path");
 const HTMLPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+
+function getHtmlPlugins(chunks) {
+  return chunks.map(
+    (chunk) =>
+      new HTMLPlugin({
+        title: "React extension",
+        filename: `${chunk}.html`,
+        chunks: [chunk],
+      }),
+  );
+}
 
 module.exports = [
   {
@@ -176,14 +188,3 @@ module.exports = [
     },
   },
 ];
-
-function getHtmlPlugins(chunks) {
-  return chunks.map(
-    (chunk) =>
-      new HTMLPlugin({
-        title: "React extension",
-        filename: `${chunk}.html`,
-        chunks: [chunk],
-      }),
-  );
-}

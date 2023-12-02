@@ -2,10 +2,10 @@
 import Web3Provider from "./js/Web3Provider/Web3Provider";
 
 // if (window.ethereum) {
-//     console.log(Number(new Date()), 'Please uninstall other wallets in order to use WalletX.');
+//     log(Number(new Date()), 'Please uninstall other wallets in order to use WalletX.');
 // } else {
 (function () {
-  // console.log(Number(new Date()), 'ok, loaded content script');
+  // log(Number(new Date()), 'ok, loaded content script');
   // const uniqid = 0;
   // const events = {};
   // const state = {

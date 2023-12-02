@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 
-import Tab from "./";
+import { Plus } from "react-feather";
+import localforage from "localforage";
+import Tab from ".";
 import TabContainer from "./Tabs";
 import TokenCard from "../TokenCard";
 import Tokens from "../../constants/tokens";
 import { useConfig } from "../../context/ConfigProvider";
 
-import { Plus } from "react-feather";
 import ImportTokenDrawer from "../ImportTokenDrawer";
-import localforage from "localforage";
-import { getItemFromStorage, generateSHA256Hash } from "../../utils/helper";
+import {
+  getItemFromStorage,
+  generateSHA256Hash,
+  log,
+} from "../../utils/helper";
 
 type Token = {
   name: string;
@@ -51,20 +55,23 @@ const TabHandler = () => {
       const data = await localforage.getItem(
         generateSHA256Hash(key.toString()),
       );
+
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {
-      console.error("Error getting token data:", error);
+      log("Error getting token data:", error, "error");
       return [];
     }
   };
 
   useEffect(() => {
     const tokenList = Tokens[chainId] || [];
+
     setTokens(tokenList);
 
     async function fetchData() {
       const retrievedData = await getTokenDataForKey(chainId);
+
       setTokenListFromIndexedDB(retrievedData);
     }
     fetchData();
@@ -88,13 +95,13 @@ const TabHandler = () => {
                 </>
               ))}
             {tokenListFromIndexedDB &&
-              tokenListFromIndexedDB.map((tokens: tokenDataT) => (
+              tokenListFromIndexedDB.map((token: tokenDataT) => (
                 <>
                   <TokenCard
-                    tokenIcon={tokens.tokenLogoUrl}
-                    tokenName={tokens.tokenName}
-                    tokenSymbol={tokens.tokenSymbol}
-                    tokenAddress={tokens.tokenAddress}
+                    tokenIcon={token.tokenLogoUrl}
+                    tokenName={token.tokenName}
+                    tokenSymbol={token.tokenSymbol}
+                    tokenAddress={token.tokenAddress}
                     userAddress={SCW || smartAccountAddress}
                   />
                 </>

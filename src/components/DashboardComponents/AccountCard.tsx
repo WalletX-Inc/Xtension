@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import {
   generateAddressIcon,
   getItemFromStorage,
   getShortDisplayString,
   getChainDetails,
+  log,
 } from "../../utils/helper";
 import { useCoinBalance } from "../../hooks/functional-hooks";
 import { useConfig } from "../../context/ConfigProvider";
-import toast from "react-hot-toast";
 import Chains from "../../../src/constants/chains";
 
-import copy from "../../../src/assets/copy.svg";
+import copy from "../../assets/copy.svg";
 
 const AccountCard = () => {
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
   const { getSmartWalletHandler, smartAccountAddress, provider, init } =
@@ -38,7 +40,7 @@ const AccountCard = () => {
       await navigator.clipboard.writeText(SCW || smartAccountAddress);
       toast.success("Text Copied To clipboard");
     } catch (error) {
-      console.error("Copy failed due to: ", error);
+      log("Copy failed due to: ", error, "error");
     }
   };
 
@@ -62,6 +64,7 @@ const AccountCard = () => {
       const currentChain = Chains.filter(
         (ch) => ch.chainId === chainIDFromStorage,
       );
+
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);
     } else {
       setCurrentCoinName(Chains?.[0]?.nativeAsset);
@@ -73,6 +76,7 @@ const AccountCard = () => {
       const currentChain = Chains.filter(
         (ch) => ch.chainId === chainIDFromStorage,
       );
+
       setCurrentChainLogo(currentChain?.[0]?.chainUri);
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);
     } else {

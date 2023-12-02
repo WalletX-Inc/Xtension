@@ -1,6 +1,6 @@
+import { Eye } from "react-feather";
 import StepHeader from "./StepHeader";
 import { getShortDisplayString } from "../../utils/helper";
-import { Eye } from "react-feather";
 
 function DappConnectAccount() {
   const smartAddress = localStorage.getItem("smartAccount");

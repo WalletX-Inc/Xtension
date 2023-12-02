@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { getItemFromStorage, getChainDetails } from "../utils/helper";
 import { useTokenBalance } from "../hooks/functional-hooks";
 

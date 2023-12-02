@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import Store from "../../../dapp-connection/js/components/StoreComponent";
 import icon128 from "../../../assets/icons/mainLogo.png";
 import EthProvider from "../../../dapp-connection/js/services/EthProvider";
+import { log } from "../../../utils/helper";
 
 type SignatureRequestDataType = {
-  address: String;
-  message: String;
-  connect_title: String | null;
-  connect_origin: String | null;
+  address: string;
+  message: string;
+  connect_title: string | null;
+  connect_origin: string | null;
 };
 
 export default function SignatureRequest() {
@@ -20,7 +21,8 @@ export default function SignatureRequest() {
 
   useEffect(() => {
     const data = Store.getState();
-    console.log({ data });
+
+    log("SignatureRequest useEffect", { data });
     setDappData(dappData);
   }, [Store.getState()]);
 

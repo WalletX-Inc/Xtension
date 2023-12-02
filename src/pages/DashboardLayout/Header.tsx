@@ -1,26 +1,21 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-import { useAuth } from "../../hooks/system-hooks/useAuth";
+import { ChevronDown } from "react-feather";
+import toast from "react-hot-toast";
 import Modal from "../../components/common/Modal";
 
 import { useConfig } from "../../context/ConfigProvider";
-import notificationIcon from "../../../src/assets/notifications.svg";
+import notificationIcon from "../../assets/notifications.svg";
 
 import {
   generateAddressIcon,
   getItemFromStorage,
   getShortDisplayString,
-  removeItemFromStorage,
-  setItemInStorage,
 } from "../../utils/helper";
 import Chains from "../../constants/chains";
-import { ChevronDown, Plus } from "react-feather";
-import toast from "react-hot-toast";
 import ChainSelectionDrawer from "../../components/ChainSelectionDrawer";
 
 export default function Header() {
-  const [toggle, setToggle] = useState(false);
+  // const [toggle, setToggle] = useState(false);
   const [openAccountModal, setOpenAccountModal] = useState<boolean>(false);
   const [defaultChainId] = useState<number>(80001);
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
@@ -33,6 +28,7 @@ export default function Header() {
   const item = getItemFromStorage("smartAccount");
   const storageChainId = getItemFromStorage("network");
   const [SCW] = useState(item || null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [chainId, setChainId] = useState(storageChainId);
 
   const {
@@ -53,6 +49,7 @@ export default function Header() {
   useEffect(() => {
     if (storageChainId) {
       const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
+
       setCurrentChainLogo(currentChain?.[0]?.chainUri);
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);
     } else {
@@ -73,31 +70,32 @@ export default function Header() {
     initializeSmartWallet();
   }, [smartAccountAddress, smartWalletAddress]);
 
-  const handleNetworkSwitch = (
-    chainId: number,
-    chainUri: string,
-    nativeAsset: string,
-  ) => {
-    setCurrentChainLogo(chainUri);
-    setChainId(chainId);
-    setCurrentCoinName(nativeAsset);
-    init(chainId);
-    setItemInStorage("network", chainId);
-  };
+  // const handleNetworkSwitch = (
+  //   _chainId: number,
+  //   _chainUri: string,
+  //   nativeAsset: string,
+  // ) => {
+  //   setCurrentChainLogo(_chainUri);
+  //   setChainId(_chainId);
+  //   setCurrentCoinName(nativeAsset);
+  //   init(_chainId);
+  //   setItemInStorage("network", _chainId);
+  // };
 
-  const navigate = useNavigate();
-  const { logout } = useAuth();
+  // const navigate = useNavigate();
+  // const { logout } = useAuth();
 
-  const showNav = (key?: string) => {
-    if (key === "/logout") {
-      logout();
-      setItemInStorage("isLoggedIn", false);
-      removeItemFromStorage("smartAccount");
+  // const showNav = (key?: string) => {
+  //   if (key === "/logout") {
+  //     logout();
+  //     setItemInStorage("isLoggedIn", false);
+  //     removeItemFromStorage("smartAccount");
 
-      navigate("/login");
-    }
-    setToggle(!toggle);
-  };
+  //     navigate("/login");
+  //   }
+
+  //   setToggle(!toggle);
+  // };
 
   // start mobile first plus facile
   return (

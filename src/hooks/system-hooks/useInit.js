@@ -1,8 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 
-import { initiateSmartWallet } from "./initiateSmartWallet";
-import { initiateEOA } from "./initiateEOA";
+import initiateSmartWallet from "./initiateSmartWallet";
+import initiateEOA from "./initiateEOA";
 import { getItemFromStorage, getChainDetails } from "../../utils/helper";
 import { useAuth } from "./useAuth";
 
@@ -27,33 +26,18 @@ export default function useInit() {
 
   const { isLoggedIn } = auth;
 
-  useEffect(() => {
-    if (deviceId || chainId) {
-      getEOA();
-    }
-  }, [deviceId, chainId]);
-
-  useEffect(() => {
-    if (provider) {
-      setisInitialized(true);
-      getSmartWalletHandler();
-    } else {
-      // setIsL
-    }
-  }, [provider]);
-
-  function init(chainId, deviceName) {
+  function init(_chainId, _deviceName) {
     setIsConnected(false);
-    const chainData = getChainDetails(chainId);
+    const _chainData = getChainDetails(_chainId);
 
-    setRpcUrl(chainData.rpc);
-    setBundlerUrl(chainData.bundlerUrl);
-    setChainId(chainData.chainId);
-    setPaymasterUrl(chainData.paymasterUrl);
-    setChainData(chainData);
+    setRpcUrl(_chainData.rpc);
+    setBundlerUrl(_chainData.bundlerUrl);
+    setChainId(_chainData.chainId);
+    setPaymasterUrl(_chainData.paymasterUrl);
+    setChainData(_chainData);
 
     const devices = getItemFromStorage("devices");
-    const filter = devices.filter((d) => d.name === deviceName)?.[0];
+    const filter = devices.filter((d) => d.name === _deviceName)?.[0];
 
     // const device = getItemFromStorage(generateSHA256Hash('device'));
     if (filter?.id) {
@@ -84,6 +68,21 @@ export default function useInit() {
     isInitialized,
     deviceId,
   );
+
+  useEffect(() => {
+    if (deviceId || chainId) {
+      getEOA();
+    }
+  }, [deviceId, chainId]);
+
+  useEffect(() => {
+    if (provider) {
+      setisInitialized(true);
+      getSmartWalletHandler();
+    } else {
+      // setIsL
+    }
+  }, [provider]);
 
   return {
     isLoggedIn,

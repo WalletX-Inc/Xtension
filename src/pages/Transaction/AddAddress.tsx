@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
@@ -47,7 +48,7 @@ const AddAddresses = () => {
     navigate("/dashboard");
   };
 
-  //function for opning the add Addresses modal
+  // function for opning the add Addresses modal
   const [isAddAddressesModalVisible, setIsAddAddressesModalVisible] =
     useState(false);
 
@@ -58,7 +59,7 @@ const AddAddresses = () => {
     setIsAddAddressesModalVisible(false);
   };
 
-  //call back functions that receives the address and index form the addressesCard component
+  // call back functions that receives the address and index form the addressesCard component
   const receivedAddress = (address: string) => {
     setSendToAddresses(address);
   };
@@ -70,6 +71,7 @@ const AddAddresses = () => {
     } else {
       setSelectedCardIndex(index);
     }
+
     setEnteredAddresses("");
   };
 
@@ -77,6 +79,7 @@ const AddAddresses = () => {
   const isEthereumAddress = (address: string) => {
     try {
       const validAddress = ethers.utils.isAddress(address);
+
       return validAddress;
     } catch (error) {
       return false;
@@ -89,32 +92,32 @@ const AddAddresses = () => {
       setSendToAddresses("");
       handleCardClick(null);
       const address: string = await navigator.clipboard.readText();
+
       setEnteredAddresses(address);
       setIsValid(isEthereumAddress(address));
     } catch (error) {
       log("Copy failed due to: ", error, "error");
     }
   };
-  const generateAddressCard = (enteredAddresses: string) => {
-    return (
-      <>
-        <AddressesCard
-          // key={1}
-          name="Shakti"
-          addresses={enteredAddresses}
-          isSelected={selectedCardIndex === 1}
-          getClickedAddress={receivedAddress}
-          onClick={() => {
-            handleCardClick(1);
-            setIsCardSelected(!isCardSelected);
-          }}
-        />
-      </>
-    );
-  };
+  const generateAddressCard = (_enteredAddresses: string) => (
+    <>
+      <AddressesCard
+        // key={1}
+        name="Shakti"
+        addresses={_enteredAddresses}
+        isSelected={selectedCardIndex === 1}
+        getClickedAddress={receivedAddress}
+        onClick={() => {
+          handleCardClick(1);
+          setIsCardSelected(!isCardSelected);
+        }}
+      />
+    </>
+  );
 
   const handleInputChange = (e: any) => {
     const inputValue = e.target.value;
+
     setEnteredAddresses(inputValue);
     setCardAddress(inputValue);
   };
@@ -125,6 +128,7 @@ const AddAddresses = () => {
 
   const handelProceed = () => {
     const uuid = crypto.randomUUID();
+
     setTransferData((prevAddresses) => [
       ...prevAddresses,
       {
@@ -237,7 +241,7 @@ const AddAddresses = () => {
 
       <button
         onClick={handelProceed}
-        disabled={sendToAddresses && isCardSelected ? false : true}
+        disabled={!(sendToAddresses && isCardSelected)}
         className={` ${
           isValid === false && enteredAddresses
             ? " bg-red-500 border-red-700"

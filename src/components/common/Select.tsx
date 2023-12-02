@@ -1,5 +1,5 @@
 import React, { FC, ChangeEvent, useState, useEffect } from "react";
-import { Check, ChevronDown } from "react-feather";
+import { ChevronDown } from "react-feather";
 
 interface Option {
   label: string;
@@ -16,6 +16,7 @@ const Select: FC<SelectProps> = ({ options, onChange, ...rest }) => {
   const [selectedValue, setSelectedValue] = useState<string>("");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedVal = event.target.value;
+
     setSelectedValue(selectedVal);
     onChange(selectedVal);
   };

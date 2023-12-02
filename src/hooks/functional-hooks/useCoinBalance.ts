@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
@@ -18,8 +17,8 @@ export default function useCoinBalance(
     }
 
     provider.on("block", async () => {
-      const balance = await provider.getBalance(address);
-      const balanceInEther = ethers.utils.formatEther(balance);
+      const userBalance = await provider.getBalance(address);
+      const balanceInEther = ethers.utils.formatEther(userBalance);
 
       setBalance(balanceInEther);
     });

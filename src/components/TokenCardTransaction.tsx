@@ -12,7 +12,7 @@ type tokenCardParams = {
 
   userAddress: string;
 
-  clickedTokenData: Function;
+  clickedTokenData: (data?: any) => any;
   isSelected?: boolean;
   index?: number;
 };
@@ -28,6 +28,7 @@ const TokenCardTransaction = ({
 
   isSelected,
   clickedTokenData,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   index,
 }: tokenCardParams) => {
   const [balance, setBalance] = useState<any>(0);
@@ -36,12 +37,13 @@ const TokenCardTransaction = ({
   useEffect(() => {
     async function getBalance() {
       if (provider) {
-        const balance = await getTokenBalance(
+        const tokenBalance = await getTokenBalance(
           tokenAddress,
           provider,
           userAddress,
         );
-        setBalance(balance);
+
+        setBalance(tokenBalance);
       }
     }
 

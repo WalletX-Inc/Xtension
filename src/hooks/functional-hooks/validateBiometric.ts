@@ -3,7 +3,7 @@ import { v4 } from "uuid";
 
 import { log } from "../../utils/helper";
 
-export function validateBiometric() {
+function validateBiometric() {
   return async (deviceId: string) => {
     const challenge = v4();
 
@@ -22,3 +22,5 @@ export function validateBiometric() {
     return false;
   };
 }
+
+export default validateBiometric;

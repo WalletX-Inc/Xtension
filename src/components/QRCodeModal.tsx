@@ -1,12 +1,13 @@
 import React from "react";
-import cancel from "../assets/x.png";
-import copy from "../assets/copy&paste.png";
 import QRCode from "react-qr-code";
 import toast from "react-hot-toast";
+import cancel from "../assets/x.png";
+import copy from "../assets/copy&paste.png";
+import { log } from "../utils/helper";
 
 type qrmodalparams = {
-  onClose: Function;
-  isOpen: Boolean;
+  onClose: () => void;
+  isOpen: boolean;
   walletAddress: any;
 };
 
@@ -16,7 +17,7 @@ const QRCodeModal = ({ onClose, isOpen, walletAddress }: qrmodalparams) => {
       await navigator.clipboard.writeText(walletAddress);
       toast.success("Text Copied To clipboard");
     } catch (error) {
-      console.error("Copy failed due to: ", error);
+      log("Copy failed due to: ", error, "error");
     }
   };
 

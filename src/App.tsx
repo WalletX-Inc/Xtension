@@ -1,9 +1,9 @@
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import AppRoutes from "./routes";
-import { AuthProvider } from "./hooks/system-hooks/useAuth";
 import { RecoilRoot } from "recoil";
 import { Toaster } from "react-hot-toast";
+import AppRoutes from "./routes";
+import { AuthProvider } from "./hooks/system-hooks/useAuth";
 import ConfigProvider from "./context/ConfigProvider";
 
 function App() {

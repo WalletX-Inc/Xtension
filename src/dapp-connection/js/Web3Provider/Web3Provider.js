@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
+/* eslint-disable no-undef */
+/* eslint-disable no-prototype-builtins */
+
 import EventEmitter from "./EventEmitter";
 import RPCError from "./RPCError";
-import WalletProxi from "../services/WalletProxi";
+import { log } from "../../../utils/helper";
+// import WalletProxi from "../services/WalletProxi";
 
 function customConsoleLog(lineNumber, data) {
-  console.log(`Inside Web3Provider.js :${lineNumber} `, data);
+  log(`Inside Web3Provider.js :${lineNumber} `, data);
 }
 
 class Web3Provider extends EventEmitter {
@@ -41,7 +46,7 @@ class Web3Provider extends EventEmitter {
     customConsoleLog(41, { method, params });
     const that = this;
 
-    const _emit_event = this.emit_event;
+    const _emitEvent = this.emit_event;
 
     return new Promise((res, rej) => {
       // const uniqid = ~~(Math.random() * 10000).toFixed(2);
@@ -60,19 +65,21 @@ class Web3Provider extends EventEmitter {
         (err) => {
           if (err.hasOwnProperty("locked")) {
             rej();
-            _emit_event(that, {
+            _emitEvent(that, {
               message: "WalletX is locked. Please unlock it to use it.",
               code: err?.error?.code,
             });
-            // _emit_event('disconnect', { message: 'WalletX is locked. Please unlock it to use it.', code: err?.error?.code });
+            // _emitEvent('disconnect', { message: 'WalletX is locked. Please unlock it to use it.', code: err?.error?.code });
             return false;
           }
 
+          // eslint-disable-next-line prefer-promise-reject-errors
           rej({
             message: err?.error?.message,
             code: err?.error?.code,
             data: err?.error?.data,
           });
+          return true;
         },
         () => {
           window.removeEventListener("message", fn);
@@ -86,20 +93,20 @@ class Web3Provider extends EventEmitter {
 
   handle_message(response, error, after, uniqid) {
     const that = this;
-    const _emit_event = that.emit_event;
+    const _emitEvent = that.emit_event;
 
     return (resp) => {
       if (
         resp.data.hasOwnProperty("payload") &&
-        resp.data.payload.method != "wallet_switchEthereumChain" &&
-        resp.data.type == "FROM_CS" &&
-        resp.data.id == uniqid
+        resp.data.payload.method !== "wallet_switchEthereumChain" &&
+        resp.data.type === "FROM_CS" &&
+        resp.data.id === uniqid
       ) {
-        // console.log("IN HERE ", resp, response)
+        // log("IN HERE ", resp, response)
 
         if (
-          (resp?.data?.payload?.method != "wallet_switchEthereumChain" ||
-            resp?.data?.payload?.method != "wallet_addEthereumChain") &&
+          (resp?.data?.payload?.method !== "wallet_switchEthereumChain" ||
+            resp?.data?.payload?.method !== "wallet_addEthereumChain") &&
           resp?.data?.payload?.chainId &&
           resp?.data?.payload?.addresses
         ) {
@@ -120,7 +127,7 @@ class Web3Provider extends EventEmitter {
         if (resp.data.hasOwnProperty("event")) {
           setTimeout(
             () =>
-              _emit_event(that, resp.data.event?.event, resp.data.event?.data),
+              _emitEvent(that, resp.data.event?.event, resp.data.event?.data),
             100,
           );
         }
@@ -129,11 +136,11 @@ class Web3Provider extends EventEmitter {
   }
 
   handle_auth_message(that, resp) {
-    const _emit_event = that.emit_event;
+    const _emitEvent = that.emit_event;
 
     if (
-      (resp?.data?.payload?.method != "wallet_switchEthereumChain" ||
-        resp?.data?.payload?.method != "wallet_addEthereumChain") &&
+      (resp?.data?.payload?.method !== "wallet_switchEthereumChain" ||
+        resp?.data?.payload?.method !== "wallet_addEthereumChain") &&
       resp?.data?.payload?.chainId &&
       resp?.data?.payload?.addresses
     ) {
@@ -143,10 +150,10 @@ class Web3Provider extends EventEmitter {
       that._state.accounts = resp?.data?.payload?.addresses;
     }
 
-    if (resp.data.type == "FROM_CS" && resp.data.authoritative == true) {
+    if (resp.data.type === "FROM_CS" && resp.data.authoritative === true) {
       if (resp.data.hasOwnProperty("event")) {
         setTimeout(
-          () => _emit_event(that, resp.data.event, resp.data.payload?.param),
+          () => _emitEvent(that, resp.data.event, resp.data.payload?.param),
           100,
         );
       }
@@ -155,8 +162,6 @@ class Web3Provider extends EventEmitter {
   // THIS ENDS CONTENT in eth-provider.js
 
   async request(e) {
-    let res;
-
     if (!e.method) {
       return new RPCError("Method not described");
     }

@@ -14,7 +14,7 @@ import {
   log,
 } from "../../utils/helper";
 
-export function initiateSmartWallet(
+export default function initiateSmartWallet(
   rpcUrl: string,
   bundlerUrl: string,
   chainId: number,
@@ -31,17 +31,19 @@ export function initiateSmartWallet(
 ) {
   return async () => {
     const isLoggedIn = getItemFromStorage("isLoggedIn");
+
     if (!signer || !isLoggedIn) {
       log("[Hooks] No signer", null, "error");
       return;
     }
+
     const SCWProvider: any = await localforage.getItem(
       generateSHA256Hash("smartAccountProvider"),
     );
     const storageChainId: any = getItemFromStorage("network");
     const smartAccountAdd: any = getItemFromStorage("smartAccount");
 
-    //Need to work on
+    // Need to work on
     if (
       isInitialized === false &&
       SCWProvider &&
@@ -60,6 +62,7 @@ export function initiateSmartWallet(
 
       return;
     }
+
     const bundler = new Bundler({
       bundlerUrl,
       chainId,
@@ -82,10 +85,13 @@ export function initiateSmartWallet(
     login();
     let devices = getItemFromStorage("devices");
     let index = devices.findIndex((d: any) => d.id === deviceId);
+
     if (index < 0) {
       index = 0;
     }
+
     let newModified = devices.splice(index, 1)?.[0];
+
     newModified = {
       ...newModified,
       address: smartAccountAddress,

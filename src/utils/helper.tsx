@@ -1,3 +1,5 @@
+/* eslint-disable security-node/detect-crlf */
+/* eslint-disable no-console */
 /* eslint-disable array-callback-return */
 import { toSvg } from "jdenticon";
 import { ethers } from "ethers";
@@ -9,11 +11,12 @@ import erc20ABI from "../constants/erc20ABI";
 
 export const getItemFromStorage: any = (
   key: string,
-  storage: string = "localStorage",
+  storage = "localStorage",
 ) => {
-  let _window = window as any;
+  const _window = window as any;
   const item: any = _window[storage].getItem(key);
   let result = null;
+
   try {
     result = item ? JSON.parse(item) : null;
   } catch {
@@ -27,7 +30,8 @@ export const setItemInStorage: any = (
   data: any,
   storage = "localStorage",
 ) => {
-  let _window = window as any;
+  const _window = window as any;
+
   _window[storage].setItem(name, JSON.stringify(data));
 };
 
@@ -35,7 +39,8 @@ export const removeItemFromStorage: any = (
   name: any,
   storage = "localStorage",
 ) => {
-  let _window = window as any;
+  const _window = window as any;
+
   _window[storage].removeItem(name);
 };
 
@@ -54,6 +59,7 @@ export const generateAddressIcon = (address: string) => {
   const svgString = toSvg(address, 100);
   const svg = new Blob([svgString], { type: "image/svg+xml" });
   const url = URL.createObjectURL(svg);
+
   return url;
 };
 
@@ -70,7 +76,7 @@ export const getChainDetails: any = (chainId: number) => {
 };
 
 export const constructTransactionData: any = (transactions: any) => {
-  let txns: any = [];
+  const txns: any = [];
 
   transactions.map(({ to, args, value, from }: any) => {
     const contract = args.length ? new ethers.utils.Interface(erc20ABI) : null;
@@ -95,7 +101,7 @@ export const constructFinalUserOp: any = async (
   partialUserOp: any,
   gasFeeAddress: string,
 ) => {
-  const paymaster = smartAccountInstance.paymaster;
+  const { paymaster } = smartAccountInstance;
   const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(
     partialUserOp,
     { mode: "ERC20", tokenList: [gasFeeAddress] },
@@ -103,11 +109,11 @@ export const constructFinalUserOp: any = async (
   const requiredFeeQuotes = feeQuotesResponse.feeQuotes[0];
   const spender = feeQuotesResponse.tokenPaymasterAddress || "";
 
-  let finalUserOp = await smartAccountInstance.buildTokenPaymasterUserOp(
+  const finalUserOp = await smartAccountInstance.buildTokenPaymasterUserOp(
     partialUserOp,
     { feeQuote: requiredFeeQuotes, spender, maxApproval: false },
   );
-  let paymasterServiceData = {
+  const paymasterServiceData = {
     mode: "ERC20",
     feeTokenAddress: requiredFeeQuotes.tokenAddress,
   };
@@ -117,6 +123,7 @@ export const constructFinalUserOp: any = async (
       finalUserOp,
       paymasterServiceData,
     );
+
     finalUserOp.paymasterAndData = paymasterAndDataWithLimits.paymasterAndData;
 
     if (
@@ -166,6 +173,7 @@ export const getTokenData = async (
   const decimals = await contract.decimals();
 
   let balance = await contract.balanceOf(userAddress);
+
   balance = ethers.utils.formatUnits(balance, decimals);
 
   return { name, symbol, balance, decimals };
@@ -180,6 +188,7 @@ export const getTokenBalance = async (
   const decimals = await contract.decimals();
 
   let balance = await contract.balanceOf(userAddress);
+
   balance = ethers.utils.formatUnits(balance, decimals);
 
   return balance.toString();
@@ -191,14 +200,13 @@ export const getCoinBalance = async (
   setBalance: any,
 ) => {
   const balance = await provider.getBalance(userAddress);
+
   setBalance(ethers.utils.formatEther(balance));
 };
 
-export const generateSHA256Hash = (data: string) => {
-  return sha256(data);
-};
+export const generateSHA256Hash = (data: string) => sha256(data);
 
-export const log = (message: string, data: any, type: string = "info") => {
+export const log = (message: string, data: any = {}, type = "info") => {
   if (type === "info") {
     console.log(chalk.blue(message), data);
   } else if (type === "error") {

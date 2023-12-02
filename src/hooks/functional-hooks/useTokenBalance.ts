@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 
@@ -21,13 +20,13 @@ export default function useTokenBalance(
     }
 
     provider.on("block", async () => {
-      const balance = await getTokenBalance(
+      const tokenBalance = await getTokenBalance(
         tokenAddress,
         provider,
         userAddress,
       );
 
-      setBalance(balance);
+      setBalance(tokenBalance);
     });
   }, [tokenAddress, isActive]);
 

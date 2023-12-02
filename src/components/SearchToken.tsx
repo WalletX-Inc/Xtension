@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState, useRef } from "react";
 import { useRecoilState } from "recoil";
-import { transferState } from "../../src/state/TransferState";
 import { Search } from "react-feather";
+import localforage from "localforage";
+import { transferState } from "../../src/state/TransferState";
 import Tokens from "../constants/tokens";
 import { useConfig } from "../context/ConfigProvider";
-import { getItemFromStorage } from "../utils/helper";
-import localforage from "localforage";
-import { generateSHA256Hash } from "../utils/helper";
+import { getItemFromStorage, generateSHA256Hash, log } from "../utils/helper";
 import TokenCardTransaction from "./TokenCardTransaction";
 
 type searchTokenPara = {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => void;
   uid: string;
 };
 
@@ -87,10 +87,11 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       const data = await localforage.getItem(
         generateSHA256Hash(key.toString()),
       );
+
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {
-      console.error("Error getting token data:", error);
+      log("Error getting token data:", error, "error");
       return [];
     }
   };
@@ -98,6 +99,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   useEffect(() => {
     async function fetchData() {
       const retrievedData = await getTokenDataForKey(chainId); // put chainID
+
       setTokenListFromIndexedDB(retrievedData);
     }
     if (!tokenListFromIndexedDB.length) fetchData();
@@ -149,41 +151,37 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       {/* TOKEN CARD  */}
 
       <div className="overflow-y-scroll  max-h-[315px]">
-        {Tokens[chainId].map((token, index) => {
-          return (
+        {Tokens[chainId].map((token, index) => (
+          <>
+            <TokenCardTransaction
+              tokenIcon={token.logoUri}
+              tokenName={token.name}
+              tokenSymbol={token.symbol}
+              tokenAddress={token.address}
+              tokenDecimal={token?.decimals}
+              userAddress={SCW || smartAccountAddress}
+              isSelected={selectedTokenIndex === index}
+              index={index}
+              clickedTokenData={addToken}
+            />
+          </>
+        ))}
+        {tokenListFromIndexedDB &&
+          tokenListFromIndexedDB.map((tokens: tokenDataT, index: any) => (
             <>
               <TokenCardTransaction
-                tokenIcon={token.logoUri}
-                tokenName={token.name}
-                tokenSymbol={token.symbol}
-                tokenAddress={token.address}
-                tokenDecimal={token?.decimals}
+                tokenIcon={tokens.tokenLogoUrl}
+                tokenName={tokens.tokenName}
+                tokenSymbol={tokens.tokenSymbol}
+                tokenAddress={tokens.tokenAddress}
+                tokenDecimal={tokens?.tokenDecimal}
                 userAddress={SCW || smartAccountAddress}
                 isSelected={selectedTokenIndex === index}
                 index={index}
                 clickedTokenData={addToken}
               />
             </>
-          );
-        })}
-        {tokenListFromIndexedDB &&
-          tokenListFromIndexedDB.map((tokens: tokenDataT, index: any) => {
-            return (
-              <>
-                <TokenCardTransaction
-                  tokenIcon={tokens.tokenLogoUrl}
-                  tokenName={tokens.tokenName}
-                  tokenSymbol={tokens.tokenSymbol}
-                  tokenAddress={tokens.tokenAddress}
-                  tokenDecimal={tokens?.tokenDecimal}
-                  userAddress={SCW || smartAccountAddress}
-                  isSelected={selectedTokenIndex == index}
-                  index={index}
-                  clickedTokenData={addToken}
-                />
-              </>
-            );
-          })}
+          ))}
       </div>
     </div>
   );

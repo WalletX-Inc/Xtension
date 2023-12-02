@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { setItemInStorage, getCoinBalance } from "../../utils/helper";
 
-export function initiateEOA(
+export default function initiateEOA(
   credentialId: any,
   setSigner: any,
   rpc: string,
@@ -24,6 +24,7 @@ export function initiateEOA(
 
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const signer = eoa.connect(provider);
+
     setSigner(signer);
     setProvider(provider);
     setEOA(eoa.address);

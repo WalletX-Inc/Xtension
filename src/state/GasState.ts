@@ -3,8 +3,8 @@ import { recoilPersist } from "recoil-persist";
 
 const { persistAtom } = recoilPersist();
 
-type gasState = {
-  tokenUID: string; //it is for looping and other tasks
+type gasStateType = {
+  tokenUID: string; // it is for looping and other tasks
   tokenLogo: string;
   tokenName: string;
   tokenSymbol: string;
@@ -14,8 +14,10 @@ type gasState = {
   tokenGasValue: number;
 };
 
-export const gasState = atom<gasState[]>({
+const gasState = atom<gasStateType[]>({
   key: "GasState",
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
+
+export default gasState;

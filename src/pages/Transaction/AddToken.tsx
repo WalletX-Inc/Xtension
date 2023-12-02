@@ -20,7 +20,7 @@ const AddTokens = () => {
     name: getChainDetails(chainId).name,
     logo: getChainDetails(chainId).chainUri,
   };
-  const [transferData, setTransferData] = useRecoilState(transferState);
+  const [transferDataList, setTransferDataList] = useRecoilState(transferState);
 
   const navigate = useNavigate();
   const [isTokenModalOpen, setTokenModalOpen] = useState<boolean>(false);
@@ -59,29 +59,29 @@ const AddTokens = () => {
   const handelAmountChange = (e: any, uid: string) => {
     setIsEnteredAmountValid({
       valid: true,
-      uid: uid,
+      uid,
     });
-    const enteredAmount = e.target.value;
+    const userEnteredAmount = e.target.value;
 
-    const isAmountValid = transferData.some(
+    const isAmountValid = transferDataList.some(
       (transferDetails) =>
         transferDetails.uid === uid &&
         transferDetails.tokenBalance &&
-        transferDetails.tokenBalance >= enteredAmount,
+        transferDetails.tokenBalance >= userEnteredAmount,
     );
 
     if (isAmountValid) {
-      setEnteredAmount(enteredAmount);
+      setEnteredAmount(userEnteredAmount);
     } else {
       setIsEnteredAmountValid({
         valid: false,
-        uid: uid,
+        uid,
       });
     }
   };
 
   const updateAmount = (uid: string) => {
-    setTransferData((prevData) =>
+    setTransferDataList((prevData) =>
       prevData.map((transferDetails) =>
         transferDetails.uid === uid
           ? {
@@ -104,7 +104,7 @@ const AddTokens = () => {
   };
 
   const handelRemoveToken = () => {
-    setTransferData((prevData) =>
+    setTransferDataList((prevData) =>
       prevData.map((transferDetails) =>
         transferDetails.uid === uidToRemoveToken
           ? {
@@ -133,7 +133,7 @@ const AddTokens = () => {
   };
 
   const handleRemoveAddress = () => {
-    setTransferData((prevAddresses) =>
+    setTransferDataList((prevAddresses) =>
       prevAddresses.filter(
         (transferDetails) => transferDetails.uid !== uidToRemoveAddress,
       ),
@@ -141,14 +141,14 @@ const AddTokens = () => {
     setIsRemoveAddressModalOpen(false);
 
     // Check this line and remove it
-    if (transferData.length == 0) {
+    if (transferDataList.length === 0) {
       navigate("/dashboard/transaction/add-address");
     }
   };
 
   const handelProceedButton = () => {
     if (
-      transferData.length > 0 &&
+      transferDataList.length > 0 &&
       isTokenAddedForAddresses &&
       isTokenAmountValidForAddresses
     ) {
@@ -160,11 +160,11 @@ const AddTokens = () => {
     const propertyName = "tokenSymbol";
     const property2Name = "amount";
 
-    const tokenIsAddedForAll = transferData.every(
+    const tokenIsAddedForAll = transferDataList.every(
       (address) => !!address[propertyName],
     );
 
-    const tokenAmountIsGreaterThanZero = transferData.every(
+    const tokenAmountIsGreaterThanZero = transferDataList.every(
       (address) => address[property2Name] > 0,
     );
 
@@ -174,9 +174,11 @@ const AddTokens = () => {
 
   useEffect(() => {
     validateTransferDetails();
-  }, [transferData]);
+  }, [transferDataList]);
 
-  if (transferData.length === 0) navigate("/dashboard/transaction/add-address");
+  if (transferDataList.length === 0)
+    navigate("/dashboard/transaction/add-address");
+
   return (
     <>
       <div className=" max-w-[350px] mx-auto  bg-[#1f1f20]  ">
@@ -220,128 +222,124 @@ const AddTokens = () => {
 
         {/* CardSection  */}
         <div className="overflow-y-scroll max-h-[450px]  mt-2">
-          {transferData.map((transferData) => {
-            return (
-              <>
-                <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
-                  <div className=" flex  justify-between   bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
-                    <div className="flex justify-center item-center gap-2">
-                      <img
-                        className="h-7 border rounded-lg my-auto"
-                        src={generateAddressIcon(transferData.address)}
-                        alt="generate it from the token"
-                      />
-                      <p className="font-medium">
-                        {getShortDisplayString(transferData.address)}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        openRemoveAddressModal(transferData.uid);
-                      }}
-                    >
-                      <Trash className="h-6 w-6" />
-                    </button>
+          {transferDataList.map((transferData) => (
+            <>
+              <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
+                <div className=" flex  justify-between   bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
+                  <div className="flex justify-center item-center gap-2">
+                    <img
+                      className="h-7 border rounded-lg my-auto"
+                      src={generateAddressIcon(transferData.address)}
+                      alt="generate it from the token"
+                    />
+                    <p className="font-medium">
+                      {getShortDisplayString(transferData.address)}
+                    </p>
                   </div>
-                  {/* Amount exceeds available balance. Please adjust 
+                  <button
+                    onClick={() => {
+                      openRemoveAddressModal(transferData.uid);
+                    }}
+                  >
+                    <Trash className="h-6 w-6" />
+                  </button>
+                </div>
+                {/* Amount exceeds available balance. Please adjust 
                   Balance too low for the requested amount.
                   Insufficient balance. Please enter a valid amount.
                   Your entered amount exceeds your available balance.
                   */}
 
-                  {isEnteredAmountValid.valid === false &&
-                  isEnteredAmountValid.uid == transferData.uid ? (
-                    <div>
-                      <h1 className="font-semibold text-sm text-red-500 px-2 tracking-wide  text-center">
-                        Amount exceeds available balance. Please adjust.
-                      </h1>
+                {isEnteredAmountValid.valid === false &&
+                isEnteredAmountValid.uid === transferData.uid ? (
+                  <div>
+                    <h1 className="font-semibold text-sm text-red-500 px-2 tracking-wide  text-center">
+                      Amount exceeds available balance. Please adjust.
+                    </h1>
+                  </div>
+                ) : (
+                  <></>
+                )}
+
+                {/* TOKEN CARD SECTION */}
+                {transferData.tokenSymbol ? (
+                  <>
+                    <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-2   justify-between w-full items-center   ">
+                      <div
+                        onClick={() => {
+                          openAddTokenModal(transferData.uid);
+                        }}
+                        className="flex justify-center items-center gap-2"
+                      >
+                        <img
+                          className="h-8 w-8 "
+                          src={transferData.tokenLogo}
+                          alt="tokenIcon"
+                        />
+
+                        <div className="flex flex-col items-start ">
+                          <p>{transferData.tokenSymbol}</p>
+                          <p className="text-sm">{transferData.tokenName}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end ">
+                        <input
+                          className="bg-transparent  border-black outline-none max-w-[80px] text-right"
+                          type="number"
+                          min={0}
+                          placeholder="0"
+                          defaultValue={`${
+                            transferData.amount === 0 ? "" : transferData.amount
+                          }`}
+                          onChange={(e: any) =>
+                            handelAmountChange(e, transferData.uid)
+                          }
+                          onBlurCapture={() => updateAmount(transferData.uid)}
+                        />
+                        <p className="text-sm ">$ 00.00</p>
+                      </div>
                     </div>
-                  ) : (
-                    <></>
-                  )}
 
-                  {/* TOKEN CARD SECTION */}
-                  {transferData.tokenSymbol ? (
-                    <>
-                      <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-2   justify-between w-full items-center   ">
-                        <div
-                          onClick={() => {
-                            openAddTokenModal(transferData.uid);
-                          }}
-                          className="flex justify-center items-center gap-2"
-                        >
-                          <img
-                            className="h-8 w-8 "
-                            src={transferData.tokenLogo}
-                            alt="tokenIcon"
-                          />
-
-                          <div className="flex flex-col items-start ">
-                            <p>{transferData.tokenSymbol}</p>
-                            <p className="text-sm">{transferData.tokenName}</p>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col items-end ">
-                          <input
-                            className="bg-transparent  border-black outline-none max-w-[80px] text-right"
-                            type="number"
-                            min={0}
-                            placeholder="0"
-                            defaultValue={`${
-                              transferData.amount === 0
-                                ? ""
-                                : transferData.amount
-                            }`}
-                            onChange={(e: any) =>
-                              handelAmountChange(e, transferData.uid)
-                            }
-                            onBlurCapture={() => updateAmount(transferData.uid)}
-                          />
-                          <p className="text-sm ">$ 00.00</p>
-                        </div>
-                      </div>
-
-                      {/* balance and remove token  */}
-                      <div className="flex justify-between px-2 text-sm ">
-                        <p className="font-semibold">
-                          Balance <span>{transferData.tokenBalance}</span>
-                        </p>
-                        {/* Make a function to create the data of tokens added from the transferData  */}
-                        <button
-                          onClick={() => {
-                            openRemoveTokenModal(transferData.uid);
-                          }}
-                          className="text-red-500 font-semibold"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="self-center  bg-gray-900 border border-black  px-2 py-1 rounded-lg mt-2 text-white  ">
-                        <button
-                          onClick={() => {
-                            openAddTokenModal(transferData.uid);
-                          }}
-                          className="font-semibold tracking-widest "
-                        >
-                          Select Asset
-                        </button>
-                      </div>
-                    </>
-                  )}
-                  {/* MODAL FOR SELECTING THE TOKENS  */}
-                  <SearchToken
-                    isOpen={isTokenModalOpen}
-                    onClose={closeAddTokenModal}
-                    uid={uidToAddTokenToAddress}
-                  />
-                </div>
-              </>
-            );
-          })}
+                    {/* balance and remove token  */}
+                    <div className="flex justify-between px-2 text-sm ">
+                      <p className="font-semibold">
+                        Balance <span>{transferData.tokenBalance}</span>
+                      </p>
+                      {/* Make a function to create the data of tokens added from the transferData  */}
+                      <button
+                        onClick={() => {
+                          openRemoveTokenModal(transferData.uid);
+                        }}
+                        className="text-red-500 font-semibold"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="self-center  bg-gray-900 border border-black  px-2 py-1 rounded-lg mt-2 text-white  ">
+                      <button
+                        onClick={() => {
+                          openAddTokenModal(transferData.uid);
+                        }}
+                        className="font-semibold tracking-widest "
+                      >
+                        Select Asset
+                      </button>
+                    </div>
+                  </>
+                )}
+                {/* MODAL FOR SELECTING THE TOKENS  */}
+                <SearchToken
+                  isOpen={isTokenModalOpen}
+                  onClose={closeAddTokenModal}
+                  uid={uidToAddTokenToAddress}
+                />
+              </div>
+            </>
+          ))}
           {/* Add more addresses  */}
           <div className="flex justify-center item-center mt-10 pb-28  ">
             <button
@@ -378,11 +376,7 @@ const AddTokens = () => {
       {/* ######################## PROCEED SECTION ######################## */}
       <button
         onClick={handelProceedButton}
-        disabled={
-          isTokenAddedForAddresses && isTokenAmountValidForAddresses
-            ? false
-            : true
-        }
+        disabled={!(isTokenAddedForAddresses && isTokenAmountValidForAddresses)}
         className={`${
           isTokenAddedForAddresses && isTokenAmountValidForAddresses
             ? "border-white"

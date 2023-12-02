@@ -1,3 +1,8 @@
+/* eslint-disable security-node/detect-crlf */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
+
 // window.addEventListener('load', function(){
 //     function injectScript(file_path, tag) {
 //         var node = document.getElementsByTagName(tag)[0];
@@ -18,7 +23,7 @@ try {
         "IN CONTENT_SCRIPT window.addEventListener('message', :15",
         ev,
       );
-      if (ev.data.type == "FROM_PAGE") {
+      if (ev.data.type === "FROM_PAGE") {
         if (
           chrome &&
           chrome.runtime &&
@@ -35,13 +40,14 @@ try {
     false,
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(
       "IN CONTENT_SCRIPT chrome.runtime.onMessage.addListener: :26",
       request,
     );
 
-    if (request.type == "FROM_BG") {
+    if (request.type === "FROM_BG") {
       const auth = request.payload.hasOwnProperty("authoritative")
         ? { authoritative: true }
         : {};

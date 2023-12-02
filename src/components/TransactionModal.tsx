@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-import approved from "../../src/assets/approveTsx.svg";
+import approved from "../assets/approveTsx.svg";
 
 type transactionModalParams = {
   isOpen: boolean;
@@ -12,6 +12,7 @@ const TransactionModal = ({
   transactionHash,
 }: transactionModalParams) => {
   const navigate = useNavigate();
+
   return (
     <div
       className={`${

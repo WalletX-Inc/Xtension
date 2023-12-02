@@ -1,9 +1,9 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PublicRoutes from "./publicRoutes";
 import PrivateRoutes from "./privateRoutes";
 import { useAuth } from "../hooks/system-hooks/useAuth";
-import { useEffect } from "react";
 import EthProvider from "../dapp-connection/js/services/EthProvider";
-import { useNavigate } from "react-router-dom";
 
 function AppRoutes() {
   const navigate = useNavigate();
