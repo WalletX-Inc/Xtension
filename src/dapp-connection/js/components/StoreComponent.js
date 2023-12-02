@@ -30,26 +30,26 @@ let Store = {
     this.commit("state", Store.state);
   },
 
-  getLocalState: function () {
-    let cont = this.load("local");
-    if (!cont) {
-      cont = {};
-    }
-    Store.localState = cont;
-    return Store.localState;
-  },
+  // getLocalState: function () {
+  //   let cont = this.load("local");
+  //   if (!cont) {
+  //     cont = {};
+  //   }
+  //   Store.localState = cont;
+  //   return Store.localState;
+  // },
 
-  saveLocalState: function (state) {
-    Store.localState = { ...Store.localState, ...state };
-    console.log(Number(new Date()), "LOCALSTATE", Store.localState);
+  // saveLocalState: function (state) {
+  //   Store.localState = { ...Store.localState, ...state };
+  //   console.log(Number(new Date()), "LOCALSTATE", Store.localState);
 
-    this.commit("local", Store.localState);
-  },
-  clearLocalState: function () {
-    Store.localState = {};
+  //   this.commit("local", Store.localState);
+  // },
+  // clearLocalState: function () {
+  //   Store.localState = {};
 
-    this.commit("local", Store.localState);
-  },
+  //   this.commit("local", Store.localState);
+  // },
 
   clearStateKeys: function (keyPrefixes) {
     let keys = Object.keys(Store.state);
@@ -74,20 +74,11 @@ let Store = {
   },
 
   INITIAL_STATE: {
-    currentScreen: "login-screen",
-    currentController: "index_controller",
-    locked: false,
-    wallets: false,
   },
 
   commit: function (place, obj) {
     const sol = DAPP_CONNECTION_ENV.WALLET_WORD_SPLIT;
     // const sol = process.env.REACT_APP_WALLET_WORD_SPLIT;
-    console.log(
-      "eituweioutwtoei, ",
-      process.env,
-      process.env.REACT_APP_WALLET_WORD_SPLIT
-    );
     const k = place == "local" ? Store.localKey : Store.key;
 
     const buff = CryptoJS.AES.encrypt(JSON.stringify(obj), sol).toString();

@@ -193,7 +193,7 @@ function handle_message(ev, sender) {
       "eth_estimateGas",
       "eth_getTransactionByHash",
       "eth_getTransactionReceipt",
-    ].indexOf(ev.payload.method) != -1
+    ].indexOf(ev.payload.method) !== -1
   ) {
     respond(ev);
   } else {

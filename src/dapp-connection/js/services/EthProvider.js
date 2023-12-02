@@ -84,15 +84,15 @@ class EthProvider {
                   "INSIDE ETHPROVIDER ",
                   ev.data.payload
                 );
-                Store.saveLocalState({
+                Store.saveState({
                   address: ev.data.payload.params[0],
                   message: ev.data.payload.params[1],
-                  useExternalFee: true,
                   connect_title: ev.data?.from?.title,
                   connect_origin: ev.data?.from?.origin,
                 });
                 // AppController.start("sign_message_external");
-                this.navigateFunc("/dashboard/dapp/sign-message");
+                // this.navigateFunc("/dashboard/dapp/sign-message");
+                this.navigateFunc("/dashboard/dapp/signature");
                 // window.location.replace(`${window.location.hostname}/dashboard/dapp/sign-message`)
                 // window.location.assign(`${window.location.hostname}/dashboard/dapp/sign-message`)
 
@@ -125,7 +125,7 @@ class EthProvider {
                   "INSIDE ETHPROVIDER ",
                   ev.data.payload
                 );
-                Store.saveLocalState({
+                Store.saveState({
                   ...ev.data.payload.params[0],
                   useExternalFee: true,
                 });

@@ -13,7 +13,8 @@ import Web3Provider from "./js/Web3Provider/Web3Provider";
     connected: false,
   };
 
-  window.walletX = new Web3Provider();
+  // window.walletX = new Web3Provider();
+  window.ethereum = new Web3Provider();
 })();
 
 // }

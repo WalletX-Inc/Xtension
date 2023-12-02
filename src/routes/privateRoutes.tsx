@@ -14,7 +14,7 @@ import Receive from "../pages/TransactDrawer/Receive";
 import SignMessage from "../pages/Dapp/SignMessage"
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
-import SignatureRequest from "../pages/Signature/SignatureRequest";
+import SignatureRequest from "../pages/Dapp/Signature/SignatureRequest";
 import DappConnect from "../pages/Dapp/DappConnect";
 import DappConnectAccount from "../pages/Dapp/DappConnectAccount";
 import DappConnecting from "../pages/Dapp/DappConnecting";
@@ -40,10 +40,6 @@ function PrivateRoutes() {
         <Route path="/dashboard/collectables" element={<Collectables />} />
         <Route path="/dashboard/activity" element={<Activity />} />
         <Route path="/dashboard/settings" element={<Settings />} />
-        <Route path="/dashboard/signature" element={<SignatureRequest />} />
-        <Route path="/dashboard/connect" element={<DappConnect />} />
-        <Route path="/dashboard/sign" element={<DappConnectAccount />} />
-        <Route path="/dashboard/connecting" element={<DappConnecting />} />
       </Route>
 
       <Route path="/dashboard/receive" element={<Receive />} />
@@ -60,11 +56,16 @@ function PrivateRoutes() {
         path="/dashboard/transaction/approve-transactions"
         element={<ApproveTransaction />}
       />
-
+{/* DAPP connection routes */}
       <Route
         path="/dashboard/dapp/sign-message"
         element={<SignMessage/>}
       />
+
+      <Route path="/dashboard/dapp/signature" element={<SignatureRequest />} />
+      <Route path="/dashboard/dapp/connect" element={<DappConnect />} />
+      <Route path="/dashboard/dapp/sign" element={<DappConnectAccount />} />
+      <Route path="/dashboard/dapp/connecting" element={<DappConnecting />} />
         
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
