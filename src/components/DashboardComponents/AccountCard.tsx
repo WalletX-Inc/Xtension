@@ -30,7 +30,7 @@ const AccountCard = () => {
   const { balance } = useCoinBalance(
     SCW || smartAccountAddress,
     true,
-    chainDetails.wssRpc
+    chainDetails.wssRpc,
   );
 
   const copyToClipboard = async () => {
@@ -60,7 +60,7 @@ const AccountCard = () => {
   useEffect(() => {
     if (chainIDFromStorage) {
       const currentChain = Chains.filter(
-        (ch) => ch.chainId === chainIDFromStorage
+        (ch) => ch.chainId === chainIDFromStorage,
       );
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);
     } else {
@@ -71,7 +71,7 @@ const AccountCard = () => {
   useEffect(() => {
     if (chainIDFromStorage) {
       const currentChain = Chains.filter(
-        (ch) => ch.chainId === chainIDFromStorage
+        (ch) => ch.chainId === chainIDFromStorage,
       );
       setCurrentChainLogo(currentChain?.[0]?.chainUri);
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);

@@ -39,7 +39,7 @@ const TokenCardTransaction = ({
         const balance = await getTokenBalance(
           tokenAddress,
           provider,
-          userAddress
+          userAddress,
         );
         setBalance(balance);
       }
@@ -57,7 +57,7 @@ const TokenCardTransaction = ({
           tokenAddress,
           tokenDecimal,
           tokenIcon,
-          balance
+          balance,
         ]);
       }}
       className="max-w-[95%] mx-auto m-3"

@@ -42,7 +42,7 @@ function Login() {
   async function authenticateDevice() {
     if (deviceName) {
       const filterDevice = allDevices.filter(
-        (d: any) => d.name === deviceName
+        (d: any) => d.name === deviceName,
       )?.[0];
 
       const challenge = v4();
@@ -54,7 +54,7 @@ function Login() {
           authenticatorType: "both",
           userVerification: "required",
           timeout: 60000,
-        }
+        },
       );
 
       filterDevice?.address

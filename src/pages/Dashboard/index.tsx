@@ -53,7 +53,7 @@ function Dashboard() {
   const { balance } = useCoinBalance(
     SCW || smartAccountAddress,
     true,
-    chainDetails.wssRpc
+    chainDetails.wssRpc,
   );
 
   // Receve Button functions
@@ -78,7 +78,7 @@ function Dashboard() {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
         const myDevice = allDevices?.filter(
-          (d: any) => d.address == smartAddress
+          (d: any) => d.address == smartAddress,
         )?.[0];
         init(chainId, myDevice?.name);
       }

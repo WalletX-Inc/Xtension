@@ -1,4 +1,5 @@
 # WalletX
+
 <br>
 
 ## A Smart wallet browser extension designed for smarter transactions in the onchain world..
@@ -20,15 +21,19 @@ Welcome to WalletX, your smart crypto wallet browser extension designed to simpl
 ## 1. Features
 
 ### A Smart Crypto Wallet
+
 - WalletX is designed for seamless on-chain transactions, providing you with a secure and user-friendly wallet to store and manage your digital assets.
 
 ### State of the art Security
+
 - WalletX ensures the highest security standards by allowing the user to login and sign transactions using their native device biometric authentication.
 
 ### Smarter Transactions
+
 - Execute transactions easily, optimize gas fees, and stay up-to-date with real-time blockchain data to make smarter financial decisions.
 
 ### Intuitive Interface
+
 - WalletX offers an intuitive and user-friendly interface, making it suitable for both beginners and experienced crypto enthusiasts.
 
 <br>
@@ -46,7 +51,8 @@ Once the installation is complete, you'll find the WalletX icon in your browser'
 
 <br>
 
-### To run WalletX locally on your system, 
+### To run WalletX locally on your system,
+
 1. Clone this repo
 2. Run `npm install` & `npm run build`. You will see a dist folder on the root directory.
 3. Open your Chrome or Brave browser, go to the extensions tab, and toggle the developer mode on. Once that is done, click on **Load Unpacked** select the dist folder, and upload it.

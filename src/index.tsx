@@ -7,7 +7,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import localforage from "localforage";
 
-
 localforage.config({
   driver: localforage.INDEXEDDB, // This will use indexedDB
   name: "WalletX", // Name of your database.
@@ -21,7 +20,7 @@ const rootDiv = ReactDOM.createRoot(root);
 rootDiv.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -67,7 +67,7 @@ const AddTokens = () => {
       (transferDetails) =>
         transferDetails.uid === uid &&
         transferDetails.tokenBalance &&
-        transferDetails.tokenBalance >= enteredAmount
+        transferDetails.tokenBalance >= enteredAmount,
     );
 
     if (isAmountValid) {
@@ -88,8 +88,8 @@ const AddTokens = () => {
               ...transferDetails,
               amount: enteredAmount,
             }
-          : transferDetails
-      )
+          : transferDetails,
+      ),
     );
   };
 
@@ -116,8 +116,8 @@ const AddTokens = () => {
               tokenDecimal: 0,
               amount: 0,
             }
-          : transferDetails
-      )
+          : transferDetails,
+      ),
     );
     setIsRemoveTokenModalOpen(false);
   };
@@ -135,8 +135,8 @@ const AddTokens = () => {
   const handleRemoveAddress = () => {
     setTransferData((prevAddresses) =>
       prevAddresses.filter(
-        (transferDetails) => transferDetails.uid !== uidToRemoveAddress
-      )
+        (transferDetails) => transferDetails.uid !== uidToRemoveAddress,
+      ),
     );
     setIsRemoveAddressModalOpen(false);
 
@@ -161,11 +161,11 @@ const AddTokens = () => {
     const property2Name = "amount";
 
     const tokenIsAddedForAll = transferData.every(
-      (address) => !!address[propertyName]
+      (address) => !!address[propertyName],
     );
 
     const tokenAmountIsGreaterThanZero = transferData.every(
-      (address) => address[property2Name] > 0
+      (address) => address[property2Name] > 0,
     );
 
     setIsTokenAddedForAddresses(tokenIsAddedForAll);

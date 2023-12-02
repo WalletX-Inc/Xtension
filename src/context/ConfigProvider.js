@@ -22,7 +22,7 @@ const ConfigProvider = ({ children }) => {
       SCW: initParams.SCWBalance,
     },
     isConnected: initParams.isConnected,
-    isInitialized:initParams.isInitialized,
+    isInitialized: initParams.isInitialized,
   };
 
   log("Context : ", providerValues, "info");

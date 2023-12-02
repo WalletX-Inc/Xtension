@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 
 import { initiateSmartWallet } from "./initiateSmartWallet";
 import { initiateEOA } from "./initiateEOA";
-import { getItemFromStorage } from "../../utils/helper";
+import { getItemFromStorage, getChainDetails } from "../../utils/helper";
 import { useAuth } from "./useAuth";
-import { getChainDetails } from "../../utils/helper";
 
 export default function useInit() {
   const [signer, setSigner] = useState(null);
@@ -26,7 +25,7 @@ export default function useInit() {
 
   const auth = useAuth();
 
-  const isLoggedIn = auth.isLoggedIn;
+  const { isLoggedIn } = auth;
 
   useEffect(() => {
     if (deviceId || chainId) {
@@ -46,6 +45,7 @@ export default function useInit() {
   function init(chainId, deviceName) {
     setIsConnected(false);
     const chainData = getChainDetails(chainId);
+
     setRpcUrl(chainData.rpc);
     setBundlerUrl(chainData.bundlerUrl);
     setChainId(chainData.chainId);
@@ -54,6 +54,7 @@ export default function useInit() {
 
     const devices = getItemFromStorage("devices");
     const filter = devices.filter((d) => d.name === deviceName)?.[0];
+
     // const device = getItemFromStorage(generateSHA256Hash('device'));
     if (filter?.id) {
       setDeviceId(filter.id);
@@ -66,7 +67,7 @@ export default function useInit() {
     rpcUrl,
     setProvider,
     setEOA,
-    setEOABalance
+    setEOABalance,
   );
   const getSmartWalletHandler = initiateSmartWallet(
     rpcUrl,
@@ -82,7 +83,6 @@ export default function useInit() {
     setIsConnected,
     isInitialized,
     deviceId,
-  
   );
 
   return {

@@ -138,7 +138,7 @@ const ApproveTransaction = () => {
     const paymaster = smartAccountProvider.paymaster;
     const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(
       userOp,
-      { mode: "ERC20", tokenList: [] }
+      { mode: "ERC20", tokenList: [] },
     );
 
     let supportedTokens: any = [];
@@ -227,7 +227,7 @@ const ApproveTransaction = () => {
       finalUserOp = await constructFinalUserOp(
         smartAccountProvider,
         finalUserOp,
-        selectedTokenForGas.tokenAddress
+        selectedTokenForGas.tokenAddress,
       );
       log("FINAL USEROP : ", finalUserOp, "info");
     }

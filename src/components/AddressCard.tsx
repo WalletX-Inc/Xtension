@@ -20,7 +20,6 @@ const AddressCard = ({
     getClickedAddress(clickedAddress);
   };
 
-
   return (
     <>
       <div

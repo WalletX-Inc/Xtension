@@ -28,7 +28,7 @@ function Registration() {
         transition duration-500 hover:scale-110 p-2"
           onClick={() => {
             setShowRegister(true);
-            removeItemFromStorage('smartAccount')
+            removeItemFromStorage("smartAccount");
           }}
         >
           <div className="p-2 flex justify-between items-center gap-5 font-bold">

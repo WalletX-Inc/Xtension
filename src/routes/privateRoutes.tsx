@@ -11,7 +11,7 @@ import Settings from "../pages/Settings";
 import Bridge from "../pages/TransactDrawer/Bridge";
 import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
-import SignMessage from "../pages/Dapp/SignMessage"
+import SignMessage from "../pages/Dapp/SignMessage";
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
 import SignatureRequest from "../pages/Dapp/Signature/SignatureRequest";
@@ -56,17 +56,14 @@ function PrivateRoutes() {
         path="/dashboard/transaction/approve-transactions"
         element={<ApproveTransaction />}
       />
-{/* DAPP connection routes */}
-      <Route
-        path="/dashboard/dapp/sign-message"
-        element={<SignMessage/>}
-      />
+      {/* DAPP connection routes */}
+      <Route path="/dashboard/dapp/sign-message" element={<SignMessage />} />
 
       <Route path="/dashboard/dapp/signature" element={<SignatureRequest />} />
       <Route path="/dashboard/dapp/connect" element={<DappConnect />} />
       <Route path="/dashboard/dapp/sign" element={<DappConnectAccount />} />
       <Route path="/dashboard/dapp/connecting" element={<DappConnecting />} />
-        
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

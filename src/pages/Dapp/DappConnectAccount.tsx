@@ -1,5 +1,5 @@
 import StepHeader from "./StepHeader";
-import {  getShortDisplayString } from "../../utils/helper";
+import { getShortDisplayString } from "../../utils/helper";
 import { Eye } from "react-feather";
 
 function DappConnectAccount() {
@@ -7,7 +7,7 @@ function DappConnectAccount() {
 
   return (
     <div className="container mt-3">
-      <StepHeader completedSteps={[1,2]} />
+      <StepHeader completedSteps={[1, 2]} />
       <a
         href="https://www.walletx.info/"
         target="_blank"

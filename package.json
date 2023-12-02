@@ -47,7 +47,8 @@
     "build": "rm -rf dist && webpack --config webpack.config.js",
     "watch": "webpack -w --config webpack.config.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prettier-fix": "prettier . --write"
   },
   "eslintConfig": {
     "extends": [
@@ -87,6 +88,7 @@
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "prettier": "^2.7.1"
   }
 }

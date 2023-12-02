@@ -1,7 +1,14 @@
 import { ethers } from "ethers";
 import { setItemInStorage, getCoinBalance } from "../../utils/helper";
 
-export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setProvider: any, setEOA: any, setBalance: any) {
+export function initiateEOA(
+  credentialId: any,
+  setSigner: any,
+  rpc: string,
+  setProvider: any,
+  setEOA: any,
+  setBalance: any,
+) {
   return () => {
     if (!credentialId) {
       return;
@@ -22,5 +29,5 @@ export function initiateEOA(credentialId: any, setSigner: any, rpc: string, setP
     setEOA(eoa.address);
 
     getCoinBalance(eoa.address, provider, setBalance);
-  }  
+  };
 }

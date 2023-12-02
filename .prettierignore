@@ -1,0 +1,11 @@
+dist
+
+# Ignore all HTML files:
+*.html
+
+.gitignore
+.prettierignore
+.github/
+/infra/*
+/docs
+logs

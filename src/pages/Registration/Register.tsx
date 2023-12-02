@@ -27,7 +27,7 @@ const Register = () => {
   const { login } = useAuth();
   const { init } = useConfig();
   const smartAccountAddress = getItemFromStorage("smartAccount");
-        const allDevicesData = getItemFromStorage("devices");
+  const allDevicesData = getItemFromStorage("devices");
 
   useEffect(() => {
     if (signer) {
@@ -47,7 +47,7 @@ const Register = () => {
     }
   }, [smartAccountAddress]);
 
-  function generateEOA(credentialId: any,data:any) {
+  function generateEOA(credentialId: any, data: any) {
     setButtonTitle("Registering...");
     const inputBytes = ethers.utils.toUtf8Bytes(credentialId);
     const hash = ethers.utils.keccak256(inputBytes);
@@ -55,30 +55,29 @@ const Register = () => {
     const mnemonic = ethers.utils.entropyToMnemonic(hash);
     const eoa = ethers.Wallet.fromMnemonic(mnemonic);
 
-    const newData={
+    const newData = {
       ...data,
-      signer:eoa.address
-    }
+      signer: eoa.address,
+    };
     console.log("allDevicesData generateEOA", allDevicesData);
-    if(allDevicesData){
-      setItemInStorage('devices',[newData, ...allDevicesData]);
-    }
-    else{
-      console.log('in else generateEOA ')
-      setItemInStorage('devices',[newData])
+    if (allDevicesData) {
+      setItemInStorage("devices", [newData, ...allDevicesData]);
+    } else {
+      console.log("in else generateEOA ");
+      setItemInStorage("devices", [newData]);
     }
     // setItemInStorage("signer", eoa.address);
 
     const provider = new ethers.providers.JsonRpcProvider(Config.RPC_MUMBAI);
     const signer = eoa.connect(provider);
     //if device entered in storage
-    
+
     setSigner(signer);
     console.log("signer execure");
   }
 
   async function getSmartWalletAddress() {
-    await init(defaultChainId,deviceName);
+    await init(defaultChainId, deviceName);
     console.log("Register.jsx getSmartWalletAddress");
     // setButtonTitle("Done");
     // login();
@@ -129,7 +128,7 @@ const Register = () => {
       // console.log(allDevices, allDevicesData, deviceData);
       // setItemInStorage("devices", allDevices);
       setItemInStorage("isLoggedIn", true);
-      generateEOA(registration?.credential.id,deviceData);
+      generateEOA(registration?.credential.id, deviceData);
     }
   }
 
@@ -152,10 +151,7 @@ const Register = () => {
           >
             {buttonTitle}
           </Button>
-          <Link
-            className={`mt-3 text-sm `}
-            to={"/login"}
-          >
+          <Link className={`mt-3 text-sm `} to={"/login"}>
             Already Have an account ? Login
           </Link>
         </div>

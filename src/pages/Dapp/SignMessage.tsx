@@ -17,7 +17,7 @@ const AddAddresses = () => {
   const [sendToAddresses, setSendToAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
-    null
+    null,
   );
   const [cardAddress, setCardAddress] = useState<string>("");
   const [isCardSelected, setIsCardSelected] = useState<boolean>(false);
@@ -139,7 +139,7 @@ const AddAddresses = () => {
         tokenLogo: "",
       },
     ]);
-    console.log('Transfer Data : ', transferData);
+    console.log("Transfer Data : ", transferData);
     navigate("/dashboard/transaction/add-tokens");
   };
 
@@ -179,7 +179,7 @@ const AddAddresses = () => {
         </div>
       </header>
 
-<h1>THIS IS SIGN MESSAGE SCREEN</h1>
+      <h1>THIS IS SIGN MESSAGE SCREEN</h1>
 
       <button
         onClick={handelProceed}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Store from "../../../dapp-connection/js/components/StoreComponent";
 import icon128 from "../../../assets/icons/mainLogo.png";
-import EthProvider from '../../../dapp-connection/js/services/EthProvider'
+import EthProvider from "../../../dapp-connection/js/services/EthProvider";
 
 type SignatureRequestDataType = {
   address: String;
@@ -26,7 +26,7 @@ export default function SignatureRequest() {
 
   const rejectSignRequest = () => {
     EthProvider.onCancel();
-  }
+  };
 
   return (
     <>
@@ -56,7 +56,10 @@ export default function SignatureRequest() {
             >
               Sign
             </button>
-            <button className="w-1/2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md ml-4" onClick={rejectSignRequest}>
+            <button
+              className="w-1/2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md ml-4"
+              onClick={rejectSignRequest}
+            >
               Reject
             </button>
           </div>

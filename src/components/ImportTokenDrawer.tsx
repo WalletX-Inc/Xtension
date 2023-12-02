@@ -82,7 +82,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
     const tokenData = await getTokenData(
       inputAddress,
       provider,
-      smartAccountAddress
+      smartAccountAddress,
     );
 
     if (!tokenData) {
@@ -110,7 +110,7 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
 
       await localforage.setItem(
         generateSHA256Hash(key.toString()),
-        newTokenData
+        newTokenData,
       );
     } catch (error) {
       console.error("Error setting token data:", error);
@@ -144,8 +144,6 @@ const ImportTokenDrawer = ({ isOpen, onClose }: importTokenParam) => {
       balance: "",
     });
   }, [isValidAddress]);
-
-  
 
   useEffect(() => {
     const closeDrawerOnOutsideClick = (e: any) => {

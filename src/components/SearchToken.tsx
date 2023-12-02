@@ -21,7 +21,7 @@ type Token = [
   address: string,
   decimals: number | string,
   logoUri: string,
-  balance: number | undefined
+  balance: number | undefined,
 ];
 
 type tokenDataT = {
@@ -74,8 +74,8 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
               tokenLogo,
               tokenBalance,
             }
-          : transferDetails
-      )
+          : transferDetails,
+      ),
     );
     setTokenIsSelected(false);
     onClose();
@@ -85,7 +85,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
   const getTokenDataForKey = async (key: string) => {
     try {
       const data = await localforage.getItem(
-        generateSHA256Hash(key.toString())
+        generateSHA256Hash(key.toString()),
       );
       setTokenListFromIndexedDB(data);
       return data || [];
@@ -119,7 +119,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
 
   return (
     <div
-    ref={drawer}
+      ref={drawer}
       className={`${
         isOpen ? "bottom-0" : " translate-y-full"
       }  fixed bottom-0 left-1/2 translate-x-[-50%]  w-[350px] h-[455px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform z-50 `}

@@ -7,7 +7,7 @@ const AuthContext = React.createContext({
   logout: () => {},
 });
 
-export const AuthProvider = (props:any) => {
+export const AuthProvider = (props: any) => {
   const user = getItemFromStorage("isLoggedIn");
   const [isLoggedIn, setIsLoggedIn] = useState(!!user);
 

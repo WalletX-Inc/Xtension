@@ -59,11 +59,21 @@ module.exports = [
       }),
 
       new CopyPlugin({
-        patterns: [{ from: "./src/dapp-connection/content-script.js", to: "content-script.js" }],
+        patterns: [
+          {
+            from: "./src/dapp-connection/content-script.js",
+            to: "content-script.js",
+          },
+        ],
       }),
 
       new CopyPlugin({
-        patterns: [{ from: "./src/dapp-connection/inject-web3.js", to: "inject-web3.js" }],
+        patterns: [
+          {
+            from: "./src/dapp-connection/inject-web3.js",
+            to: "inject-web3.js",
+          },
+        ],
       }),
 
       new CopyPlugin({
@@ -105,13 +115,13 @@ module.exports = [
         {
           test: /\.(js)$/,
           exclude: /node_modules/,
-          use: ['babel-loader']
-        }
-      ]
+          use: ["babel-loader"],
+        },
+      ],
     },
     resolve: {
       extensions: [".js"],
-    modules: ['node_modules']
+      modules: ["node_modules"],
     },
     output: {
       path: path.resolve(__dirname, "dist/js"),
@@ -139,10 +149,10 @@ module.exports = [
         {
           test: /\.(js)$/,
           exclude: /node_modules/,
-          use: ['babel-loader'],
-        include: path.join(__dirname, './src/dapp-connection/js'),
-        }
-      ]
+          use: ["babel-loader"],
+          include: path.join(__dirname, "./src/dapp-connection/js"),
+        },
+      ],
     },
     resolve: {
       extensions: [".js"],
@@ -174,6 +184,6 @@ function getHtmlPlugins(chunks) {
         title: "React extension",
         filename: `${chunk}.html`,
         chunks: [chunk],
-      })
+      }),
   );
 }

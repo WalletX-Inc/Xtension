@@ -76,7 +76,7 @@ export default function Header() {
   const handleNetworkSwitch = (
     chainId: number,
     chainUri: string,
-    nativeAsset: string
+    nativeAsset: string,
   ) => {
     setCurrentChainLogo(chainUri);
     setChainId(chainId);

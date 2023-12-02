@@ -13,10 +13,10 @@ try {
   // comunication thread - page <> backgruond
   window.addEventListener(
     "message",
-    function (ev) {
+    (ev) => {
       console.log(
         "IN CONTENT_SCRIPT window.addEventListener('message', :15",
-        ev
+        ev,
       );
       if (ev.data.type == "FROM_PAGE") {
         if (
@@ -32,23 +32,20 @@ try {
         }
       }
     },
-    false
+    false,
   );
 
-  chrome.runtime.onMessage.addListener(function (
-    request,
-    sender,
-    sendResponse
-  ) {
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(
       "IN CONTENT_SCRIPT chrome.runtime.onMessage.addListener: :26",
-      request
+      request,
     );
 
     if (request.type == "FROM_BG") {
       const auth = request.payload.hasOwnProperty("authoritative")
         ? { authoritative: true }
         : {};
+
       window.postMessage({
         ...auth,
         type: "FROM_CS",

@@ -1,9 +1,9 @@
 import { FC } from "react";
 
 interface stepProps {
-  completedSteps:Array<number>
+  completedSteps: Array<number>;
 }
-export const StepHeader: FC<stepProps> = ({completedSteps}):JSX.Element => {
+export const StepHeader: FC<stepProps> = ({ completedSteps }): JSX.Element => {
   return (
     <ol
       className="flex items-center w-full
@@ -86,4 +86,4 @@ export const StepHeader: FC<stepProps> = ({completedSteps}):JSX.Element => {
   );
 };
 
-export default StepHeader
+export default StepHeader;

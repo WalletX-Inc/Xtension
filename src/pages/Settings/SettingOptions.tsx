@@ -23,11 +23,10 @@ const SettingOptions = () => {
     setIsLogOutModalOpen(false);
   };
 
-  const logOut = async() => {
-
+  const logOut = async () => {
     logout();
     setItemInStorage("isLoggedIn", false);
-   await removeItemFromStorage("smartAccount");
+    await removeItemFromStorage("smartAccount");
     navigate("/login");
   };
 

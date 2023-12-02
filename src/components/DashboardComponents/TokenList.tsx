@@ -48,7 +48,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
   const getTokenDataForKey = async (key: string) => {
     try {
       const data = await localforage.getItem(
-        generateSHA256Hash(key.toString())
+        generateSHA256Hash(key.toString()),
       );
       setTokenListFromIndexedDB(data);
       return data || [];

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 const Bridge = () => {
   return (
@@ -28,6 +28,6 @@ const Bridge = () => {
       </div>
     </div>
   );
-}
+};
 
-export default Bridge
+export default Bridge;

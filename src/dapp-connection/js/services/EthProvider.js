@@ -57,7 +57,7 @@ class EthProvider {
               console.log(
                 Number(new Date()),
                 "INSIDE ETHPROVIDER first ELSE IF",
-                ev.data.payload
+                ev.data.payload,
               );
               // if (['eth_sendTransaction', 'wallet_switchEthereumChain'].indexOf(ev.data.payload.method) == -1 && (state.connect_title && state.connect_title == ev.data?.from?.title && state.connect_origin == ev.data?.from?.origin)) {
               if (
@@ -74,7 +74,7 @@ class EthProvider {
                 console.log(
                   Number(new Date()),
                   "INSIDE ETHPROVIDER first IF",
-                  ev.data.payload
+                  ev.data.payload,
                 );
 
                 ref.handle_request(ev.data.id, ev.data.payload, ev.data.from);
@@ -82,7 +82,7 @@ class EthProvider {
                 console.log(
                   Number(new Date()),
                   "INSIDE ETHPROVIDER ",
-                  ev.data.payload
+                  ev.data.payload,
                 );
                 Store.saveState({
                   address: ev.data.payload.params[0],
@@ -96,13 +96,13 @@ class EthProvider {
                 // window.location.replace(`${window.location.hostname}/dashboard/dapp/sign-message`)
                 // window.location.assign(`${window.location.hostname}/dashboard/dapp/sign-message`)
 
-                customConsoleLog(100, "AFTER WINDOW ASSIGN")
+                customConsoleLog(100, "AFTER WINDOW ASSIGN");
                 ref.onInteraction(
                   (resp) => {
                     console.log(
                       Number(new Date()),
                       " sign message info ",
-                      resp
+                      resp,
                     );
                     ref.respond(ev.data.id, resp);
                   },
@@ -117,13 +117,13 @@ class EthProvider {
                   },
                   () => {
                     ref.respond(ev.data.id, { message: "closing" });
-                  }
+                  },
                 );
               } else if (ev.data.payload.method == "eth_sendTransaction") {
                 console.log(
                   Number(new Date()),
                   "INSIDE ETHPROVIDER ",
-                  ev.data.payload
+                  ev.data.payload,
                 );
                 Store.saveState({
                   ...ev.data.payload.params[0],
@@ -136,7 +136,7 @@ class EthProvider {
                     console.log(
                       Number(new Date()),
                       " send transaction hash info ",
-                      resp
+                      resp,
                     );
                     ref.respond(ev.data.id, resp.transactionHash);
                   },
@@ -151,7 +151,7 @@ class EthProvider {
                   },
                   () => {
                     ref.respond(ev.data.id, { message: "closing" });
-                  }
+                  },
                 );
               } else if (
                 ev.data.payload.method == "wallet_switchEthereumChain"
@@ -180,7 +180,7 @@ class EthProvider {
                     ref.handle_request(
                       ev.data.id,
                       ev.data.payload,
-                      ev.data.from
+                      ev.data.from,
                     );
                   },
                   () => {
@@ -199,7 +199,7 @@ class EthProvider {
                   },
                   () => {
                     ref.respond(ev.data.id, { message: "closing" });
-                  }
+                  },
                 );
               } else if (ev.data.payload.method == "wallet_addEthereumChain") {
                 const chainId = ev.data.payload?.params[0]?.chainId;
@@ -226,7 +226,7 @@ class EthProvider {
                     ref.handle_request(
                       ev.data.id,
                       ev.data.payload,
-                      ev.data.from
+                      ev.data.from,
                     );
                   },
                   () => {
@@ -245,7 +245,7 @@ class EthProvider {
                   },
                   () => {
                     ref.respond(ev.data.id, { message: "closing" });
-                  }
+                  },
                 );
               } else {
                 const state = Store.getState();
@@ -270,7 +270,7 @@ class EthProvider {
                     ref.handle_request(
                       ev.data.id,
                       ev.data.payload,
-                      ev.data.from
+                      ev.data.from,
                     );
                   },
                   () => {
@@ -289,14 +289,14 @@ class EthProvider {
                   },
                   () => {
                     ref.respond(ev.data.id, { message: "closing" });
-                  }
+                  },
                 );
               }
             }
           }
         },
         1000,
-        { data: ev }
+        { data: ev },
       );
     });
   }
@@ -419,7 +419,7 @@ class EthProvider {
           const active_node_uri = await WalletProxi.getNodeURI();
           const activeWallet = WalletProxi.getActiveWallet();
           const walletBalance = await WalletProxi.getWalletBalance(
-            activeWallet.address
+            activeWallet.address,
           );
 
           setTimeout(() => {
@@ -458,14 +458,14 @@ class EthProvider {
               data.params[0].chainName,
               data.params[0].chainName,
               data.params[0].chainId,
-              RPC
+              RPC,
             );
 
             WalletProxi.setActiveChain(chainID, false, false);
             const active_node_uri = await WalletProxi.getNodeURI();
             const activeWallet = WalletProxi.getActiveWallet();
             const walletBalance = await WalletProxi.getWalletBalance(
-              activeWallet.address
+              activeWallet.address,
             );
 
             setTimeout(() => {
@@ -496,7 +496,7 @@ class EthProvider {
           const active_node_uri = await WalletProxi.getNodeURI();
           const activeWallet = WalletProxi.getActiveWallet();
           const walletBalance = await WalletProxi.getWalletBalance(
-            activeWallet.address
+            activeWallet.address,
           );
 
           setTimeout(() => {

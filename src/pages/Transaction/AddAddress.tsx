@@ -18,7 +18,7 @@ const AddAddresses = () => {
   const [sendToAddresses, setSendToAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
-    null
+    null,
   );
   const [cardAddress, setCardAddress] = useState<string>("");
   const [isCardSelected, setIsCardSelected] = useState<boolean>(false);
@@ -140,7 +140,7 @@ const AddAddresses = () => {
         tokenLogo: "",
       },
     ]);
-    log('Transfer Data : ', transferData, "info");
+    log("Transfer Data : ", transferData, "info");
     navigate("/dashboard/transaction/add-tokens");
   };
 

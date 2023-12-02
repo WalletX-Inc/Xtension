@@ -6,15 +6,14 @@ import Login from "../pages/Login";
 import PublicLayout from "../pages/Layout/PublicLayout";
 import { getItemFromStorage } from "../utils/helper";
 
-const isRegistered = getItemFromStorage('smartAccount')
+const isRegistered = getItemFromStorage("smartAccount");
 
 function PublicRoutes() {
-
   return (
     <Routes>
       <Route element={<PublicLayout />}>
         <Route element={!isRegistered ? <LandingPage /> : <Login />} path="/" />
-        <Route element={<Login/>} path='/login' />
+        <Route element={<Login />} path="/login" />
         <Route element={<LandingPage />} path="/landing" />
         <Route element={<Registration />} path="register" />
       </Route>

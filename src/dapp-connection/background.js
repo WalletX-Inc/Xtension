@@ -1,16 +1,17 @@
 import Web3 from "web3";
 
-//fake localStorage, using chrome storage
-let localStorage = {
-  getItem: function (key) {
+// fake localStorage, using chrome storage
+const localStorage = {
+  getItem(key) {
     return new Promise((res, rej) => {
       chrome.storage.local.get([key], (resp) => {
         res(resp);
       });
     });
   },
-  setItem: function (key, val) {
+  setItem(key, val) {
     const obj = {};
+
     obj[key] = val;
     return new Promise((res, rej) => {
       chrome.storage.local.set(obj, (resp) => {
@@ -18,8 +19,9 @@ let localStorage = {
       });
     });
   },
-  removeItem: function (key) {
+  removeItem(key) {
     const obj = {};
+
     obj[key] = null;
     return new Promise((res, rej) => {
       chrome.storage.local.set(obj, (resp) => {
@@ -29,7 +31,7 @@ let localStorage = {
   },
 };
 
-let State = {
+const State = {
   // isFirstTime: true,
   lockTimer: false,
   shouldLock: false,
@@ -42,11 +44,11 @@ let State = {
   requests: [],
   requestTypes: {},
   lastLocked: localStorage.getItem("lastLocked") || false,
-  markLastLocked: function () {
+  markLastLocked() {
     State.lastLocked = new Date().getTime();
     localStorage.setItem("lastLocked", State.lastLocked);
   },
-  removeLastLocked: function () {
+  removeLastLocked() {
     State.lastLocked = false;
     localStorage.removeItem("lastLocked");
   },
@@ -59,7 +61,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   ) {
     chrome.scripting
       .executeScript({
-        target: { tabId: tabId },
+        target: { tabId },
         files: ["./js/inject-web3.js"],
       })
       .then(() => {
@@ -67,17 +69,18 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       })
       .catch((err) => console.log(Number(new Date()), err));
   }
+
   return true;
 });
 
-chrome.runtime.onConnect.addListener(function (port) {
+chrome.runtime.onConnect.addListener((port) => {
   console.log(Number(new Date()), "Extension connected");
   // if( State.isFirstTime ){
   //     State.isFirstTime = false;
   //     setTimeout( function() { console.log(Number(new Date()), 'sending re-route'); port.postMessage({ action: 'reset_to_home', from: 'BG'} ); }, 100 );
   // }
 
-  port.onMessage.addListener(async function (msg, sender, sendResp) {
+  port.onMessage.addListener(async (msg, sender, sendResp) => {
     if (msg.type == "popup-visible") {
       console.log(Number(new Date()), "POPUP SHOWN");
 
@@ -90,11 +93,13 @@ chrome.runtime.onConnect.addListener(function (port) {
         setTimeout(() => port.postMessage({ action: "lock", from: "BG" }), 200);
         return;
       }
+
       State.removeLastLocked();
 
       State.popup_visible = true;
       // clearTimeout( State.lockTimer );
     }
+
     if (msg.type == "unlocked") {
       console.log(Number(new Date()), "extension was unlocked");
       State.shouldLock = false;
@@ -103,7 +108,7 @@ chrome.runtime.onConnect.addListener(function (port) {
 
     return true;
   });
-  port.onDisconnect.addListener(function (msg) {
+  port.onDisconnect.addListener((msg) => {
     console.log(Number(new Date()), "POPUP DESTROYED");
     State.popup_visible = false;
     // State.lockTimer = setTimeout( lockExt, process.env.EXTENSION_INACTIVITY_LOCK_TIME * 60 * 1000 );
@@ -117,7 +122,7 @@ let win;
 let contentTabId = false;
 let web3 = false;
 
-chrome.runtime.onMessage.addListener(function (ev, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((ev, sender, sendResponse) => {
   console.log(Number(new Date()), "event received", ev, sender);
 
   console.log(Number(new Date()), "CALLING CHAINID");
@@ -130,6 +135,7 @@ chrome.runtime.onMessage.addListener(function (ev, sender, sendResponse) {
   if (ev.type == "FROM_POPUP") {
     handle_response(ev, sender);
   }
+
   // sendResponse({received: true});
   return true;
 });
@@ -141,7 +147,7 @@ function rebuild_node(payload) {
   State.balance = payload.balance;
   State.addresses = payload.addresses;
   web3 = new Web3(new Web3.providers.HttpProvider(payload.node_uri));
-  web3.eth.getChainId().then(function (chainId) {
+  web3.eth.getChainId().then((chainId) => {
     State.chainId = `0x${Number(chainId).toString(16)}`;
     // State.addreses = [];
 
@@ -200,22 +206,23 @@ function handle_message(ev, sender) {
     console.log(
       Number(new Date()),
       "prepare to open popup for ",
-      ev.payload.method
+      ev.payload.method,
     );
     // self.chrome.windows.getCurrent().then((curr) => {
     chrome.windows.getCurrent().then((curr) => {
       if (curr.type == "popup") {
         console.log(
           Number(new Date()),
-          "avoid opening popup if popup is there"
+          "avoid opening popup if popup is there",
         );
         return;
       }
+
       const _w = parseInt(curr.width);
       const lpos = Number(_w - 341);
       // console.log(Number(new Date()), 'active win', w, lpos );
 
-      //launch confirmation
+      // launch confirmation
       if (!State.popup_visible) {
         chrome.windows.create(
           {
@@ -244,7 +251,7 @@ function handle_message(ev, sender) {
                 id: ev.id,
               });
             }, 1500);
-          }
+          },
         );
         // "extension_popup", "width=340,height=620,status=no,scrollbars=no,resizable=no");
       }
@@ -261,36 +268,37 @@ async function respond(ev) {
     case "eth_accounts":
       send_message(
         State.addresses,
-        ev.id /*{ event: { event: 'accountsChanged', data: State.addreses } }*/
+        ev.id /* { event: { event: 'accountsChanged', data: State.addreses } } */,
       );
       break;
 
     case "eth_chainId":
+
     case "net_version":
       send_message(
         State.chainId,
-        ev.id /*{ event: { event: 'chainChanged', data: State.chainId } }*/
+        ev.id /* { event: { event: 'chainChanged', data: State.chainId } } */,
       );
       break;
 
     case "eth_requestAccounts":
       send_message(
         State.addresses,
-        ev.id /*{ event: { event: 'accountsChanged', data: State.addreses } }*/
+        ev.id /* { event: { event: 'accountsChanged', data: State.addreses } } */,
       );
       break;
 
     case "eth_getBalance":
       send_message(
         State.balance,
-        ev.id /*{ event: { event: 'accountsChanged', data: State.addreses } }*/
+        ev.id /* { event: { event: 'accountsChanged', data: State.addreses } } */,
       );
       break;
 
     case "eth_blockNumber":
       send_message(
         State.blockNumber,
-        ev.id /*{ event: { event: 'accountsChanged', data: State.addreses } }*/
+        ev.id /* { event: { event: 'accountsChanged', data: State.addreses } } */,
       );
       break;
 
@@ -306,9 +314,10 @@ async function respond(ev) {
         console.log(
           Number(new Date()),
           "this is estimate config",
-          ev.payload?.params[0]
+          ev.payload?.params[0],
         );
-        let resp_estimate = await w3.eth.estimateGas(ev.payload?.params[0]);
+        const resp_estimate = await w3.eth.estimateGas(ev.payload?.params[0]);
+
         send_message(resp_estimate, ev.id);
       } catch (e) {
         send_message({ error: { code: 4001, message: e.message } }, ev.id);
@@ -317,7 +326,8 @@ async function respond(ev) {
 
     case "eth_getTransactionByHash":
       try {
-        let trans = await w3.eth.getTransaction(ev.payload?.params[0]);
+        const trans = await w3.eth.getTransaction(ev.payload?.params[0]);
+
         send_message(trans, ev.id);
       } catch (e) {
         send_message({ error: { code: 4001, message: e.message } }, ev.id);
@@ -327,20 +337,24 @@ async function respond(ev) {
 
     case "eth_getTransactionReceipt":
       try {
-        let trans_receipt = await new Promise((res, rej) => {
+        const trans_receipt = await new Promise((res, rej) => {
           w3.eth.getTransactionReceipt(ev.payload?.params[0], (err, resp) => {
             if (err) {
               rej(err);
             }
+
             res(resp);
           });
         });
+
         if (trans_receipt.status == true) {
           trans_receipt.status = "0x1";
         }
+
         if (trans_receipt.status == false) {
           trans_receipt.status = "0x0";
         }
+
         send_message(trans_receipt, ev.id);
       } catch (e) {
         send_message({ error: { code: 4001, message: e.message } }, ev.id);
@@ -370,7 +384,7 @@ function send_message(p, id, extra = {}) {
   chrome.tabs.sendMessage(contentTabId, {
     type: "FROM_BG",
     payload: p,
-    id: id,
+    id,
   });
 }
 
@@ -381,7 +395,7 @@ function handle_response(ev, sender) {
     Number(new Date()),
     "requesttypes",
     State.requestTypes,
-    ev.payload
+    ev.payload,
   );
 
   if (ev.payload.message === "closing") {
@@ -391,6 +405,7 @@ function handle_response(ev, sender) {
   if (ev.method == "lock_ext") {
     State.authorized_domains = [];
   }
+
   if (ev.payload.method == "disconnect") {
     State.authorized_domains = [];
     State.addresses = [];
@@ -438,12 +453,15 @@ function handle_response(ev, sender) {
     if (State.authorized_domains.indexOf(ev.payload.origin) == -1) {
       State.authorized_domains.push(ev.payload.origin);
     }
+
     let sendEvent = null;
+
     console.log(Number(new Date()), "payload", State.addreses);
     if (State.addresses.length != ev.payload.addresses.length) {
       console.log(Number(new Date()), "addreses changed");
       sendEvent = { event: "accountsChanged", data: ev.payload.addresses };
     }
+
     State.chainId = ev.payload.chainId;
     State.addresses = ev.payload.addresses;
     State.balance = ev.payload.balance;
@@ -465,6 +483,7 @@ function handle_response(ev, sender) {
     if (ev.payload.hasOwnProperty("error")) {
       State.requestTypes = {};
     }
+
     console.log(Number(new Date()), "not auto");
     chrome.tabs.sendMessage(contentTabId, {
       type: "FROM_BG",
@@ -478,6 +497,7 @@ function handle_response(ev, sender) {
     });
     hide_popup();
   }
+
   State.isAuthorizing = false;
 }
 function check_authorized(origin) {
@@ -485,10 +505,11 @@ function check_authorized(origin) {
 }
 
 function remove_event_type(method) {
-  console.log(Number(new Date()), "remove " + method);
+  console.log(Number(new Date()), `remove ${method}`);
   const obj = {};
-  for (var i in State.requestTypes) {
-    console.log(Number(new Date()), "check " + i);
+
+  for (const i in State.requestTypes) {
+    console.log(Number(new Date()), `check ${i}`);
     if (State.requestTypes.hasOwnProperty(i) && i != method) {
       obj[method] = true;
     }
@@ -498,11 +519,13 @@ function remove_event_type(method) {
 async function getWeb3() {
   const node_uri_obj = await localStorage.getItem("node_uri");
   let node_uri;
+
   if (typeof node_uri_obj === "object") {
-    node_uri = node_uri_obj.node_uri || "https://" + process.env.NODE_MAINNET;
+    node_uri = node_uri_obj.node_uri || `https://${process.env.NODE_MAINNET}`;
   } else {
-    node_uri = node_uri_obj || "https://" + process.env.NODE_MAINNET;
+    node_uri = node_uri_obj || `https://${process.env.NODE_MAINNET}`;
   }
+
   console.log(Number(new Date()), { node_uri });
   console.log(Number(new Date()), "outside IF", web3, node_uri);
   if (!web3) {
@@ -510,6 +533,7 @@ async function getWeb3() {
     web3 = new Web3(new Web3.providers.HttpProvider(node_uri));
     console.log(Number(new Date()), "after IF", web3);
   }
+
   return web3;
 }
 
@@ -521,7 +545,7 @@ function lockExt() {
 }
 
 function hide_popup() {
-  chrome.windows.remove(win.id, function () {
+  chrome.windows.remove(win.id, () => {
     console.log(Number(new Date()), "removed window");
   });
 }

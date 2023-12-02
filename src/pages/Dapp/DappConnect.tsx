@@ -1,10 +1,9 @@
-import StepHeader from './StepHeader'
-import { generateAddressIcon, getShortDisplayString } from '../../utils/helper';
+import StepHeader from "./StepHeader";
+import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
 
 function DappConnect() {
+  const smartAddress = localStorage.getItem("smartAccount");
 
-    const smartAddress=localStorage.getItem('smartAccount')
-    
   return (
     <div className="container mt-3">
       <StepHeader completedSteps={[1]} />
@@ -76,4 +75,4 @@ function DappConnect() {
   );
 }
 
-export default DappConnect
+export default DappConnect;

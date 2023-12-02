@@ -8,17 +8,17 @@ export function validateBiometric() {
     const challenge = v4();
 
     const authentication = await client.authenticate([deviceId], challenge, {
-        authenticatorType: "both",
-        userVerification: "required",
-        timeout: 60000,
-      });
-  
-      if(authentication.credentialId){
-        log("[validateBiometric Hook] Biometric validated", null, "success");
-        return true;
-      }
+      authenticatorType: "both",
+      userVerification: "required",
+      timeout: 60000,
+    });
 
-      log("[validateBiometric Hook] Biometric failed", null, "error");
-      return false;
-  }  
+    if (authentication.credentialId) {
+      log("[validateBiometric Hook] Biometric validated", null, "success");
+      return true;
+    }
+
+    log("[validateBiometric Hook] Biometric failed", null, "error");
+    return false;
+  };
 }
