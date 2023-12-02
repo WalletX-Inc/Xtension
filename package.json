@@ -49,6 +49,7 @@
     "watch": "webpack -w --config webpack.config.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "prepare": "husky install",
     "lint": "eslint .",
     "lint-fix": "eslint --fix .",
     "prettier-fix": "prettier . --write",
