@@ -15,6 +15,9 @@ import SignMessage from "../pages/Dapp/SignMessage"
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
 import SignatureRequest from "../pages/Signature/SignatureRequest";
+import DappConnect from "../pages/Dapp/DappConnect";
+import DappConnectAccount from "../pages/Dapp/DappConnectAccount";
+import DappConnecting from "../pages/Dapp/DappConnecting";
 
 function PrivateRoutes() {
   const navigate = useNavigate();
@@ -37,7 +40,10 @@ function PrivateRoutes() {
         <Route path="/dashboard/collectables" element={<Collectables />} />
         <Route path="/dashboard/activity" element={<Activity />} />
         <Route path="/dashboard/settings" element={<Settings />} />
-        <Route path='/dashboard/signature'  element={<SignatureRequest/>}  />
+        <Route path="/dashboard/signature" element={<SignatureRequest />} />
+        <Route path="/dashboard/connect" element={<DappConnect />} />
+        <Route path="/dashboard/sign" element={<DappConnectAccount />} />
+        <Route path="/dashboard/connecting" element={<DappConnecting />} />
       </Route>
 
       <Route path="/dashboard/receive" element={<Receive />} />
