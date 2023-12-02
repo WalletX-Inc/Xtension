@@ -55,7 +55,7 @@ export default function PrivateRoutes() {
         path="/dashboard/transaction/approve-transactions"
         element={<ApproveTransaction />}
       />
-      {/* DAPP connection routes */}
+      {/* DAPP connection routes  */}
       <Route path="/dashboard/dapp/signature" element={<SignatureRequest />} />
       <Route path="/dashboard/dapp/connect" element={<DappConnect />} />
       <Route path="/dashboard/dapp/sign" element={<DappConnectAccount />} />
