@@ -76,12 +76,6 @@
       "post-commit": "npm run post-commit"
     }
   },
-  "lint-staged": {
-    "*.{js,ts,jsx,tsx}": [
-      "npm run prettier-fix",
-      "npm run lint-fix"
-    ]
-  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/chrome": "^0.0.246",
