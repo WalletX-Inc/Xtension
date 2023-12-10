@@ -206,7 +206,7 @@ const ApproveTransaction = () => {
       let obj: any = {};
       const isCoin =
         data.tokenAddress.toString() ===
-        "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+        "0x0000000000000000000000000000000000001010";
 
       obj.to = isCoin ? data.address : data.tokenAddress;
       obj.args = isCoin
@@ -477,7 +477,7 @@ const ApproveTransaction = () => {
                 }
               ])
               console.log('res',res)
-              setShowIframe('https://www.youtube.com/embed/M7lc1UVf-VE?autoplay=1&mute=1&enablejsapi=1');
+              setShowIframe('https://www.youtube.com/watch?v=7NWN3wivxhA?autoplay=1&mute=1&enablejsapi=1');
 
             }}
           >
