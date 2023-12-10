@@ -36,7 +36,7 @@ const AccountCard = () => {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(SCW || smartAccountAddress);
-      toast.success("Text Copied To clipboard");
+      toast.success("Address Copied To clipboard");
     } catch (error) {
       console.error("Copy failed due to: ", error);
     }
@@ -100,7 +100,7 @@ const AccountCard = () => {
                 <span className=" m-auto">
                   <img
                     onClick={() => copyToClipboard()}
-                    className="h-6 ml-1 m-auto"
+                    className="h-6 ml-1 m-auto cursor-pointer"
                     src={copy}
                     alt="copy and paste"
                   />
@@ -112,7 +112,7 @@ const AccountCard = () => {
         <hr className="w-[95%] mx-auto" />
         {/* Account Balance  */}
         <div className="text-center font-extrabold mt-2 text-2xl text-gray-200">
-          {!balance ? 0 : balance} {currentCoinName}
+          {!balance ? 0 : Number(balance).toFixed(7)} {currentCoinName}
         </div>
       </div>
     </>

@@ -28,7 +28,7 @@ const TransactDrawer = ({ isOpen }: TransactParam) => {
           <div className="flex w-full justify-between text-center gap-2">
             <div
               onClick={() => navigate("/dashboard/bridge")}
-              className="flex justify-center items-center gap-3 w-1/2 px-2 py-3 bg-gray-50 text-black border-2 border-gray-950  rounded-xl text-xl  tracking-wide font-semibold "
+              className="cursor-pointer flex justify-center items-center gap-3 w-1/2 px-2 py-3 bg-gray-50 text-black border-2 border-gray-950  rounded-xl text-xl  tracking-wide font-semibold "
             >
               <img
                 className="h-9 p-2 bg-purple-200  rounded-full"
@@ -39,7 +39,7 @@ const TransactDrawer = ({ isOpen }: TransactParam) => {
             </div>
             <div
               onClick={() => navigate("/dashboard/swap")}
-              className="flex justify-center items-center gap-3 w-1/2 px-2 py-3 bg-gray-50 text-black border-2 border-gray-950  rounded-xl text-xl  tracking-wide font-semibold "
+              className="cursor-pointer flex justify-center items-center gap-3 w-1/2 px-2 py-3 bg-gray-50 text-black border-2 border-gray-950  rounded-xl text-xl  tracking-wide font-semibold "
             >
               <img
                 className="h-9 p-2 bg-teal-200 rounded-full"
@@ -51,7 +51,7 @@ const TransactDrawer = ({ isOpen }: TransactParam) => {
           </div>
 
           {/* Send And Receive  */}
-          <div className="flex w-full justify-between text-center gap-2 ">
+          <div className="cursor-pointer flex w-full justify-between text-center gap-2 ">
             {/* Receive  */}
             <div
               onClick={() => navigate("/dashboard/receive")}

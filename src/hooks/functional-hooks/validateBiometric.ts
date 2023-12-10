@@ -6,7 +6,7 @@ import { log } from "../../utils/helper";
 export function validateBiometric() {
   return async (deviceId: string) => {
     const challenge = v4();
-
+      console.log('in validateBiomatric')
     const authentication = await client.authenticate([deviceId], challenge, {
         authenticatorType: "both",
         userVerification: "required",

@@ -90,7 +90,7 @@ export const constructFinalUserOp: any = async (smartAccountInstance: any, parti
   const spender = feeQuotesResponse.tokenPaymasterAddress || '';
 
   let finalUserOp = await smartAccountInstance.buildTokenPaymasterUserOp(partialUserOp, { feeQuote: requiredFeeQuotes, spender, maxApproval: false });
-  let paymasterServiceData = { mode: 'ERC20', feeTokenAddress: requiredFeeQuotes.tokenAddress };
+  let paymasterServiceData = { mode: 'SPONSORED', feeTokenAddress: requiredFeeQuotes.tokenAddress };
 
   try {
     const paymasterAndDataWithLimits = await paymaster.getPaymasterAndData(finalUserOp, paymasterServiceData);
@@ -103,6 +103,32 @@ export const constructFinalUserOp: any = async (smartAccountInstance: any, parti
     }
   
     return finalUserOp;
+  } catch (e) {
+    console.log('Error in constructing final user op : ', e);
+    return null;
+  }
+}
+
+export const constructFinalUserOpForGasless: any = async (smartAccountInstance: any, partialUserOp: any, gasFeeAddress: string) => {
+  const paymaster = smartAccountInstance.paymaster;
+
+  let paymasterServiceData = { mode: 'SPONSORED' };
+
+  try {
+    const paymasterAndDataWithLimits = await paymaster.getPaymasterAndData(partialUserOp, paymasterServiceData);
+    partialUserOp.paymasterAndData = paymasterAndDataWithLimits.paymasterAndData;
+    console.log('paymasterAndDataWithLimits.verificationGasLimit',paymasterAndDataWithLimits)
+
+    if (paymasterAndDataWithLimits.callGasLimit && paymasterAndDataWithLimits.verificationGasLimit && paymasterAndDataWithLimits.preVerificationGas) {
+      partialUserOp.callGasLimit = paymasterAndDataWithLimits.callGasLimit;
+      partialUserOp.verificationGasLimit = paymasterAndDataWithLimits.verificationGasLimit-200000;
+      partialUserOp.preVerificationGas = paymasterAndDataWithLimits.preVerificationGas;
+      console.log('IFFF paymasterAndDataWithLimits.verificationGasLimit',paymasterAndDataWithLimits.verificationGasLimit)
+
+    }
+  
+    console.log({partialUserOp})
+    return partialUserOp;
   } catch (e) {
     console.log('Error in constructing final user op : ', e);
     return null;
