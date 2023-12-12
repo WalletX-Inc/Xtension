@@ -105,21 +105,19 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
 
   useEffect(() => {
     const closeDrawerOnOutsideClick = (e: any) => {
-      if (!(drawer.current as any).contains(e.target)) {
-        onClose();
+            if (!(drawer.current as any).contains(e.target)) {
+                onClose();
       }
     };
 
     document.addEventListener("mousedown", closeDrawerOnOutsideClick);
 
-    return () => {
-      document.removeEventListener("mousedown", closeDrawerOnOutsideClick);
-    };
-  });
+     
+  },[]);
 
   return (
     <div
-    ref={drawer}
+      ref={drawer}
       className={`${
         isOpen ? "bottom-0" : " translate-y-full"
       }  fixed bottom-0 left-1/2 translate-x-[-50%]  w-[350px] h-[455px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform z-50 `}
