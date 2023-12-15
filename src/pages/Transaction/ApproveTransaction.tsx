@@ -385,7 +385,7 @@ const ApproveTransaction = () => {
           <div
             className="text-white w-[90%] rounded-xl p-2 text-center cursor-pointer bg-gray-800 my-4 tracking-wider font-semibold text-base border-2 border-gray-950"
             onClick={async() => {
-              const res=await getAdHash(provider, '0x920CCb77F0C95791af4203a7b3bf244da01564aC',[
+              const res=await getAdHash(provider, '0x4E4968c25572d58b7fE9E440fd392e399F36CE2c',[
                 {
                   "inputs": [],
                   "stateMutability": "nonpayable",
@@ -477,7 +477,7 @@ const ApproveTransaction = () => {
                 }
               ])
               console.log('res',res)
-              setShowIframe('https://www.youtube.com/watch?v=7NWN3wivxhA?autoplay=1&mute=1&enablejsapi=1');
+              setShowIframe(res || 'https://bafybeiaewqmznmdb2r73vcrm32jmhf5babixhmf6j7bwlam6jw7wo2sqe4.ipfs.dweb.link/');
 
             }}
           >
@@ -537,7 +537,7 @@ const ApproveTransaction = () => {
             setShowIframe('');
           }}
           modalClass="fixed inset-0 flex items-center justify-center z-50 p-4"
-          headerText="Advertised by X company"
+          // headerText="Advertised by X company"
           headerClass="text-white"
         >
           <iframe
