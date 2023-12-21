@@ -19,6 +19,7 @@ function PrivateRoutes() {
 
   const devices = getItemFromStorage("devices");
 
+  // Clear the local storage if you get the error 
   useEffect(() => {
     if (devices.length <= 0) {
       console.log("Clear all data from local storage");

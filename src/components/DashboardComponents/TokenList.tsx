@@ -72,7 +72,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
 
   return (
     <>
-      <div className="max-h-[275px] overflow-y-scroll  px-3">
+      <div className="max-h-[275px] overflow-y-scroll">
         {tokens &&
           tokens.map((token: Token) => (
             <>
