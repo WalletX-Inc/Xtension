@@ -3,7 +3,7 @@ import { generateAddressIcon, getShortDisplayString } from "../utils/helper";
 type addressesProps = {
   name: string;
   addresses: string;
-  isSelected: boolean;
+  isSelected?: boolean;
   getClickedAddress: Function;
   onClick: () => void;
 };
@@ -31,7 +31,7 @@ const AddressCard = ({
         className="max-w-[92%] mx-auto m-3 "
       >
         <div
-          className={`flex flex-row gap-3 items-center bg-gray-800 text-white rounded-xl shadow-md px-4 py-2 border border-gray-700 ${
+          className={`flex flex-row gap-3 items-center bg-gray-800 text-white rounded-xl shadow-md px-4 py-2 border border-gray-700 hover:border-white ${
             isSelected ? "border-2 border-solid border-white " : ""
           }`}
         >
@@ -43,7 +43,7 @@ const AddressCard = ({
 
           <div className="min-w-[80%]">
             {/* <p className="text-xl font-semibold">{name} </p> */}
-            <p className="text-lg font-semibold overflow-hidden ">
+            <p className="text-base text-gray-200 font-semibold overflow-hidden ">
               {getShortDisplayString(addresses)}
             </p>
           </div>
