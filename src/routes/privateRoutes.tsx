@@ -13,6 +13,7 @@ import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
+import DappInteraction from "../pages/DappInteraction";
 
 function PrivateRoutes() {
   const navigate = useNavigate();
@@ -53,6 +54,8 @@ function PrivateRoutes() {
         element={<ApproveTransaction />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
+      {/* This is an temporary route and should be removed */}
+      <Route path="dappinteraction" element={<DappInteraction />} />
     </Routes>
   );
 }

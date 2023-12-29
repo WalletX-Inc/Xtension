@@ -120,7 +120,11 @@ const AccountCard = () => {
           />
           <span className="text-[13px]  ">Send</span>
         </div>
-        <div className=" flex flex-col gap-2 justify-center items-center ">
+
+        {/* This should  be removed after dapp integration is done */}
+        <div 
+          onClick={()=>navigate("/dappinteraction")}
+          className=" flex flex-col gap-2 justify-center items-center ">
           <img
             src={swap}
             alt="swap button "
