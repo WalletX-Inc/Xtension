@@ -13,12 +13,14 @@ import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
 import { getItemFromStorage } from "../utils/helper";
 import localforage from "localforage";
+import DappInteraction from "../pages/DappInteraction";
 
 function PrivateRoutes() {
   const navigate = useNavigate();
 
   const devices = getItemFromStorage("devices");
 
+  // Clear the local storage if you get the error 
   useEffect(() => {
     if (devices.length <= 0) {
       console.log("Clear all data from local storage");
@@ -52,6 +54,8 @@ function PrivateRoutes() {
         element={<ApproveTransaction />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
+      {/* This is an temporary route and should be removed */}
+      <Route path="dappinteraction" element={<DappInteraction />} />
     </Routes>
   );
 }
