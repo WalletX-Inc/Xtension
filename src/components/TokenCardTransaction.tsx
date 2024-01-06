@@ -57,33 +57,31 @@ const TokenCardTransaction = ({
           tokenAddress,
           tokenDecimal,
           tokenIcon,
-          balance
+          balance,
         ]);
       }}
-      className="max-w-[95%] mx-auto m-3"
+      className=" mx-auto "
     >
       <div
-        className={`${
-          isSelected
-            ? ""
-            : "border-2 border-solid border-black border-opacity-80"
-        } flex gap-1 flex-row items-center bg-gray-800 rounded-xl shadow-md px-4 pt-2 pb-1 border `}
+        className={
+          "flex gap-1 flex-row items-center hover:bg-gray-700  hover:bg-opacity-50  px-4 pt-3 pb-4  "
+        }
       >
-        <div className=" min-w-[20%]">
+        <div>
           <img
             src={tokenIcon}
             alt="token Logo"
-            className=" w-12 h-12 rounded-full object-cover mr-4 border-2"
+            className=" w-9 rounded-full object-cover mr-4 border-2"
           />
         </div>
         <div className="w-full flex justify-between items-center">
           <div>
-            <p className="text-lg font-semibold">{tokenSymbol}</p>
-            <p className="text-lg font-semibold overflow-hidden text-gray-600">
-              {tokenName}
+            <p className="text-[14px] font-semibold">{tokenName}</p>
+            <p className="text-[12px] font-semibold overflow-hidden text-gray-600">
+              {tokenSymbol}
             </p>
           </div>
-          <div className="items-end">
+          <div className="items-end text-base">
             <p title="current Balance">{Number(balance).toFixed(5)}</p>
             <p title="balance in dollars"></p>
           </div>

@@ -6,6 +6,7 @@ import Modal from "../../components/common/Modal";
 
 import { useConfig } from "../../context/ConfigProvider";
 import notificationIcon from "../../../src/assets/notifications.svg";
+import threeDots from "../../../src/assets/dots-three-vertical (2).svg";
 
 import {
   generateAddressIcon,
@@ -18,6 +19,9 @@ import Chains from "../../constants/chains";
 import { ChevronDown, Plus } from "react-feather";
 import toast from "react-hot-toast";
 import ChainSelectionDrawer from "../../components/ChainSelectionDrawer";
+import ChainSelection from "../../components/Modals/ChainSelection";
+import AccountSelection from "../../components/Modals/AccountSelection";
+import QuickSettings from "../../components/Modals/QuickSettings";
 
 export default function Header() {
   const [toggle, setToggle] = useState(false);
@@ -25,7 +29,13 @@ export default function Header() {
   const [defaultChainId] = useState<number>(80001);
   const [currentChainLogo, setCurrentChainLogo] = useState<string>("");
   const [currentCoinName, setCurrentCoinName] = useState<string>("");
-  const [isChainSelectionDrawerOpen, setIsChainSelectionDrawerOpen] =
+  // const [isChainSelectionDrawerOpen, setIsChainSelectionDrawerOpen] =
+  //   useState<boolean>(false);
+  const [isChainSelectionModalOpen, setIsChainSelectionModalOpen] =
+    useState<boolean>(false);
+  const [isAccountSelectionModalOpen, setIsAccountSelectionModalOpen] =
+    useState<boolean>(false);
+  const [isQuickSettingsModalOpen, setIsQuickSettingsModalOpen] =
     useState<boolean>(false);
 
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
@@ -42,12 +52,36 @@ export default function Header() {
     balance: { SCW: SCWBalance, EOA: EOABalance },
   } = useConfig();
 
-  const openChainSelectionDrawer = () => {
-    setIsChainSelectionDrawerOpen(!isChainSelectionDrawerOpen);
+  // const openChainSelectionDrawer = () => {
+  //   setIsChainSelectionDrawerOpen(!isChainSelectionDrawerOpen);
+  // };
+
+  // const closeChainSelectionDrawer = () => {
+  //   setIsChainSelectionDrawerOpen(false);
+  // };
+
+  const openChainSelectionModal = () => {
+    setIsChainSelectionModalOpen(true);
   };
 
-  const closeChainSelectionDrawer = () => {
-    setIsChainSelectionDrawerOpen(false);
+  const closeChainSelectionModal = () => {
+    setIsChainSelectionModalOpen(false);
+  };
+
+  const openAccountSelectionModal = () => {
+    setIsAccountSelectionModalOpen(true);
+  };
+
+  const closeAccountSelectionModal = () => {
+    setIsAccountSelectionModalOpen(false);
+  };
+
+  const openQuickSettingsModal = () => {
+    setIsQuickSettingsModalOpen(true);
+  };
+
+  const closeQuickSettingsModal = () => {
+    setIsQuickSettingsModalOpen(false);
   };
 
   useEffect(() => {
@@ -102,47 +136,59 @@ export default function Header() {
   // start mobile first plus facile
   return (
     <>
-      <nav className="text-white fixed top-0 w-full p-2  bg-[#1f1f20]">
+      <nav className="text-white fixed top-0 w-full p-2  bg-[#1f1f20] shadow-md shadow-black">
         <div className="flex justify-between items-center w-full py-2 px-1">
           {/* Network secection  */}
           <div
-            className="flex align-center justify-center  cursor-pointer  hover:opacity-70 bg-black  border rounded-lg py-1 pl-2 pr-1 "
+            className="flex align-center justify-center  cursor-pointer bg-black hover:bg-gray-950 rounded-full py-1 pl-2 pr-1 "
             onClick={() => {
-              openChainSelectionDrawer();
+              // openChainSelectionDrawer();
+              openChainSelectionModal();
             }}
           >
             <img
-              className="h-5 m-auto rounded-full"
+              className="h-4 m-auto rounded-full"
               src={currentChainLogo}
               alt={`${currentCoinName} logo`}
             />
-            <ChevronDown className="ml-2" />
+            <ChevronDown size={23} className="ml-2" />
           </div>
 
           {/* Account Type Selection  */}
           <div
-            className=" justify-center text-base font-bold flex items-center cursor-pointer border rounded-lg bg-gray-800 border-gray-200 pl-2  h-8 text-gray-200"
+            className=" justify-center text-base font-bold flex gap-1 items-center cursor-pointer  rounded-lg   px-2 py-3 h-8 text-gray-200  text-ellipsis overflow-hidden truncate"
             onClick={() => {
-              setOpenAccountModal(true);
-            }}
-          >
-            Smart Wallet
-            <ChevronDown className="mx-1" />
-          </div>
-
-          {/* Notifications  */}
-          <div
-            className="justify-end"
-            onClick={() => {
-              toast("Coming Soon", {
-                icon: "🔥",
-              });
+              // setOpenAccountModal(true);
+              openAccountSelectionModal();
             }}
           >
             <img
-              className="h-7"
+              className=" w-7 rounded-full object-cover  border-2"
+              src={generateAddressIcon(SCW || smartWalletAddress)}
+              alt="profile icon"
+            />
+            Smart Wallet
+            <ChevronDown size={25} />
+          </div>
+
+          {/* Notifications  & Quick Settings
+           */}
+          <div className="justify-end flex gap-2 items-center">
+            <img
+              onClick={() => {
+                toast("Coming Soon", {
+                  icon: "🔥",
+                });
+              }}
+              className="h-6"
               src={notificationIcon}
               alt="notification icon"
+            />
+            <img
+              onClick={() => openQuickSettingsModal()}
+              className="h-6"
+              src={threeDots}
+              alt="Additional settings"
             />
           </div>
 
@@ -192,7 +238,7 @@ export default function Header() {
           </>
         </div>
         {/* This is for  account Selection  */}
-        <Modal
+        {/* <Modal
           isOpen={openAccountModal}
           onClose={() => {
             setOpenAccountModal(false);
@@ -258,7 +304,7 @@ export default function Header() {
               </div>
             </div>
           </div>
-        </Modal>
+        </Modal> */}
 
         <>
           {/* This is for the network Selecton  */}
@@ -333,9 +379,21 @@ export default function Header() {
       </Modal> */}
         </>
       </nav>
-      <ChainSelectionDrawer
+      {/* <ChainSelectionDrawer
         isOpen={isChainSelectionDrawerOpen}
         onSelectedClose={closeChainSelectionDrawer}
+      /> */}
+      <ChainSelection
+        isOpen={isChainSelectionModalOpen}
+        onClose={closeChainSelectionModal}
+      />
+      <AccountSelection
+        isOpen={isAccountSelectionModalOpen}
+        onClose={closeAccountSelectionModal}
+      />
+      <QuickSettings
+        isOpen={isQuickSettingsModalOpen}
+        onClose={closeQuickSettingsModal}
       />
     </>
   );
