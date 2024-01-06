@@ -7,7 +7,7 @@ import { LandingTagLines } from "../../constants/landingTagLines";
 function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const navigate = useNavigate();
-
+ 
   let settings = {
     dots: currentSlide < LandingTagLines.length - 1,
     infinite: false,
