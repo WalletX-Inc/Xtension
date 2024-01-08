@@ -7,7 +7,6 @@ import { LandingTagLines } from "../../constants/landingTagLines";
 function LandingPage() {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const navigate = useNavigate();
- 
   let settings = {
     dots: currentSlide < LandingTagLines.length - 1,
     infinite: false,
@@ -36,7 +35,7 @@ function LandingPage() {
             {details.isFinal && (
               <Button
                 className="min-w-[300px] mt-[70px] text-white bg-gray-900 border hover:bg-gray-950 rounded-lg flex justify-center m-auto
-        transition duration-500 hover:scale-110 p-3"
+                transition duration-500 hover:scale-110 p-3"
                 onClick={() => {
                   navigate("/register", { replace: true });
                 }}

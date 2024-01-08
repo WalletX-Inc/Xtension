@@ -1,8 +1,8 @@
 import React from "react";
 import copy from "../../../../../assets/copy (1).svg";
-import close from "../../../../../assets/close.svg";
+import close from "../../../../../assets/NftDiscoveryPage/close.svg";
 import toast from "react-hot-toast";
-import { getShortDisplayString } from "../../../../../utils/helper";
+import { getShortDisplayString } from "../utils/helper";
 
 type singleNftModalParams = {
   name?: string;
@@ -29,7 +29,7 @@ export const SingleNftModal = ({
   };
 
   return (
-    <div className="">
+    <div>
       <div className="flex justify-between mb-4">
         <p className="font-bold">{name}</p>
         <img src={close} className="h-6 float-right" onClick={onClose} />

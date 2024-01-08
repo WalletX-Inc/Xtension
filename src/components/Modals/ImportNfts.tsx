@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Search, X } from "react-feather";
 import Moralis from "moralis";
 import { useConfig } from "../../context/ConfigProvider";
-import defaultNft from "../../assets/nft_default.jpg"
+import defaultNft from "../../assets/NftDiscoveryPage/nft_default.jpg"
 
 type nftsource = {
   name: string;

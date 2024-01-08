@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Moralis from "moralis";
-import { Collection } from "./Collection";
+import { Collection } from "../../../../Collection";
 import { useConfig } from "../../../../../context/ConfigProvider";
 import ImportNfts from "../../../../Modals/ImportNfts";
-import plus from "../../../../../assets/plus-white.svg";
-import defaultImg from "../../../../../assets/nft_default.jpg";
-// import refresh from "../../../../../assets/refresh.svg";
-// import localforage from "localforage";
+import plus from "../../../../../assets/NftDiscoveryPage/add-file.svg";
+import defaultImg from "../../../../../assets/NftDiscoveryPage/nft_default.jpg";
+import toast from "react-hot-toast";
 
 type nftdata = {
   tokenId: string;
@@ -133,7 +132,7 @@ const Nfts = () => {
             singleNftData
           );
 
-          console.error(`Error processing element at index ${i}: ${error}`);
+          toast.error("Couldn't get your NFT");
         }
       }
 
@@ -143,16 +142,8 @@ const Nfts = () => {
     }
   };
 
-  // const getNftFromLocal = async() => {
-  //    const nftFromLocal: any = await localforage.getItem(
-  //     "fetchedNftsData",
-  //   );
-  //   setNftSource(nftFromLocal);
-  // }
-
   useEffect(() => {
     importAllNfts();
-    // getNftFromLocal()
   }, []);
 
   return (
@@ -185,13 +176,6 @@ const Nfts = () => {
           updateSingleImportedNftData={updateSingleImportedNftData}
         />
       </div>
-
-      {/* REFRESH BUTTON */}
-
-      {/* <div className="flex gap-2 items-center mx-auto mt-4 text-[#3B82F6] rounded ">
-        <img src={refresh} className="h-4" alt="refresh" />
-        <button onClick={importAllNfts}>Refresh</button>
-      </div> */}
     </div>
   );
 };
