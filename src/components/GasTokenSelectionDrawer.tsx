@@ -48,7 +48,7 @@ const GasTokenSelectionDrawer = ({
         ref={drawer}
         className={`${
           isOpen ? "bottom-0" : " translate-y-full"
-        }  fixed bottom-0   w-[350px] h-[350px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform `}
+        }  fixed bottom-0   w-[350px] h-[350px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 pt-2 pb-4 transition duration-500  transform `}
       >
         <h1 className="text-center font-semibold text-xl">
           Select Token For Gas

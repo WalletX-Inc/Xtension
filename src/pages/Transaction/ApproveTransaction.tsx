@@ -25,6 +25,7 @@ import {
 } from "../../utils/helper";
 import { validateBiometric } from "../../hooks/functional-hooks";
 import GasTokenSelectionDrawer from "../../components/GasTokenSelectionDrawer";
+import Switch from "../../components/Switch";
 
 type selectedTokenForGas = {
   icon: string;
@@ -244,6 +245,10 @@ const ApproveTransaction = () => {
       log("Error while sending batch txn : ", e, "error");
     }
   }
+  const [switchValue, setSwitchValue] = useState<boolean>(false);
+  const toggleSwitch = () => {
+    setSwitchValue(!switchValue);
+  };
 
   if (transferData.length === 0) navigate("/dashboard");
 
@@ -325,33 +330,52 @@ const ApproveTransaction = () => {
           </div>
         </div>
         {/* Gas and  Approve   */}
+
         <div className="fixed left-1/2 translate-x-[-50%] bottom-0 flex flex-col item-center justify-center  py-2   max-w-[350px] bg-transparent text-2xl font-bold w-full mx-auto">
           {/* FETCH THE TOKEN DETAILS FOR GAS FROM THE SELECTED TOKEN FOR GAS  */}
-          <div className="flex w-[85%] items-center  justify-between text-white  text-base py-2 ">
-            <h1 className="font-sans font-semibold text-lg">Gas</h1>
-            <button
-              className="flex  item-center gap-1"
-              disabled={transactionInProcess}
-              onClick={() => openGasSelectionDrawer()}
+
+          <div
+            className={` ${
+              !switchValue ? "translate-y-[5%]" : " translate-y-[50%]"
+            }  w-full flex flex-col justify-center items-center transition duration-700  transform`}
+          >
+            <div className="flex items-center justify-between w-[85%] pr-1 text-white text-base  ">
+              <p className=" font-sans font-semibold tracking-wide ">
+                Go Gas Less
+              </p>
+              <Switch value={switchValue} onChange={toggleSwitch} />
+            </div>
+            <div
+              className={` ${
+                switchValue === true
+                  ? "transition-opacity ease-out duration-[1000ms] opacity-0"
+                  : "transition-opacity ease-in duration-[1000ms] opacity-100"
+              }  flex w-[85%] items-center  justify-between text-white  text-base py-2 `}
             >
-              <p className="font-sans text-sm  font-semibold">
-                {" "}
-                {`~$${selectedTokenForGas.tokenGasValue}`}{" "}
-              </p>
-              <img
-                className="h-6"
-                src={selectedTokenForGas.icon}
-                alt="selected gas token icon"
-              />
-              <p className="font-sans text-sm font-bold ">
-                {selectedTokenForGas.tokenSymbol}
-              </p>
-              <img className="h-8" src={selectArrow} alt="selectArrow" />
-            </button>
+              <h1 className="font-sans font-semibold text-lg">Gas</h1>
+              <button
+                className="flex  item-center gap-1"
+                disabled={transactionInProcess}
+                onClick={() => openGasSelectionDrawer()}
+              >
+                <p className="font-sans text-sm  font-semibold">
+                  {`~$${selectedTokenForGas.tokenGasValue}`}{" "}
+                </p>
+                <img
+                  className="h-6"
+                  src={selectedTokenForGas.icon}
+                  alt="selected gas token icon"
+                />
+                <p className="font-sans text-sm font-bold ">
+                  {selectedTokenForGas.tokenSymbol}
+                </p>
+                <img className="h-8" src={selectArrow} alt="selectArrow" />
+              </button>
+            </div>
           </div>
 
           {/* Approve button  */}
-          <div className="flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center  text-xl text-white min-w-[325px] max-w-[350px] h-[55px] ">
+          <div className=" z-10 flex  w-[90%] border-2 border-gray-500 px-2 py-2 rounded-lg bg-gray-950 hover:bg-black items-center justify-center  text-xl text-white min-w-[325px] max-w-[350px] h-[55px] ">
             <button
               disabled={transactionInProcess}
               onClick={() => {
