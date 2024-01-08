@@ -19,7 +19,7 @@ import Web3Provider from "./js/Web3Provider/Web3Provider";
 
   // console.log(Number(new Date()), 'ok, loaded content script');
 
-  window.ethereum = new Web3Provider();
+  window.walletX = new Web3Provider();
 })();
 
 // }
