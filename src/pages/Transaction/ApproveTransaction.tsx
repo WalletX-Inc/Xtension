@@ -12,7 +12,6 @@ import {
   constructTransactionData,
   constructFinalUserOp,
   getItemFromStorage,
-  generateSHA256Hash,
   log,
 } from "../../utils/helper";
 import gasState from "../../state/GasState";
@@ -48,7 +47,9 @@ const ApproveTransaction = () => {
   const [gasData, setGasData] = useRecoilState(gasState);
   const biometricAuth = validateBiometric();
 
-  const dName = getItemFromStorage(generateSHA256Hash("device"));
+  const devices = getItemFromStorage("devices");
+  const dName = devices[0];
+  // const dName = getItemFromStorage(generateSHA256Hash("device"));
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
     useState<selectedTokenForGasType>({

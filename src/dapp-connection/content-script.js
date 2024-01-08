@@ -19,10 +19,10 @@ try {
   window.addEventListener(
     "message",
     (ev) => {
-      console.log(
-        "IN CONTENT_SCRIPT window.addEventListener('message', :15",
-        ev,
-      );
+      // console.log(
+      //   "IN CONTENT_SCRIPT window.addEventListener('message', :15",
+      //   ev,
+      // );
       if (ev.data.type === "FROM_PAGE") {
         if (
           chrome &&
@@ -42,10 +42,10 @@ try {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log(
-      "IN CONTENT_SCRIPT chrome.runtime.onMessage.addListener: :26",
-      request,
-    );
+    // console.log(
+    //   "IN CONTENT_SCRIPT chrome.runtime.onMessage.addListener: :26",
+    //   request,
+    // );
 
     if (request.type === "FROM_BG") {
       const auth = request.payload.hasOwnProperty("authoritative")

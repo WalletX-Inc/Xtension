@@ -1,7 +1,11 @@
 import {
-  BiconomySmartAccount,
+  BiconomySmartAccountV2,
   DEFAULT_ENTRYPOINT_ADDRESS,
 } from "@biconomy/account";
+import {
+  ECDSAOwnershipValidationModule,
+  DEFAULT_ECDSA_OWNERSHIP_MODULE,
+} from "@biconomy/modules";
 import { Bundler } from "@biconomy/bundler";
 import { BiconomyPaymaster } from "@biconomy/paymaster";
 import localforage from "localforage";
@@ -76,9 +80,22 @@ export default function initiateSmartWallet(
       bundler,
       paymaster,
     };
-    const account = new BiconomySmartAccount(smartAccountConfig);
-    const smartAccount = await account.init();
-    const smartAccountAddress = await smartAccount.getSmartAccountAddress();
+    // const account = new BiconomySmartAccount(smartAccountConfig);
+    // const smartAccount = await account.init();
+    // const smartAccountAddress = await smartAccount.getSmartAccountAddress();
+
+    const module = await ECDSAOwnershipValidationModule.create({
+      signer,
+      moduleAddress: DEFAULT_ECDSA_OWNERSHIP_MODULE,
+    });
+    const smartAccount = await BiconomySmartAccountV2.create({
+      ...smartAccountConfig,
+      defaultValidationModule: module,
+      activeValidationModule: module,
+    });
+    // const smartAccount = await account.create();
+
+    const smartAccountAddress = await smartAccount.getAccountAddress();
 
     log("[Hooks] Smart Account Address: ", smartAccountAddress, "info");
 

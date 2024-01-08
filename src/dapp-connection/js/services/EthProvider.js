@@ -1,8 +1,9 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-this-alias */
 /* eslint-disable no-undef */
+/* eslint-disable no-constant-condition */
 
-import WalletProxi from "./WalletProxiInit";
+// import WalletProxi from "./WalletProxiInit";
 import Store from "../components/StoreComponent";
 import { log } from "../../../utils/helper";
 
@@ -22,6 +23,7 @@ class EthProvider {
 
     // AppController.start('connect_controller');
 
+    // const tempState = Store.getTempState();
     const state = Store.getState();
     const ref = this;
 
@@ -36,10 +38,11 @@ class EthProvider {
       customConsoleLog(28, val);
       setTimeout(
         (ev) => {
-          log(Number(new Date()), "message from bg (eth-provider)", ev);
+          log("message from bg (eth-provider)", { ev, state });
           if (ev.data.type === "FROM_BG") {
             customConsoleLog(33, ev);
-            if (!WalletProxi.isLocked()) {
+            if (false) {
+              // if (!WalletProxi.isLocked()) {
               // AppController.start("lock_controller");
               log(Number(new Date()), "wallet is locked");
               ref.respond(ev.data.id, {
@@ -71,6 +74,7 @@ class EthProvider {
               if (
                 [
                   "eth_sign",
+                  "personal_sign",
                   "eth_sendTransaction",
                   "wallet_switchEthereumChain",
                   "wallet_addEthereumChain",
@@ -79,23 +83,32 @@ class EthProvider {
                 state.connect_title === ev.data?.from?.title &&
                 state.connect_origin === ev.data?.from?.origin
               ) {
-                log(
-                  Number(new Date()),
-                  "INSIDE ETHPROVIDER first IF",
-                  ev.data.payload,
-                );
+                log("INSIDE ETHPROVIDER first IF", ev.data.payload);
 
                 ref.handle_request(ev.data.id, ev.data.payload, ev.data.from);
-              } else if (ev.data.payload.method === "eth_sign") {
+              } else if (
+                ev.data.payload.method === "eth_sign" ||
+                ev.data.payload.method === "personal_sign"
+              ) {
                 log(Number(new Date()), "INSIDE ETHPROVIDER ", ev.data.payload);
-                Store.saveState({
-                  address: ev.data.payload.params[0],
-                  message: ev.data.payload.params[1],
-                  connect_title: ev.data?.from?.title,
-                  connect_origin: ev.data?.from?.origin,
-                });
+                if (ev.data.payload.method === "personal_sign") {
+                  Store.saveTempState({
+                    address: ev.data.payload.params[1],
+                    message: ev.data.payload.params[0],
+                    connect_title: ev.data?.from?.title,
+                    connect_origin: ev.data?.from?.origin,
+                  });
+                } else {
+                  Store.saveTempState({
+                    address: ev.data.payload.params[0],
+                    message: ev.data.payload.params[1],
+                    connect_title: ev.data?.from?.title,
+                    connect_origin: ev.data?.from?.origin,
+                  });
+                }
                 // AppController.start("sign_message_external");
                 // this.navigateFunc("/dashboard/dapp/sign-message");
+
                 this.navigateFunc("/dashboard/dapp/signature");
                 // window.location.replace(`${window.location.hostname}/dashboard/dapp/sign-message`)
                 // window.location.assign(`${window.location.hostname}/dashboard/dapp/sign-message`)
@@ -103,49 +116,53 @@ class EthProvider {
                 customConsoleLog(100, "AFTER WINDOW ASSIGN");
                 ref.onInteraction(
                   (resp) => {
+                    Store.clearTempState();
                     log(Number(new Date()), " sign message info ", resp);
                     ref.respond(ev.data.id, resp);
                   },
-                  () => {
+                  (reason) => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, {
                       error: {
                         message: "User Rejected Request",
                         code: 4001,
-                        data: "The user rejected the request.",
+                        data: reason || "The user rejected the request.",
                       },
                     });
                   },
                   () => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, { message: "closing" });
                   },
                 );
               } else if (ev.data.payload.method === "eth_sendTransaction") {
                 log(Number(new Date()), "INSIDE ETHPROVIDER ", ev.data.payload);
-                Store.saveState({
-                  ...ev.data.payload.params[0],
+                Store.saveTempState({
+                  transactionData: ev.data.payload.params[0],
                   useExternalFee: true,
                 });
                 // AppController.start("send_transaction_external");
+                this.navigateFunc("/dashboard/dapp/transaction");
 
                 ref.onInteraction(
                   (resp) => {
-                    log(
-                      Number(new Date()),
-                      " send transaction hash info ",
-                      resp,
-                    );
-                    ref.respond(ev.data.id, resp.transactionHash);
+                    Store.clearTempState();
+                    log(" send transaction hash info ", resp);
+                    ref.respond(ev.data.id, resp.receipt.transactionHash);
+                    // ref.respond(ev.data.id, resp.transactionHash);
                   },
-                  () => {
+                  (reason) => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, {
                       error: {
                         message: "User Rejected Request",
                         code: 4001,
-                        data: "The user rejected the request.",
+                        data: reason || "The user rejected the request.",
                       },
                     });
                   },
                   () => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, { message: "closing" });
                   },
                 );
@@ -155,13 +172,13 @@ class EthProvider {
                 const chainId = ev.data.payload?.params[0]?.chainId;
 
                 if (chainId) {
-                  Store.saveState({
+                  Store.saveTempState({
                     connect_title: ev.data?.from?.title,
                     connect_origin: ev.data?.from?.origin,
                     requestedChainId: chainId,
                   });
                 } else {
-                  Store.saveState({
+                  Store.saveTempState({
                     connect_title: ev.data?.from?.title,
                     connect_origin: ev.data?.from?.origin,
                     requestedChainId: null,
@@ -174,6 +191,7 @@ class EthProvider {
 
                 ref.onInteraction(
                   () => {
+                    Store.clearTempState();
                     ref.handle_request(
                       ev.data.id,
                       ev.data.payload,
@@ -181,7 +199,8 @@ class EthProvider {
                     );
                   },
                   () => {
-                    Store.saveState({
+                    Store.clearTempState();
+                    Store.saveTempState({
                       connect_title: false,
                       connect_origin: false,
                     });
@@ -195,6 +214,7 @@ class EthProvider {
                     });
                   },
                   () => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, { message: "closing" });
                   },
                 );
@@ -202,13 +222,13 @@ class EthProvider {
                 const chainId = ev.data.payload?.params[0]?.chainId;
 
                 if (chainId) {
-                  Store.saveState({
+                  Store.saveTempState({
                     connect_title: ev.data?.from?.title,
                     connect_origin: ev.data?.from?.origin,
                     requestedChainId: chainId,
                   });
                 } else {
-                  Store.saveState({
+                  Store.saveTempState({
                     connect_title: ev.data?.from?.title,
                     connect_origin: ev.data?.from?.origin,
                     requestedChainId: null,
@@ -221,6 +241,7 @@ class EthProvider {
 
                 ref.onInteraction(
                   () => {
+                    Store.clearTempState();
                     ref.handle_request(
                       ev.data.id,
                       ev.data.payload,
@@ -228,7 +249,8 @@ class EthProvider {
                     );
                   },
                   () => {
-                    Store.saveState({
+                    Store.clearTempState();
+                    Store.saveTempState({
                       connect_title: false,
                       connect_origin: false,
                     });
@@ -242,39 +264,51 @@ class EthProvider {
                     });
                   },
                   () => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, { message: "closing" });
                   },
                 );
               } else {
-                const _state = Store.getState();
+                // const _state = Store.getTempState();
 
-                if (
-                  _state?.connect_title &&
-                  _state?.connect_title === ev.data?.from?.title &&
-                  _state?.connect_origin &&
-                  _state?.connect_origin === ev.data?.from?.origin
-                ) {
-                  ref.handle_request(ev.data.id, ev.data.payload, ev.data.from);
-                  return;
-                }
+                // console.log("THIS IS OPENING FOR CONNECTION");
 
-                Store.saveState({
+                // if (
+                //   _state?.connect_title &&
+                //   _state?.connect_title === ev.data?.from?.title &&
+                //   _state?.connect_origin &&
+                //   _state?.connect_origin === ev.data?.from?.origin
+                // ) {
+                //   ref.handle_request(ev.data.id, ev.data.payload, ev.data.from);
+                //   return;
+                // }
+
+                Store.saveTempState({
                   connect_title: ev.data?.from?.title,
                   connect_origin: ev.data?.from?.origin,
                 });
                 // user router to open required screen
                 // App.showPage("connect-dapp-screen");
+                this.navigateFunc("dashboard/dapp/connect");
 
                 ref.onInteraction(
-                  () => {
+                  (connectionData) => {
+                    Store.clearTempState();
+                    Store.saveState({
+                      ...connectionData,
+                      connect_title: ev.data?.from?.title,
+                      connect_origin: ev.data?.from?.origin,
+                    });
                     ref.handle_request(
                       ev.data.id,
                       ev.data.payload,
                       ev.data.from,
+                      connectionData,
                     );
                   },
-                  () => {
-                    Store.saveState({
+                  (reason) => {
+                    Store.clearTempState();
+                    Store.saveTempState({
                       connect_title: false,
                       connect_origin: false,
                     });
@@ -283,11 +317,12 @@ class EthProvider {
                       error: {
                         message: "User Rejected Request",
                         code: 4001,
-                        data: "The user rejected the request.",
+                        data: reason || "The user rejected the request.",
                       },
                     });
                   },
                   () => {
+                    Store.clearTempState();
                     ref.respond(ev.data.id, { message: "closing" });
                   },
                 );
@@ -301,19 +336,24 @@ class EthProvider {
     });
   }
 
-  async handle_request(id, data, from) {
-    log(Number(new Date()), "HANDLE REQ", data);
+  async handle_request(id, data, from, connectionData) {
+    log("HANDLE REQ", data);
     log(data.method);
-    window.WalletProxi = WalletProxi;
+    // window.WalletProxi = WalletProxi;
 
     // VARIABLES:
     let chains;
     let chainID;
     let chainRequested;
 
+    // if (connectionData) {
+    //   console.log({ connectionData });
+    // }
+
     switch (data.method) {
       case "eth_accounts":
-        if (await WalletProxi.isEmptyVault()) {
+        if (false) {
+          // if (await WalletProxi.isEmptyVault()) {
           this.respond(id, {
             error: {
               message: "User Rejected Request",
@@ -322,40 +362,38 @@ class EthProvider {
             },
           });
         } else {
-          const w = WalletProxi.getActiveWallet();
-          const balance = await WalletProxi.getWalletBalance(w?.address, true);
+          if (!connectionData) {
+            connectionData = Store.getState();
+          }
 
-          const activeChain = await WalletProxi.getActiveChain();
-          const activeNodeUri = await WalletProxi.getNodeURI();
+          const { address, chainId, isConnected, balance, chainDetails } =
+            connectionData;
+          // const balance = connectionData.balance; // wait WalletProxi.getWalletBalance(w?.address, true);
 
-          const acc = [w?.address];
+          const acc = [address];
           const dataObj = {
             addresses: acc,
             // chainId: process.env.NETWORK === 'ropsten' ? '0x03' : '0x1',
-            // chainId: '80001',
-            node_uri: activeNodeUri,
+            chainId,
+            node_uri: chainDetails.rpc,
             balance,
             payload: acc,
-            block: await WalletProxi.getLatesBlock(),
+            block: "", // await WalletProxi.getLatesBlock(),
             origin: from.origin,
             method: data.method,
+            isConnected,
           };
 
-          if (activeChain.chainId) {
-            dataObj.chainId = activeChain.chainId;
-          } else if (process.env.NETWORK === "ropsten") {
-            dataObj.chainId = "0x03";
-          } else {
-            dataObj.chainId = "0x1";
-          }
-
+          // setTimeout(() => {
           this.respond(id, dataObj, null, true);
+          // }, 10000);
         }
 
         break;
 
       case "eth_requestAccounts":
-        if (await WalletProxi.isEmptyVault()) {
+        if (false) {
+          // if (await WalletProxi.isEmptyVault()) {
           this.respond(id, {
             error: {
               message: "User Rejected Request",
@@ -364,48 +402,43 @@ class EthProvider {
             },
           });
         } else {
-          const w = WalletProxi.getActiveWallet();
-          // log(Number(new Date()), 'WALLET', w );
-
-          const balance = await WalletProxi.getWalletBalance(w?.address, true);
-
-          const activeChain = await WalletProxi.getActiveChain();
-          const activeNodeUri = await WalletProxi.getNodeURI();
-
-          const acc = [w?.address];
-          const dataObj = {
-            addresses: acc,
-            // chainId: process.env.NETWORK === 'ropsten' ? '0x3' : '0x1',
-            // chainId: '80001',
-            balance,
-            node_uri: activeNodeUri,
-            payload: acc,
-            block: await WalletProxi.getLatesBlock(),
-            origin: from.origin,
-            method: data.method,
-          };
-
-          if (activeChain.chainId) {
-            dataObj.chainId = activeChain.chainId;
-          } else if (process.env.NETWORK === "ropsten") {
-            dataObj.chainId = "0x03";
-          } else {
-            dataObj.chainId = "0x1";
+          if (!connectionData) {
+            connectionData = Store.getState();
           }
 
+          const { address, chainId, isConnected, balance, chainDetails } =
+            connectionData;
+          // const balance = connectionData.balance; // wait WalletProxi.getWalletBalance(w?.address, true);
+
+          const acc = [address];
+          const dataObj = {
+            addresses: acc,
+            // chainId: process.env.NETWORK === 'ropsten' ? '0x03' : '0x1',
+            chainId,
+            node_uri: chainDetails.rpc,
+            balance,
+            payload: acc,
+            block: "", // await WalletProxi.getLatesBlock(),
+            origin: from.origin,
+            method: data.method,
+            isConnected,
+          };
+
+          // setTimeout(() => {
           this.respond(id, dataObj, null, true);
+          // }, 10000);
         }
 
         break;
 
       case "eth_getBalance":
-        await WalletProxi.loadVault();
+        // await WalletProxi.loadVault();
         // eslint-disable-next-line no-case-declarations
-        const aW = WalletProxi.getActiveWallet();
+        // const aW = ""; // WalletProxi.getActiveWallet();
         // eslint-disable-next-line no-case-declarations
-        const { address } = aW;
+        // const { address } = aW;
         // eslint-disable-next-line no-case-declarations
-        const balance = await WalletProxi.getWalletBalance(address, true);
+        const balance = ""; // await WalletProxi.getWalletBalance(address, true);
 
         this.respond(id, balance);
         break;
@@ -419,7 +452,7 @@ class EthProvider {
         break;
 
       case "wallet_addEthereumChain":
-        chains = await WalletProxi.getChains();
+        chains = ""; // await WalletProxi.getChains();
         log(Number(new Date()), "chain params", data);
         chainID = chains.reduce((acc, el, idx) => {
           if (
@@ -433,12 +466,12 @@ class EthProvider {
 
         chainRequested = chains[chainID];
         if (chainID !== null) {
-          WalletProxi.setActiveChain(chainID, false, false);
-          const activeNodeUri = await WalletProxi.getNodeURI();
-          const activeWallet = WalletProxi.getActiveWallet();
-          const walletBalance = await WalletProxi.getWalletBalance(
-            activeWallet.address,
-          );
+          // WalletProxi.setActiveChain(chainID, false, false);
+          const activeNodeUri = ""; // await WalletProxi.getNodeURI();
+          const activeWallet = ""; // WalletProxi.getActiveWallet();
+          const walletBalance = ""; // await WalletProxi.getWalletBalance(
+          // activeWallet.address,
+          // );
 
           setTimeout(() => {
             this.respond(id, {
@@ -466,24 +499,25 @@ class EthProvider {
             },
           });
         } else {
-          const RPC =
-            typeof data.params[0].rpcUrls === "string"
-              ? data.params[0].rpcUrls
-              : data.params[0].rpcUrls[0];
+          // const RPC =
+          //   typeof data.params[0].rpcUrls === "string"
+          //     ? data.params[0].rpcUrls
+          //     : data.params[0].rpcUrls[0];
 
-          await WalletProxi.addChain(
-            data.params[0].chainName,
-            data.params[0].chainName,
-            data.params[0].chainId,
-            RPC,
-          );
+          // await WalletProxi.addChain(
+          //   data.params[0].chainName,
+          //   data.params[0].chainName,
+          //   data.params[0].chainId,
+          //   RPC,
+          // );
 
-          WalletProxi.setActiveChain(chainID, false, false);
-          const activeNodeUri = await WalletProxi.getNodeURI();
-          const activeWallet = WalletProxi.getActiveWallet();
-          const walletBalance = await WalletProxi.getWalletBalance(
-            activeWallet.address,
-          );
+          // WalletProxi.setActiveChain(chainID, false, false);
+          const activeNodeUri = ""; // await WalletProxi.getNodeURI();
+          const activeWallet = ""; // WalletProxi.getActiveWallet();
+          const walletBalance = "";
+          // await WalletProxi.getWalletBalance(
+          //   activeWallet.address,
+          // );
 
           setTimeout(() => {
             this.respond(id, {
@@ -499,7 +533,7 @@ class EthProvider {
         break;
 
       case "wallet_switchEthereumChain":
-        chains = await WalletProxi.getChains();
+        chains = ""; // await WalletProxi.getChains();
         log(Number(new Date()), "chain params", data);
         chainID = chains.reduce((acc, el, idx) => {
           if (
@@ -512,12 +546,13 @@ class EthProvider {
         }, null);
         chainRequested = chains[chainID];
         if (chainID !== null) {
-          WalletProxi.setActiveChain(chainID, false, false);
-          const activeNodeUri = await WalletProxi.getNodeURI();
-          const activeWallet = WalletProxi.getActiveWallet();
-          const walletBalance = await WalletProxi.getWalletBalance(
-            activeWallet.address,
-          );
+          // WalletProxi.setActiveChain(chainID, false, false);
+          const activeNodeUri = ""; // await WalletProxi.getNodeURI();
+          const activeWallet = ""; // WalletProxi.getActiveWallet();
+          const walletBalance = "";
+          // await WalletProxi.getWalletBalance(
+          //   activeWallet.address,
+          // );
 
           setTimeout(() => {
             this.respond(id, {
@@ -553,13 +588,13 @@ class EthProvider {
   }
 
   respond(evId, data) {
-    log(Number(new Date()), "RESPONDING FROM EXT", data);
+    log("RESPONDING FROM EXT", data);
     // eslint-disable-next-line prefer-rest-params
     const events = arguments[2] ? { event: arguments[2] } : {};
     // eslint-disable-next-line prefer-rest-params
     const authoritative = arguments[3] ? { authoritative: true } : {};
 
-    customConsoleLog(533, evId, data);
+    customConsoleLog(533, data);
 
     if (
       chrome &&
@@ -587,8 +622,8 @@ class EthProvider {
     if (this.handleFunc) this.handleFunc(params);
   }
 
-  onCancel() {
-    if (this.rejectFunc) this.rejectFunc();
+  onCancel(data) {
+    if (this.rejectFunc) this.rejectFunc(data);
   }
 
   onClose() {

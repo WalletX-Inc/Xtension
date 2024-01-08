@@ -284,6 +284,8 @@ function handleMessage(ev, sender) {
     State.addreses = [];
   }
 
+  console.log("\n\n\n\n in bg from contetn FROM_CS\n\n\n");
+
   // State.requestTypes[ ev.payload.method ] = 'true';
 
   if (
@@ -291,7 +293,8 @@ function handleMessage(ev, sender) {
     ev.payload.method !== "eth_sendTransaction" &&
     ev.payload.method !== "wallet_switchEthereumChain" &&
     ev.payload.method !== "wallet_addEthereumChain" &&
-    ev.payload.method !== "eth_sign"
+    ev.payload.method !== "eth_sign" &&
+    ev.payload.method !== "personal_sign"
   ) {
     console.log(Number(new Date()), "is this automated?", ev.payload.method);
 
@@ -378,7 +381,7 @@ function handleResponse(ev, sender) {
   );
 
   if (ev.payload.message === "closing") {
-    // hidePopup();
+    hidePopup();
   }
 
   if (ev.method === "lock_ext") {
@@ -416,7 +419,7 @@ function handleResponse(ev, sender) {
   }
 
   if (ev.payload.method === "accountsChanged") {
-    console.log(Number(new Date()), "received address change", ev);
+    console.log("received address change", ev);
     State.addresses = ev.payload.addresses;
     chrome.tabs.sendMessage(contentTabId, {
       type: "FROM_BG",

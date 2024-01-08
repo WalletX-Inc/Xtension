@@ -10,21 +10,9 @@ import {
 } from "../../../utils/helper";
 import { validateBiometric } from "../../../hooks/functional-hooks";
 
-type SignatureRequestDataType = {
-  address: string;
-  message: string;
-  connect_title: string | null;
-  connect_origin: string | null;
-};
-
 export default function SignatureRequest() {
   const [smartWalletAddress, setSmartWalletAddress] = useState<string>("");
-  const [dappData, setDappData] = useState<SignatureRequestDataType>({
-    address: "",
-    message: "",
-    connect_title: null,
-    connect_origin: null,
-  });
+  const [transactionData, setTransactionData] = useState<any>({});
   const biometricAuth = validateBiometric();
   const devices = getItemFromStorage("devices");
   const dName = devices[0];
@@ -44,19 +32,16 @@ export default function SignatureRequest() {
   useEffect(() => {
     const data: any = Store.getTempState();
 
-    log("SignatureRequest useEffect", { data });
+    log("SignatureRequest useEffect", { data, transactionData });
     if (data)
-      setDappData({
-        address: data.address,
-        message: data.message,
-        connect_title: data.connect_title,
-        connect_origin: data.connect_origin,
+      setTransactionData({
+        ...data.transactionData,
       });
   }, [
-    dappData.address,
-    dappData.message,
-    dappData.connect_title,
-    dappData.connect_origin,
+    transactionData.data,
+    transactionData.from,
+    transactionData.to,
+    transactionData.value,
   ]);
 
   const rejectSignRequest = (reason: string | null = null) => {
@@ -78,9 +63,14 @@ export default function SignatureRequest() {
     // if (provider && smartAccountAddress) setIsLoading(false);
   }, [smartAccountAddress, smartWalletAddress]);
 
-  const userSignMessage = async () => {
-    if (dappData.address !== (SCW || smartAccountAddress)) {
-      rejectSignRequest("Not the correct signer address");
+  const sendTransaction = async () => {
+    if (
+      transactionData?.from.toLowerCase() !==
+      (SCW.toLowerCase() || smartAccountAddress.toLowerCase())
+    ) {
+      setTimeout(() => {
+        rejectSignRequest("Not the correct signer address");
+      }, 6000);
       return;
     }
 
@@ -91,11 +81,44 @@ export default function SignatureRequest() {
       return;
     }
 
-    const signMessageResponse = await smartAccountProvider.signMessage(
-      dappData?.message,
-    );
+    const transactions: any[] = [];
+    const obj: any = {};
 
-    EthProvider.onAccept(signMessageResponse);
+    obj.to = transactionData.to;
+    obj.value = transactionData.value;
+    obj.from = transactionData.from;
+    obj.data = transactionData.data;
+
+    transactions.push(obj);
+
+    const partialUserOp = await smartAccountProvider.buildUserOp(transactions);
+    const finalUserOp = partialUserOp;
+
+    // log("Selected token For gas : ", selectedTokenForGas, "info");
+
+    // if (
+    //   selectedTokenForGas.tokenAddress.toString() !==
+    //   "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    // ) {
+    //   finalUserOp = await constructFinalUserOp(
+    //     smartAccountProvider,
+    //     finalUserOp,
+    //     selectedTokenForGas.tokenAddress,
+    //   );
+    //   log("FINAL USEROP : ", finalUserOp, "info");
+    // }
+
+    try {
+      const userOpResponse = await smartAccountProvider.sendUserOp(finalUserOp);
+
+      const transactionDetails = await userOpResponse.wait();
+
+      log("Transaction Details : ", transactionDetails, "success");
+      EthProvider.onAccept(transactionDetails);
+    } catch (e: any) {
+      log("Error while sending batch txn : ", { e, msg: e.message }, "error");
+      EthProvider.onCancel(e.message);
+    }
   };
 
   return (
@@ -117,14 +140,14 @@ export default function SignatureRequest() {
           <div className="bg-gray-500 my-3 text-center rounded-lg">
             <h4>Message</h4>
             <pre className="text-center overflow-auto rounded-md p-3">
-              {dappData?.message}
+              {JSON.stringify(transactionData)}
             </pre>
           </div>
           <div className="flex justify-center mt-8">
             <button
               className="w-1/2 text-white bg-gray-700 hover:bg-gray-600 rounded-lg flex justify-center m-auto
           transition duration-500 hover:scale-110 p-2"
-              onClick={userSignMessage}
+              onClick={sendTransaction}
             >
               Sign
             </button>

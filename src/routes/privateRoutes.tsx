@@ -14,7 +14,9 @@ import Swap from "../pages/TransactDrawer/Swap";
 import Receive from "../pages/TransactDrawer/Receive";
 import { getItemFromStorage, log } from "../utils/helper";
 import SignatureRequest from "../pages/Dapp/Signature/SignatureRequest";
-import DappConnect from "../pages/Dapp/DappConnect";
+import DappTransaction from "../pages/Dapp/Transaction/Transaction";
+import DappConnect from "../pages/Dapp/Connect/Connect";
+import DappConnectOld from "../pages/Dapp/DappConnect";
 import DappConnectAccount from "../pages/Dapp/DappConnectAccount";
 import DappConnecting from "../pages/Dapp/DappConnecting";
 
@@ -57,7 +59,10 @@ export default function PrivateRoutes() {
       />
       {/* DAPP connection routes  */}
       <Route path="/dashboard/dapp/signature" element={<SignatureRequest />} />
+      <Route path="/dashboard/dapp/transaction" element={<DappTransaction />} />
       <Route path="/dashboard/dapp/connect" element={<DappConnect />} />
+
+      <Route path="/dashboard/dapp/connect-old" element={<DappConnectOld />} />
       <Route path="/dashboard/dapp/sign" element={<DappConnectAccount />} />
       <Route path="/dashboard/dapp/connecting" element={<DappConnecting />} />
 

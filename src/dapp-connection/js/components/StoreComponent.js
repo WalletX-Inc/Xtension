@@ -8,9 +8,9 @@ const CryptoJS = require("crypto-js");
 
 const Store = {
   key: "state_extension_Storage",
-  localKey: "localState_extension_Storage",
+  tempKey: "tempState_extension_Storage",
   state: null,
-  localState: null,
+  tempState: null,
 
   getState() {
     if (!this.state) {
@@ -38,26 +38,28 @@ const Store = {
     this.commit("state", Store.state);
   },
 
-  // getLocalState: function () {
-  //   let cont = this.load("local");
-  //   if (!cont) {
-  //     cont = {};
-  //   }
-  //   Store.localState = cont;
-  //   return Store.localState;
-  // },
+  getTempState() {
+    let cont = this.load("temp");
 
-  // saveLocalState: function (state) {
-  //   Store.localState = { ...Store.localState, ...state };
-  //   log(Number(new Date()), "LOCALSTATE", Store.localState);
+    if (!cont) {
+      cont = {};
+    }
 
-  //   this.commit("local", Store.localState);
-  // },
-  // clearLocalState: function () {
-  //   Store.localState = {};
+    Store.tempState = cont;
+    return Store.tempState;
+  },
 
-  //   this.commit("local", Store.localState);
-  // },
+  saveTempState(state) {
+    Store.tempState = { ...Store.tempState, ...state };
+    log("TEMPSTATE", Store.tempState);
+
+    this.commit("temp", Store.tempState);
+  },
+  clearTempState() {
+    Store.tempState = {};
+
+    this.commit("temp", Store.tempState);
+  },
 
   clearStateKeys(keyPrefixes) {
     const keys = Object.keys(Store.state);
@@ -80,7 +82,7 @@ const Store = {
     }, {});
 
     // log(Number(new Date()),  'new state', remaining );
-    this.commit("local", newState);
+    this.commit("temp", newState);
   },
 
   INITIAL_STATE: {},
@@ -88,7 +90,7 @@ const Store = {
   commit(place, obj) {
     const sol = DAPP_CONNECTION_ENV.WALLET_WORD_SPLIT;
     // const sol = process.env.REACT_APP_WALLET_WORD_SPLIT;
-    const k = place === "local" ? Store.localKey : Store.key;
+    const k = place === "temp" ? Store.tempKey : Store.key;
 
     const buff = CryptoJS.AES.encrypt(JSON.stringify(obj), sol).toString();
 
@@ -96,11 +98,11 @@ const Store = {
     log(Number(new Date()), "saved state");
   },
   load(place) {
-    const k = place === "local" ? Store.localKey : Store.key;
+    const k = place === "temp" ? Store.tempKey : Store.key;
 
     const sol = DAPP_CONNECTION_ENV.WALLET_WORD_SPLIT;
 
-    log("eituweioutwtoei, ", process.env.REACT_APP_WALLET_WORD_SPLIT);
+    log("eituweioutwtoei, ", { place, k, sol });
     const buff = localStorage.getItem(k) || null;
 
     if (!buff) {

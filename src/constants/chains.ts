@@ -43,9 +43,9 @@ const supportedChains = [
     chainUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
     coinUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
     bundlerUrl:
-      "https://bundler.biconomy.io/api/v2/80001/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
+      "https://bundler.biconomy.io/api/v2/137/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
     paymasterUrl:
-      "https://paymaster.biconomy.io/api/v1/80001/UYATlrlJ9.d1efbad1-1158-4156-ae07-324726431f69",
+      "https://paymaster.biconomy.io/api/v1/137/UYATlrlJ9.d1efbad1-1158-4156-ae07-324726431f69",
     isMainnet: true,
     isL2: false,
     isERC20GasPaymentSupported: true,
