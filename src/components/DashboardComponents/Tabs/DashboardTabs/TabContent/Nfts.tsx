@@ -1,31 +1,197 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Moralis from "moralis";
+import { Collection } from "./Collection";
+import { useConfig } from "../../../../../context/ConfigProvider";
+import ImportNfts from "../../../../Modals/ImportNfts";
+import plus from "../../../../../assets/plus-white.svg";
+import defaultImg from "../../../../../assets/nft_default.jpg";
+// import refresh from "../../../../../assets/refresh.svg";
+// import localforage from "localforage";
+
+type nftdata = {
+  tokenId: string;
+  nftLink: string;
+};
+
+type nftsource = {
+  name: string;
+  tokenAddress: string;
+  tokenId: number;
+  nftLink: any;
+  nfts: nftdata[];
+};
 
 const Nfts = () => {
+  const [nftsource, setNftSource] = useState<nftsource[]>([]);
+  const [isImportNftsModalOpen, setImportNftsModalOpen] =
+    useState<boolean>(false);
+  const { smartAccountAddress, chainId } = useConfig();
+
+  const openImportNftsModal = () => setImportNftsModalOpen(true);
+  const closeImportNftsDrawer = () => setImportNftsModalOpen(false);
+
+  const updateSingleImportedNftData = (data: nftsource) => {
+    const existingNftIndex = nftsource.findIndex(
+      (item: any) => item.tokenAddress === data.tokenAddress
+    );
+
+    const nftData: nftdata = {
+      tokenId: data.tokenId.toString(),
+      nftLink: data.nftLink.replace("ipfs://", "https://ipfs.io/ipfs/"),
+    };
+
+    if (existingNftIndex !== -1) {
+      const updatedNftSource = [...nftsource];
+      updatedNftSource[existingNftIndex] = {
+        ...updatedNftSource[existingNftIndex],
+        nfts: [...updatedNftSource[existingNftIndex].nfts, nftData],
+      };
+    } else {
+      const newNftData = {
+        tokenAddress: data.tokenAddress,
+        name: data.name,
+        nfts: [nftData],
+      };
+      const updatedNftSource: any = [...nftsource, newNftData];
+      setNftSource(updatedNftSource);
+    }
+  };
+
+  const sortNftUsingTokenAddress = (
+    nftSrcArray: any[],
+    index: number,
+    tokenAddress: string,
+    name: string,
+    nftData: any
+  ) => {
+    if (index !== -1) {
+      nftSrcArray[index].nfts.push(nftData);
+    } else {
+      const newNftData = {
+        tokenAddress,
+        name,
+        nfts: [nftData],
+      };
+      nftSrcArray.push(newNftData);
+    }
+  };
+
+  const importAllNfts = async () => {
+    try {
+      const response: any = await Moralis.EvmApi.nft.getWalletNFTs({
+        chain: chainId,
+        format: "decimal",
+        mediaItems: false,
+        address: smartAccountAddress,
+      });
+
+      const nftSrcArray: any = [];
+
+      for (let i = 0; i < response.raw.result.length; i++) {
+        try {
+          const token_uri = await fetch(response.raw.result[i].token_uri);
+          const dataFromTokenUri = await token_uri.json();
+
+          const existingNftIndex = nftSrcArray.findIndex(
+            (item: any) =>
+              item.tokenAddress === response.raw.result[i].token_address
+          );
+
+          const singleNftData = {
+            tokenId: response.raw.result[i].token_id,
+            nftLink: dataFromTokenUri?.image
+              ? dataFromTokenUri.image.replace(
+                  "ipfs://",
+                  "https://ipfs.io/ipfs/"
+                )
+              : defaultImg,
+          };
+
+          sortNftUsingTokenAddress(
+            nftSrcArray,
+            existingNftIndex,
+            response.raw.result[i].token_address,
+            response.raw.result[i].name,
+            singleNftData
+          );
+        } catch (error) {
+          const existingNftIndex = nftSrcArray.findIndex(
+            (item: any) =>
+              item.tokenAddress === response.raw.result[i].token_address
+          );
+
+          const singleNftData = {
+            tokenId: response.raw.result[i].token_id,
+            nftLink: defaultImg,
+          };
+
+          sortNftUsingTokenAddress(
+            nftSrcArray,
+            existingNftIndex,
+            response.raw.result[i].token_address,
+            response.raw.result[i].name,
+            singleNftData
+          );
+
+          console.error(`Error processing element at index ${i}: ${error}`);
+        }
+      }
+
+      setNftSource(nftSrcArray);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // const getNftFromLocal = async() => {
+  //    const nftFromLocal: any = await localforage.getItem(
+  //     "fetchedNftsData",
+  //   );
+  //   setNftSource(nftFromLocal);
+  // }
+
+  useEffect(() => {
+    importAllNfts();
+    // getNftFromLocal()
+  }, []);
+
   return (
-    <div className="py-4">
-      <div className="relative mt-12">
-        <h2 className="text-white text-3xl md:text-4xl font-bold flex flex-row justify-center items-center">
-          Coming
-          <div className="relative text-sm mx-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-caret-up-fill text-blue-500"
-              viewBox="0 0 16 16"
-            >
-              <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
-            </svg>
-            <div className="absolute -top-12 transform -rotate-45 text-blue-500">
-              <p className="font-light text-base text-white bg-blue-500 rounded-md px-2 py-0">
-                super
-              </p>
+    <div className="p-4 pt-0 max-h-[275px] overflow-y-scroll">
+      {nftsource &&
+        nftsource.map((item: nftsource, index) => {
+          return (
+            <div key={index}>
+              <Collection
+                name={item.name}
+                tokenAddress={item.tokenAddress}
+                nft_Data={nftsource[index].nfts}
+              />
             </div>
-          </div>
-          Soon
-        </h2>
+          );
+        })}
+      <div className="flex flex-col h-full justify-center items-center">
+        {!nftsource && <p className="mb-4">Oops, No NFTs yet</p>}
+        <button
+          onClick={() => openImportNftsModal()}
+          className="flex gap-2 p-2 mt-4 bg-[#3B82F6] rounded items-center"
+        >
+          <img src={plus} className="h-5" alt="add" />
+          <p>Import NFT</p>
+        </button>
+
+        <ImportNfts
+          isOpen={isImportNftsModalOpen}
+          onClose={closeImportNftsDrawer}
+          updateSingleImportedNftData={updateSingleImportedNftData}
+        />
       </div>
+
+      {/* REFRESH BUTTON */}
+
+      {/* <div className="flex gap-2 items-center mx-auto mt-4 text-[#3B82F6] rounded ">
+        <img src={refresh} className="h-4" alt="refresh" />
+        <button onClick={importAllNfts}>Refresh</button>
+      </div> */}
     </div>
   );
 };
