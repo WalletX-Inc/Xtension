@@ -124,7 +124,7 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       ref={drawer}
       className={`${
         isOpen ? "bottom-0" : " translate-y-full"
-      }  fixed bottom-0 left-1/2 translate-x-[-50%]  w-[350px] h-[455px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10 px-4 py-5 transition duration-500  transform z-50 `}
+      }  fixed bottom-0 left-1/2 translate-x-[-50%]  w-[350px] h-[455px] bg-slate-900 border-gray-300 text-white border rounded-t-3xl rounded-b-lg mt-10  py-5 transition duration-500  transform z-50 `}
     >
       <h1
         onClick={() => onClose()}
@@ -134,18 +134,20 @@ const SearchToken = ({ isOpen, onClose, uid }: searchTokenPara) => {
       </h1>
 
       {/* SEARCH BOX  */}
-      <div className="flex items-center max-w-[95%] mx-auto border border-gray-300 rounded-lg my-4 p-2">
-        <button className="min-w-fit  pr-1 opacity-60">
-          <Search className="h-5 mx-auto my-auto" />
-        </button>
-        <input
-          type="text"
-          placeholder="Search..."
-          className="w-full focus:outline-none pl-1 bg-transparent"
-          value=""
-          //   onChange={handleInputChange}
-          //   onFocus={handleFocus}
-        />
+      <div className="px-4">
+        <div className="flex items-center max-w-[95%] mx-auto border border-gray-300 rounded-lg my-4 p-2">
+          <button className="min-w-fit  pr-1 opacity-60">
+            <Search className="h-5 mx-auto my-auto" />
+          </button>
+          <input
+            type="text"
+            placeholder="Search..."
+            className="w-full focus:outline-none pl-1 bg-transparent"
+            value=""
+            //   onChange={handleInputChange}
+            //   onFocus={handleFocus}
+          />
+        </div>
       </div>
 
       {/* TOKEN CARD  */}

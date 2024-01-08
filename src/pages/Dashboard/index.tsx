@@ -26,6 +26,7 @@ import AccountCard from "../../components/DashboardComponents/AccountCard";
 import Header from "../DashboardLayout/Header";
 import TokenList from "../../components/DashboardComponents/TokenList";
 import ImportTokenDrawer from "../../components/ImportTokenDrawer";
+import Tabs from "../../components/DashboardComponents/Tabs/DashboardTabs/Tabs";
 
 function Dashboard() {
   const [transferData, setTransferData] = useRecoilState(transferState);
@@ -116,17 +117,15 @@ function Dashboard() {
       {/* <Header /> */}
 
       <Header />
-      {/* The below div is used because the accoutCard is called at 2 places and mt-20 breaks it there */}
-      <div className="mt-20">
-        <AccountCard />
-      </div>
-      <div className=" pb-36 ">
+      <AccountCard />
+      <Tabs />
+      {/* <div className=" pb-36 ">
         <h1 className="text-xl font-semibold tracking-wider pb-2 px-5">
           Tokens
         </h1>
 
         <TokenList isImportTokenDrawerAvaliable={true} />
-      </div>
+      </div> */}
 
       <>
         {/* <div className="flex justify-center mb-7 items-center">

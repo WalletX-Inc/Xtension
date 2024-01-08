@@ -4,7 +4,6 @@ import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "react-feather";
-
 import AddressesCard from "../../components/AddressCard";
 import paste from "../../assets/paste.svg";
 import search from "../../assets/search.svg";
@@ -26,7 +25,6 @@ const AddAddresses = () => {
   const [isBackModalOpen, setIsBackModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // function to go back to the dashboard and forward to the add token page
   const openBackModal = () => {
     if (transferData.length > 0) {
       setIsBackModalOpen(true);
@@ -48,23 +46,11 @@ const AddAddresses = () => {
     navigate("/dashboard");
   };
 
-  // function for opning the add Addresses modal
-  const [isAddAddressesModalVisible, setIsAddAddressesModalVisible] =
-    useState(false);
-
-  const openAddAddressesModal = () => {
-    setIsAddAddressesModalVisible(true);
-  };
-  const closeAddAddressesModal = () => {
-    setIsAddAddressesModalVisible(false);
-  };
-
-  // call back functions that receives the address and index form the addressesCard component
   const receivedAddress = (address: string) => {
     setSendToAddresses(address);
   };
 
-  const handleCardClick = (index: number | null) => {
+  const handleCardClick = (index: any) => {
     if (selectedCardIndex === index) {
       setSelectedCardIndex(null);
       setSendToAddresses("");
@@ -75,65 +61,22 @@ const AddAddresses = () => {
     setEnteredAddresses("");
   };
 
-  // Search Box functions
-  const isEthereumAddress = (address: string) => {
+  const isEthereumAddress = (address: any) => {
     try {
-      const validAddress = ethers.utils.isAddress(address);
-
-      return validAddress;
+      return ethers.utils.isAddress(address);
     } catch (error) {
       return false;
     }
   };
 
-  // this function is not beign use cause of manifest v3 problem on build
-  const pasteAddresses = async () => {
-    try {
-      setSendToAddresses("");
-      handleCardClick(null);
-      const address: string = await navigator.clipboard.readText();
-
-      setEnteredAddresses(address);
-      setIsValid(isEthereumAddress(address));
-    } catch (error) {
-      log("Copy failed due to: ", error, "error");
-    }
-  };
-  const generateAddressCard = (_enteredAddresses: string) => (
-    <>
-      <AddressesCard
-        // key={1}
-        name="Shakti"
-        addresses={_enteredAddresses}
-        isSelected={selectedCardIndex === 1}
-        getClickedAddress={receivedAddress}
-        onClick={() => {
-          handleCardClick(1);
-          setIsCardSelected(!isCardSelected);
-        }}
-      />
-    </>
-  );
-
-  const handleInputChange = (e: any) => {
-    const inputValue = e.target.value;
-
-    setEnteredAddresses(inputValue);
-    setCardAddress(inputValue);
-  };
-  const handleFocus = () => {
-    setSendToAddresses("");
-    handleCardClick(null);
-  };
-
-  const handelProceed = () => {
+  const handleProceed = (address: string) => {
     const uuid = crypto.randomUUID();
 
     setTransferData((prevAddresses) => [
       ...prevAddresses,
       {
         uid: uuid,
-        address: sendToAddresses,
+        address: sendToAddresses || address,
         name: "",
         tokenName: "",
         tokenAddress: "",
@@ -148,6 +91,50 @@ const AddAddresses = () => {
     navigate("/dashboard/transaction/add-tokens");
   };
 
+  const pasteAddresses = async () => {
+    try {
+      setSendToAddresses("");
+      handleCardClick(null);
+      const address: string = await navigator.clipboard.readText();
+
+      setEnteredAddresses(address);
+      setIsValid(isEthereumAddress(address));
+    } catch (error) {
+      log("Copy failed due to: ", error, "error");
+    }
+  };
+
+  const generateAddressCard = (_enteredAddresses: string) => (
+    <AddressesCard
+      name="Shakti"
+      addresses={_enteredAddresses}
+      isSelected={selectedCardIndex === 1}
+      getClickedAddress={receivedAddress}
+      onClick={() => {
+        handleCardClick(1);
+        setIsCardSelected(true);
+
+        if (isEthereumAddress(_enteredAddresses)) {
+          setSendToAddresses(_enteredAddresses);
+        }
+
+        handleProceed(_enteredAddresses);
+      }}
+    />
+  );
+
+  const handleInputChange = (e: any) => {
+    const inputValue = e.target.value;
+
+    setEnteredAddresses(inputValue);
+    setCardAddress(inputValue);
+  };
+
+  const handleFocus = () => {
+    setSendToAddresses("");
+    handleCardClick(null);
+  };
+
   useEffect(() => {
     setIsValid(isEthereumAddress(enteredAddresses));
     setIsValid(isEthereumAddress(cardAddress));
@@ -157,108 +144,77 @@ const AddAddresses = () => {
   }, [enteredAddresses, cardAddress, selectedCardIndex, sendToAddresses]);
 
   return (
-    <div className=" max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
+    <div className="max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
       <header className="mb-4">
         <div className="flex flex-row items-center">
           <button onClick={() => openBackModal()}>
             <ArrowLeft color="white" className="h-11 w-6 mx-3" />
           </button>
           <h1 className="text-xl font-semibold mx-auto">Select Address</h1>
-          {transferData.length > 0 ? (
-            <>
-              <button onClick={() => goToAddTokens()}>
-                <ArrowRight color="white" className="h-11 w-6 mx-3" />
-              </button>
-            </>
-          ) : (
-            <></>
+          {transferData.length > 0 && (
+            <button onClick={() => goToAddTokens()}>
+              <ArrowRight color="white" className="h-11 w-6 mx-3" />
+            </button>
           )}
-
-          {/* <button
-            onClick={openAddAddressesModal}
-            title="Add More Addresses"
-            className="mr-5"
-          >
-            <img className="h-8" src={add} alt="add addresses button" />
-          </button> */}
         </div>
       </header>
 
-      {/* ######################## SEARCH BOX ########################  */}
       <div className="flex items-center max-w-[325px] mx-auto border border-gray-300 rounded-lg my-4 p-2">
         <button className="min-w-fit pb-1 pr-1 opacity-60 ">
-          <img className="h-6  mt-1" src={search} alt="searchIcon" />
+          <img className="h-6 mt-1" src={search} alt="searchIcon" />
         </button>
         <input
           type="text"
-          placeholder="Paste or enter a address"
+          placeholder="Paste or enter an address"
           className="w-full focus:outline-none pl-1 bg-transparent pr-2"
           value={enteredAddresses}
           onChange={handleInputChange}
           onFocus={handleFocus}
         />
-
         <button onClick={pasteAddresses} className="min-w-fit">
           <img className="h-6 opacity-70" src={paste} alt="pasteIcon" />
         </button>
       </div>
 
-      {/* ######################## ADDRESSES CARD ########################  */}
-      {/* <AddressesCard
-        key={20}
-        name="Shakti"
-        addresses="0x6727b20B238d48B2258ACE33432857051"
-        isSelected={selectedCardIndex === 20}
-        getClickedAddress={receivedAddress}
-        onClick={() => {
-          handleCardClick(20);
-        }}
-      /> */}
-      {isValid ? <>{generateAddressCard(cardAddress)}</> : <></>}
+      {(enteredAddresses && sendToAddresses) || isValid ? (
+        <>
+          {isValid ? (
+            <>{generateAddressCard(cardAddress)}</>
+          ) : (
+            <p className="text-red-500 text-center mt-10">
+              Oops, the address is not valid
+            </p>
+          )}
+        </>
+      ) : (
+        <>
+          {transferData.length > 0 && (
+            <div>
+              <p className=" text-xl text-center font-semibold text-gray-500">
+                Add Addresses
+              </p>
+              {transferData.map((address, index) => (
+                <AddressesCard
+                  key={index}
+                  name={address.name}
+                  addresses={address.address}
+                  isSelected={selectedCardIndex === index}
+                  getClickedAddress={receivedAddress}
+                  onClick={() => {
+                    handleCardClick(index);
+                    setIsCardSelected(true);
+                    if (isEthereumAddress(address.address)) {
+                      setSendToAddresses(address.address);
+                    }
 
-      {/* BELOW WE ARE TAKING THE AN ARRAY OF OBJECTS WHICH HAS THE ADDRESS FOR THE RECENT TRANSACTIONS.  */}
-      {/* <div className=" pb-16 ">
-        {recentAddresses.map((addresses, index) => {
-          return (
-            <>
-              <AddressesCard
-                key={index}
-                pfp={pfp}
-                name={addresses.name}
-                addresses={addresses.addresses}
-                isSelected={selectedCardIndex === index}
-                getClickedAddress={receivedAddress}
-                onClick={() => {
-                  handleCardClick(index);
-                }}
-              />
-            </>
-          );
-        })}
-      </div> */}
-
-      {/* ######################## PROCEED SECTION ######################## */}
-
-      <button
-        onClick={handelProceed}
-        disabled={!(sendToAddresses && isCardSelected)}
-        className={` ${
-          isValid === false && enteredAddresses
-            ? " bg-red-500 border-red-700"
-            : " bg-gray-950 hover:bg-black"
-        }  
-        fixed left-1/2 translate-x-[-50%] bottom-2  flex justify-center items-center shadow-lg text-white    border-2    rounded-lg  py-2 min-w-[325px] max-w-[350px]  ${
-          sendToAddresses && isCardSelected
-            ? "border-white text-white "
-            : " text-opacity-50 bg-gray-950 border-gray-500"
-        }`}
-      >
-        <h1 className="text-xl font-semibold tracking-wider">
-          {isValid === false && enteredAddresses
-            ? " Invalid Address"
-            : " Next "}
-        </h1>
-      </button>
+                    handleProceed(address.address);
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </>
+      )}
 
       <RemoveModal
         isOpen={isBackModalOpen}

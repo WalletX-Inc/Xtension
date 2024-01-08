@@ -13,7 +13,6 @@ const Settings = () => (
           settingOptions.length >= 5 ? "overflow-y-scroll max-h-screen " : ""
         }`}
       >
-        {/* <AccountCard /> */}
         <SettingOptions />
       </div>
     </div>

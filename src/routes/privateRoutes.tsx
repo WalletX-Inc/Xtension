@@ -19,12 +19,14 @@ import DappConnect from "../pages/Dapp/Connect/Connect";
 import DappConnectOld from "../pages/Dapp/DappConnect";
 import DappConnectAccount from "../pages/Dapp/DappConnectAccount";
 import DappConnecting from "../pages/Dapp/DappConnecting";
+import DappInteraction from "../pages/DappInteraction";
 
 export default function PrivateRoutes() {
   const navigate = useNavigate();
 
   const devices = getItemFromStorage("devices");
 
+  // Clear the local storage if you get the error
   useEffect(() => {
     if (devices.length <= 0) {
       log("Clear all data from local storage");
@@ -67,6 +69,8 @@ export default function PrivateRoutes() {
       <Route path="/dashboard/dapp/connecting" element={<DappConnecting />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
+      {/* This is an temporary route and should be removed */}
+      <Route path="dappinteraction" element={<DappInteraction />} />
     </Routes>
   );
 }

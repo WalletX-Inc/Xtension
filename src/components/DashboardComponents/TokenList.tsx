@@ -9,7 +9,7 @@ import {
   log,
 } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
-import ImportTokenDrawer from "../ImportTokenDrawer";
+import ImportToken from "../Modals/ImportToken";
 
 type Token = {
   name: string;
@@ -79,7 +79,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
 
   return (
     <>
-      <div className="max-h-[275px] overflow-y-scroll  px-3">
+      <div className="max-h-[275px] overflow-y-scroll">
         {tokens &&
           tokens.map((token: Token) => (
             <>
@@ -131,7 +131,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
         )}
       </div>
 
-      <ImportTokenDrawer
+      <ImportToken
         isOpen={isImportTokenDrawerOpen}
         onClose={closeImportTokenDrawer}
       />
