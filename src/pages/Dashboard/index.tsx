@@ -1,14 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
+import toast, { Toaster } from "react-hot-toast";
 import { transferState } from "../../state/TransferState";
 import {
   generateAddressIcon,
   getItemFromStorage,
   getShortDisplayString,
   getChainDetails,
+  log,
 } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import Chains from "../../constants/chains";
@@ -17,7 +20,6 @@ import { useCoinBalance } from "../../hooks/functional-hooks";
 
 import copyAndPaste from "../../assets/copy.svg";
 
-import toast, { Toaster } from "react-hot-toast";
 import Loader from "../../components/common/Loader";
 import Footer from "../DashboardLayout/Footer";
 import AccountCard from "../../components/DashboardComponents/AccountCard";
@@ -54,7 +56,7 @@ function Dashboard() {
   const { balance } = useCoinBalance(
     SCW || smartAccountAddress,
     true,
-    chainDetails.wssRpc
+    chainDetails.wssRpc,
   );
 
   // Receve Button functions
@@ -71,7 +73,7 @@ function Dashboard() {
       await navigator.clipboard.writeText(SCW || smartAccountAddress);
       toast.success("Text Copied To clipboard");
     } catch (error) {
-      console.error("Copy failed due to: ", error);
+      log("Copy failed due to: ", error, "error");
     }
   };
 
@@ -79,8 +81,9 @@ function Dashboard() {
     async function initializeSmartWallet() {
       if (!smartAccountAddress) {
         const myDevice = allDevices?.filter(
-          (d: any) => d.address == smartAddress
+          (d: any) => d.address === smartAddress,
         )?.[0];
+
         init(chainId, myDevice?.name);
       }
     }
@@ -98,6 +101,7 @@ function Dashboard() {
   useEffect(() => {
     if (storageChainId) {
       const currentChain = Chains.filter((ch) => ch.chainId === storageChainId);
+
       setCurrentCoinName(currentChain?.[0]?.nativeAsset);
     } else {
       setCurrentCoinName(Chains?.[0]?.nativeAsset);

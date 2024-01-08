@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import receiveIcon from "../../src/assets/arrow-down.png";
-import sendIcon from "../../src/assets/arrow-up.png";
-import swapIcon from "../../src/assets/swap.png";
-import bridgeIcon from "../../src/assets/bridge.png";
+import receiveIcon from "../assets/arrow-down.png";
+import sendIcon from "../assets/arrow-up.png";
+import swapIcon from "../assets/swap.png";
+import bridgeIcon from "../assets/bridge.png";
 
 type TransactParam = {
   isOpen: boolean;

@@ -2,31 +2,29 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { ethers } from "ethers";
-import { SyncLoader, BeatLoader } from "react-spinners";
+import { SyncLoader } from "react-spinners";
 import { ArrowLeft } from "react-feather";
 
 import { transferState } from "../../state/TransferState";
-import { generateAddressIcon, getShortDisplayString } from "../../utils/helper";
-import { gasState } from "../../state/GasState";
+import {
+  generateAddressIcon,
+  getShortDisplayString,
+  constructTransactionData,
+  constructFinalUserOp,
+  getItemFromStorage,
+  log,
+} from "../../utils/helper";
+import gasState from "../../state/GasState";
 import RemoveModal from "../../components/Modal";
 import fingerPrint from "../../assets/biometric-identification.svg";
 import selectArrow from "../../assets/angleDown.svg";
 import maticLogo from "../../assets/matic-logo.png";
-import {
-  constructTransactionData,
-  constructFinalUserOp,
-} from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 import TransactionModal from "../../components/TransactionModal";
-import {
-  getItemFromStorage,
-  generateSHA256Hash,
-  log,
-} from "../../utils/helper";
 import { validateBiometric } from "../../hooks/functional-hooks";
 import GasTokenSelectionDrawer from "../../components/GasTokenSelectionDrawer";
 
-type selectedTokenForGas = {
+type selectedTokenForGasType = {
   icon: string;
   tokenName: string;
   tokenSymbol: string;
@@ -39,7 +37,7 @@ const ApproveTransaction = () => {
     useState<boolean>(false);
   const [isTransactionModalOpen, setIsTransactionModalOpen] =
     useState<boolean>(false);
-  const [transferData, setTransferData] = useRecoilState(transferState);
+  const [transferDataList, setTransferDataList] = useRecoilState(transferState);
   const [isCancelAllTransactionModalOpen, setIsCancelAllTransactionModalOpen] =
     useState<boolean>(false);
   const [isGasDrawerVisible, setIsGasDrawerVisible] = useState<boolean>(false);
@@ -49,10 +47,12 @@ const ApproveTransaction = () => {
   const [gasData, setGasData] = useRecoilState(gasState);
   const biometricAuth = validateBiometric();
 
-  const dName = getItemFromStorage(generateSHA256Hash("device"));
+  const devices = getItemFromStorage("devices");
+  const dName = devices[0];
+  // const dName = getItemFromStorage(generateSHA256Hash("device"));
 
   const [selectedTokenForGas, setSelectedTokenForGas] =
-    useState<selectedTokenForGas>({
+    useState<selectedTokenForGasType>({
       icon: `${maticLogo}`,
       tokenName: "PolygonMatic",
       tokenSymbol: "MATIC",
@@ -65,7 +65,7 @@ const ApproveTransaction = () => {
 
   // Cancel the whole transaction
   const clearAllTransactions = () => {
-    setTransferData([]);
+    setTransferDataList([]);
     setIsCancelAllTransactionModalOpen(false);
     navigate("/dashboard");
   };
@@ -94,8 +94,8 @@ const ApproveTransaction = () => {
     tokenSymbol,
     tokenAddress,
     tokenGasValue,
-  }: selectedTokenForGas) => {
-    //takes the values in the parameter and then sets it up in the selectedTokenForGas
+  }: selectedTokenForGasType) => {
+    // takes the values in the parameter and then sets it up in the selectedTokenForGasType
     setSelectedTokenForGas({
       icon,
       tokenName,
@@ -107,10 +107,10 @@ const ApproveTransaction = () => {
   };
 
   const supportedTokensForGas = async (transferData: any) => {
-    let rawTransaction: any[] = [];
+    const rawTransaction: any[] = [];
 
     transferData.forEach((data: any) => {
-      let obj: any = {};
+      const obj: any = {};
       const isCoin =
         data.tokenAddress.toString() ===
         "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
@@ -135,13 +135,13 @@ const ApproveTransaction = () => {
     const txns = constructTransactionData(rawTransaction);
     const userOp = await smartAccountProvider.buildUserOp(txns);
 
-    const paymaster = smartAccountProvider.paymaster;
+    const { paymaster } = smartAccountProvider;
     const feeQuotesResponse = await paymaster.getPaymasterFeeQuotesOrData(
       userOp,
-      { mode: "ERC20", tokenList: [] }
+      { mode: "ERC20", tokenList: [] },
     );
 
-    let supportedTokens: any = [];
+    const supportedTokens: any = [];
 
     feeQuotesResponse.feeQuotes.map((token: any) => {
       const tokenObj = {
@@ -159,18 +159,16 @@ const ApproveTransaction = () => {
     log("Fee Quotes : ", supportedTokens, "info");
 
     const uuid = crypto.randomUUID();
-    const gasDataWithValues = supportedTokens.map((token: any) => {
-      return {
-        tokenUID: uuid,
-        tokenLogo: token.logoUri,
-        tokenName: token.name,
-        tokenSymbol: token.symbol,
-        tokenAddress: token.address,
-        tokenBalance: 0,
-        tokenGas: token.maxGasFee.toFixed(5),
-        tokenGasValue: token.maxGasFeeUSD.toFixed(5),
-      };
-    });
+    const gasDataWithValues = supportedTokens.map((token: any) => ({
+      tokenUID: uuid,
+      tokenLogo: token.logoUri,
+      tokenName: token.name,
+      tokenSymbol: token.symbol,
+      tokenAddress: token.address,
+      tokenBalance: 0,
+      tokenGas: token.maxGasFee.toFixed(5),
+      tokenGasValue: token.maxGasFeeUSD.toFixed(5),
+    }));
 
     setGasData(gasDataWithValues);
 
@@ -178,8 +176,8 @@ const ApproveTransaction = () => {
   };
 
   useEffect(() => {
-    supportedTokensForGas(transferData);
-  }, [transferData]);
+    supportedTokensForGas(transferDataList);
+  }, [transferDataList]);
 
   async function sendBatchTransaction(transferData: any) {
     const isValid = await biometricAuth(dName.id);
@@ -189,11 +187,12 @@ const ApproveTransaction = () => {
       return;
     }
 
-    let rawTransaction: any[] = [];
+    const rawTransaction: any[] = [];
+
     setTransactionInProcess(true);
 
     transferData.forEach((data: any) => {
-      let obj: any = {};
+      const obj: any = {};
       const isCoin =
         data.tokenAddress.toString() ===
         "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
@@ -227,7 +226,7 @@ const ApproveTransaction = () => {
       finalUserOp = await constructFinalUserOp(
         smartAccountProvider,
         finalUserOp,
-        selectedTokenForGas.tokenAddress
+        selectedTokenForGas.tokenAddress,
       );
       log("FINAL USEROP : ", finalUserOp, "info");
     }
@@ -245,7 +244,7 @@ const ApproveTransaction = () => {
     }
   }
 
-  if (transferData.length === 0) navigate("/dashboard");
+  if (transferDataList.length === 0) navigate("/dashboard");
 
   return (
     <>
@@ -280,48 +279,46 @@ const ApproveTransaction = () => {
             </h1>
           </div>
           <div className="mt-5 overflow-y-scroll  max-h-[375px] px-2">
-            {transferData.map((transferData) => {
-              return (
-                <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
-                  <div className=" bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
-                    <div className="flex justify-center item-center gap-2">
-                      <img
-                        className="h-7 border rounded-lg my-auto"
-                        src={generateAddressIcon(transferData.address)}
-                        alt="generate it from the token"
-                      />
-                      <p className="font-medium">
-                        {getShortDisplayString(transferData.address)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-4   justify-between w-full items-center   ">
-                    <div className="flex justify-center items-center gap-2">
-                      <img
-                        className="h-8 w-8 "
-                        src={transferData.tokenLogo}
-                        alt="tokenIcon"
-                      />
-
-                      <div className="flex flex-col items-start ">
-                        <p>{transferData.tokenSymbol}</p>
-                        <p className="text-sm">{transferData.tokenName}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col items-end ">
-                      <input
-                        className="bg-transparent  border-black outline-none max-w-[80px] text-right"
-                        type="number"
-                        value={transferData.amount}
-                        readOnly
-                      />
-                      <p className="text-sm ">$0.25</p>
-                    </div>
+            {transferDataList.map((transferData) => (
+              <div className="flex flex-col gap-2 bg-gray-800 max-w-[325px] border rounded-xl py-2 px-2 border-gray-700 mx-auto mt-5 text-white shadow-md text-base">
+                <div className=" bg-gray-700 border border-gray-700 py-2 px-2 rounded-lg">
+                  <div className="flex justify-center item-center gap-2">
+                    <img
+                      className="h-7 border rounded-lg my-auto"
+                      src={generateAddressIcon(transferData.address)}
+                      alt="generate it from the token"
+                    />
+                    <p className="font-medium">
+                      {getShortDisplayString(transferData.address)}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
+                <div className="flex bg-gray-700 border-gray-700 py-3  gap-2 rounded-lg px-4   justify-between w-full items-center   ">
+                  <div className="flex justify-center items-center gap-2">
+                    <img
+                      className="h-8 w-8 "
+                      src={transferData.tokenLogo}
+                      alt="tokenIcon"
+                    />
+
+                    <div className="flex flex-col items-start ">
+                      <p>{transferData.tokenSymbol}</p>
+                      <p className="text-sm">{transferData.tokenName}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end ">
+                    <input
+                      className="bg-transparent  border-black outline-none max-w-[80px] text-right"
+                      type="number"
+                      value={transferData.amount}
+                      readOnly
+                    />
+                    <p className="text-sm ">$0.25</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
         {/* Gas and  Approve   */}
@@ -355,7 +352,7 @@ const ApproveTransaction = () => {
             <button
               disabled={transactionInProcess}
               onClick={() => {
-                sendBatchTransaction(transferData);
+                sendBatchTransaction(transferDataList);
               }}
             >
               {transactionInProcess === true ? (

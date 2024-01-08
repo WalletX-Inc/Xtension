@@ -9,14 +9,42 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["clipboardRead"],
+  "permissions": ["clipboardRead", "tabs", "activeTab", "storage", "scripting"],
   "action": {
     "default_popup": "js/index.html",
     "default_title": "WalletX | Smart Wallet",
     "default_icon": "icons/icon16.png"
   },
-  "web_accessible_resources": [{
-    "resources": ["js/images/*"],
-    "matches": ["*://*/*"]
-  }]
+  "web_accessible_resources": [
+    {
+      "resources": ["js/images/*"],
+      "matches": ["*://*/*"]
+    },
+    {
+      "resources": ["js/content-script.js"],
+      "matches": ["<all_urls>"]
+    },
+    {
+      "resources": ["js/eth-provider.js"],
+      "matches": ["<all_urls>"],
+      "use_dynamic_url": true
+    }
+  ],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/content-script.js"],
+      "run_at": "document_end"
+    }
+  ],
+
+  "host_permissions": ["<all_urls>"],
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' https:",
+    "sandbox": "sandbox allow-scripts; script-src 'self'"
+  }
 }

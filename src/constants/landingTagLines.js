@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 export const LandingTagLines = [
   {
     title: "Own Your Crypto",
@@ -9,12 +10,12 @@ export const LandingTagLines = [
     title: "Smarter Blockchain Interactions",
     description:
       "Engage onchain in a smarter way by performing multiple transactions simultaneously and paying for gas in the token of your choice.",
-      isFinal: false,
+    isFinal: false,
   },
   {
     title: "Cross Chain Interactions",
     description:
       "Use your smart wallet across multiple EVM chains, perform cross chain swaps and access liquidity across chains",
-      isFinal: true,
+    isFinal: true,
   },
 ];

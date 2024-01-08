@@ -16,6 +16,7 @@ type transferData = {
   amount: number;
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const transferState = atom<transferData[]>({
   key: "transferState",
   default: [],

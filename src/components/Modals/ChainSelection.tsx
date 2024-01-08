@@ -1,14 +1,12 @@
-import React, { useEffect } from "react";
+import { Search, X } from "react-feather";
 import Chains from "../../../src/constants/chains";
 
-import { Search, X } from "react-feather";
-import filterIcon from "../../../src/assets/filter.svg";
 import { getItemFromStorage, setItemInStorage } from "../../utils/helper";
 import { useConfig } from "../../context/ConfigProvider";
 
 type chainSelectionModalParams = {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => any;
 };
 const ChainSelection = ({ isOpen, onClose }: chainSelectionModalParams) => {
   const storageChainId = getItemFromStorage("network");
@@ -64,12 +62,12 @@ const ChainSelection = ({ isOpen, onClose }: chainSelectionModalParams) => {
                 alt="pasteIcon"
               />
             </button> */}
-          </div>    
+          </div>
 
           {/* Chain Details  */}
           <div className=" flex flex-col w-full  h-[450px] overflow-y-scroll">
-            {Chains.map((chain) => {
-              return !chain.isEnabled ? null : (
+            {Chains.map((chain) =>
+              !chain.isEnabled ? null : (
                 <>
                   <div
                     className={`flex w-full mx-auto  py-4 hover:bg-gray-900 hover:bg-opacity-50 ${
@@ -94,8 +92,8 @@ const ChainSelection = ({ isOpen, onClose }: chainSelectionModalParams) => {
                     </h1>
                   </div>
                 </>
-              );
-            })}
+              ),
+            )}
           </div>
         </div>
       </div>

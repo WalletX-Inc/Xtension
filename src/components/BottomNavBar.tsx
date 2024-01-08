@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import homeIcon from "../../src/assets/NavBarIcons/homeIcon.svg";
-import nftIcon from "../../src/assets/NavBarIcons/nftIcon.svg";
-import fetauresIcon from "../../src/assets/NavBarIcons/featuresIcon.svg";
-import activityIcon from "../../src/assets/NavBarIcons/activityIcon.svg";
-import settingsIcon from "../../src/assets/NavBarIcons/settingsIcon.svg";
+import homeIcon from "../assets/NavBarIcons/homeIcon.svg";
+import nftIcon from "../assets/NavBarIcons/nftIcon.svg";
+import fetauresIcon from "../assets/NavBarIcons/featuresIcon.svg";
+import activityIcon from "../assets/NavBarIcons/activityIcon.svg";
+import settingsIcon from "../assets/NavBarIcons/settingsIcon.svg";
 import TransactDrawer from "./TransactDrawer";
 
 const BottomNavBar = () => {

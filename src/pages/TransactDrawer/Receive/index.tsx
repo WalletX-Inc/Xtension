@@ -1,10 +1,10 @@
 import toast from "react-hot-toast";
 import QRCode from "react-qr-code";
-import { ArrowLeft, ArrowRight } from "react-feather";
+import { ArrowLeft } from "react-feather";
 
-import copy from "../../../../src/assets/copy&paste.png";
-import { getItemFromStorage } from "../../../utils/helper";
 import { useNavigate } from "react-router";
+import copy from "../../../assets/copy&paste.png";
+import { getItemFromStorage, log } from "../../../utils/helper";
 
 const Receive = () => {
   const navigate = useNavigate();
@@ -15,9 +15,10 @@ const Receive = () => {
       await navigator.clipboard.writeText(walletAddress);
       toast.success("Text Copied To clipboard");
     } catch (error) {
-      console.error("Copy failed due to: ", error);
+      log("Copy failed due to: ", error, "error");
     }
   };
+
   return (
     <div className="max-w-[350px] mx-auto overflow-hidden no-scrollbar bg-[#1f1f20] h-full text-white">
       <header className="mb-4">

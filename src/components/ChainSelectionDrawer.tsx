@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
-import Chains from "../../src/constants/chains";
-import { getItemFromStorage, setItemInStorage } from "../utils/helper";
-import { useConfig } from "../context/ConfigProvider";
 import { Search } from "react-feather";
-import filterIcon from "../../src/assets/filter.svg";
+import Chains from "../../src/constants/chains";
+import { getItemFromStorage, setItemInStorage, log } from "../utils/helper";
+import { useConfig } from "../context/ConfigProvider";
+import filterIcon from "../assets/filter.svg";
 
 type ChainSelectionDrawerParams = {
   isOpen: boolean;
-  onSelectedClose: Function;
+  onSelectedClose: () => void;
 };
 
 const ChainSelectionDrawer = ({
@@ -61,7 +61,7 @@ const ChainSelectionDrawer = ({
             //   onFocus={handleFocus}
           />
           <button
-            onClick={() => console.log("filter these accordingly")}
+            onClick={() => log("filter these accordingly", {})}
             className="min-w-fit"
           >
             <img className="h-5 opacity-80 " src={filterIcon} alt="pasteIcon" />
@@ -70,8 +70,8 @@ const ChainSelectionDrawer = ({
 
         {/* Chain Details  */}
         <div className=" flex flex-col w-[95%] gap-3 h-[300px] overflow-y-scroll">
-          {Chains.map((chain) => {
-            return !chain.isEnabled ? null : (
+          {Chains.map((chain) =>
+            !chain.isEnabled ? null : (
               <>
                 <div
                   className={`flex gap-3 w-[96.5%] border 0 rounded-lg mx-auto px-2 py-2 ${
@@ -96,8 +96,8 @@ const ChainSelectionDrawer = ({
                   </h1>
                 </div>
               </>
-            );
-          })}
+            ),
+          )}
         </div>
       </div>
     </>

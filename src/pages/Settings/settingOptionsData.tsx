@@ -1,15 +1,14 @@
-import multiSig from "../../../src/assets/SettingPageIcons/puzzle.svg";
-import recovery from "../../../src/assets/SettingPageIcons/recovered.svg";
-import connections from "../../../src/assets/SettingPageIcons/connections.svg";
-import addressBook from "../../../src/assets/SettingPageIcons/address-book.svg";
-import networks from "../../../src/assets/SettingPageIcons/network.svg";
-import faq from "../../../src/assets/SettingPageIcons/question.svg";
-import termsOfServices from "../../../src/assets/SettingPageIcons/termsOfServices.svg";
-import privacyPolicy from "../../../src/assets/SettingPageIcons/privacyPolicy.svg";
-import logOut from "../../../src/assets/SettingPageIcons/logout.svg";
-import currency from "../../../src/assets/SettingPageIcons/currency.svg";
-
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
+import multiSig from "../../assets/SettingPageIcons/puzzle.svg";
+import recovery from "../../assets/SettingPageIcons/recovered.svg";
+import logOut from "../../assets/SettingPageIcons/logout.svg";
+// import connections from "../../assets/SettingPageIcons/connections.svg";
+// import addressBook from "../../assets/SettingPageIcons/address-book.svg";
+// import networks from "../../assets/SettingPageIcons/network.svg";
+// import faq from "../../assets/SettingPageIcons/question.svg";
+// import termsOfServices from "../../assets/SettingPageIcons/termsOfServices.svg";
+// import privacyPolicy from "../../assets/SettingPageIcons/privacyPolicy.svg";
+// import currency from "../../assets/SettingPageIcons/currency.svg";
 
 type settingOptionsType = {
   logo: string;
@@ -20,6 +19,7 @@ type settingOptionsType = {
 // either pass navigate as optional parameter to the above or pass a funciton below
 // get the current current currency nad put it there in the currency tab
 
+// eslint-disable-next-line import/prefer-default-export
 export const settingOptions: settingOptionsType[] = [
   {
     logo: `${multiSig}`,

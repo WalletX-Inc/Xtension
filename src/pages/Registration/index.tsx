@@ -1,19 +1,12 @@
 import { useState } from "react";
+import { ArrowRightCircle } from "react-feather";
 import Button from "../../components/common/Button";
 import icon128 from "../../assets/icons/mainLogo.png";
 import Register from "./Register";
-import { ArrowRightCircle } from "react-feather";
-import toast from "react-hot-toast";
 import { removeItemFromStorage } from "../../utils/helper";
 
 function Registration() {
   const [showRegister, setShowRegister] = useState(false);
-
-  const handleRemoveData = (id: string) => {
-    localStorage.clear();
-    setShowRegister(true);
-    toast.dismiss(id);
-  };
 
   return (
     <div>
@@ -28,7 +21,7 @@ function Registration() {
         transition duration-500 hover:scale-110 p-2"
           onClick={() => {
             setShowRegister(true);
-            removeItemFromStorage('smartAccount')
+            removeItemFromStorage("smartAccount");
           }}
         >
           <div className="p-2 flex justify-between items-center gap-5 font-bold">

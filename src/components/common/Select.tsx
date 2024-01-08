@@ -1,5 +1,5 @@
-import React, { FC, ChangeEvent, useState,useEffect } from "react";
-import { Check, ChevronDown } from "react-feather";
+import React, { FC, ChangeEvent, useState, useEffect } from "react";
+import { ChevronDown } from "react-feather";
 
 interface Option {
   label: string;
@@ -12,19 +12,19 @@ interface SelectProps {
   [key: string]: any;
 }
 
-const Select: FC<SelectProps> = ({ options, onChange,...rest }) => {
-    const [selectedValue,setSelectedValue] =useState<string>('') 
+const Select: FC<SelectProps> = ({ options, onChange, ...rest }) => {
+  const [selectedValue, setSelectedValue] = useState<string>("");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selectedVal = event.target.value;
-    setSelectedValue(selectedVal)
+
+    setSelectedValue(selectedVal);
     onChange(selectedVal);
   };
 
-    useEffect(() => {
-      // Set the initial selected value to an empty string
-      setSelectedValue("");
-    }, []);
-
+  useEffect(() => {
+    // Set the initial selected value to an empty string
+    setSelectedValue("");
+  }, []);
 
   return (
     <div className="relative inline-block min-w-[280px] ">
@@ -37,17 +37,15 @@ const Select: FC<SelectProps> = ({ options, onChange,...rest }) => {
         px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline overflow-hidden max-w-[300px] ${rest.className}`}
       >
         <option value="" disabled>
-          {rest?.label?rest.label:'Select an option'}
+          {rest?.label ? rest.label : "Select an option"}
         </option>
-    
+
         {options.length &&
           options.map((option, index) => (
-            <option
-              key={index}
-              value={option.value}
-              className="cursor-pointer"
-            >
-              {option.label.length>20 ?`${option.label.slice(0.20)}...`:option.label}
+            <option key={index} value={option.value} className="cursor-pointer">
+              {option.label.length > 20
+                ? `${option.label.slice(0.2)}...`
+                : option.label}
             </option>
           ))}
       </select>

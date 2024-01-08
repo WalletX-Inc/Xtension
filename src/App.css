@@ -17,7 +17,7 @@ html {
 }
 
 * {
-  font-family:  "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: normal;
   color: var(--color-text-default);
@@ -69,7 +69,6 @@ html {
   margin: 50% 0px;
 }
 
-
 /* It is to remove the arrows in the number input field  */
 
 input::-webkit-outer-spin-button,
@@ -79,6 +78,6 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }

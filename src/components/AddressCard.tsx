@@ -3,12 +3,13 @@ import { generateAddressIcon, getShortDisplayString } from "../utils/helper";
 type addressesProps = {
   name: string;
   addresses: string;
-  isSelected?: boolean;
-  getClickedAddress: Function;
+  isSelected: boolean;
+  getClickedAddress: (addresses: any) => any;
   onClick: () => void;
 };
 
 const AddressCard = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   name,
   addresses,
   getClickedAddress,
@@ -17,9 +18,9 @@ const AddressCard = ({
 }: addressesProps) => {
   const sendAddress = () => {
     const clickedAddress = addresses;
+
     getClickedAddress(clickedAddress);
   };
-
 
   return (
     <>

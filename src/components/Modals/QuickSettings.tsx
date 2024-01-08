@@ -1,19 +1,18 @@
-import React, { useEffect, useRef } from "react";
-import { X } from "react-feather";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+import accountDetails from "../../assets/scan-barcode.svg";
+import visitExplorer from "../../assets/export.svg";
+import connectedSites from "../../assets/connect.svg";
+import extensions from "../../assets/snaps.svg";
+import support from "../../assets/message-question.svg";
+import settings from "../../assets/setting.svg";
+import lockWallet from "../../assets/lock.svg";
 import { log } from "../../utils/helper";
 
-import accountDetails from "../../../src/assets/scan-barcode.svg";
-import visitExplorer from "../../../src/assets/export.svg";
-import connectedSites from "../../../src/assets/connect.svg";
-import extensions from "../../../src/assets/snaps.svg";
-import support from "../../../src/assets/message-question.svg";
-import settings from "../../../src/assets/setting.svg";
-import lockWallet from "../../../src/assets/lock.svg";
-
-import { useNavigate } from "react-router-dom";
 type quickSettingsModalParams = {
   isOpen: boolean;
-  onClose: Function;
+  onClose: () => any;
 };
 
 const QuickSettings = ({ isOpen, onClose }: quickSettingsModalParams) => {
@@ -38,17 +37,23 @@ const QuickSettings = ({ isOpen, onClose }: quickSettingsModalParams) => {
     {
       title: "Connected sites",
       icon: `${connectedSites}`,
-      action: () => {},
+      action: () => {
+        log("Action in Connected sites");
+      },
     },
     {
       title: "Extensions",
       icon: `${extensions}`,
-      action: () => {},
+      action: () => {
+        log("Action in Extensions");
+      },
     },
     {
       title: "Support",
       icon: `${support}`,
-      action: () => {},
+      action: () => {
+        log("Action in Support");
+      },
     },
     {
       title: "Settings",
@@ -60,7 +65,9 @@ const QuickSettings = ({ isOpen, onClose }: quickSettingsModalParams) => {
     {
       title: "Lock WalletX",
       icon: `${lockWallet}`,
-      action: () => {},
+      action: () => {
+        log("Action Lock WalletX");
+      },
     },
   ];
 
@@ -105,25 +112,23 @@ const QuickSettings = ({ isOpen, onClose }: quickSettingsModalParams) => {
 
         {/* Quick Settings */}
         <div>
-          {quickSettings.map((qs) => {
-            return (
-              <>
-                <div
-                  className={
-                    "flex  flex-col items-start hover:bg-gray-700  hover:bg-opacity-50  px-4 py-3 "
-                  }
-                  onClick={() => {
-                    qs.action();
-                  }}
-                >
-                  <div className="flex gap-2 justify-center items-center ">
-                    <img src={qs.icon} alt="token Logo" className="h-4 " />
-                    <p className="text-[15px] ">{qs.title}</p>
-                  </div>
+          {quickSettings.map((qs) => (
+            <>
+              <div
+                className={
+                  "flex  flex-col items-start hover:bg-gray-700  hover:bg-opacity-50  px-4 py-3 "
+                }
+                onClick={() => {
+                  qs.action();
+                }}
+              >
+                <div className="flex gap-2 justify-center items-center ">
+                  <img src={qs.icon} alt="token Logo" className="h-4 " />
+                  <p className="text-[15px] ">{qs.title}</p>
                 </div>
-              </>
-            );
-          })}
+              </div>
+            </>
+          ))}
         </div>
       </div>
     </div>

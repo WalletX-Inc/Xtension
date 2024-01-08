@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { BeatLoader } from "react-spinners";
 import { useRecoilState } from "recoil";
-import { gasState } from "../state/GasState";
-import gas from "../../src/assets/gas.svg";
+import gasState from "../state/GasState";
+import gas from "../assets/gas.svg";
 
-type selectedTokenForGas = {
+type selectedTokenForGasType = {
   icon: string;
   tokenName: string;
   tokenSymbol: string;
@@ -14,9 +14,9 @@ type selectedTokenForGas = {
 
 type gasTokenSelectionParams = {
   isOpen: boolean;
-  onClose: Function;
-  updateGasToken: Function;
-  selectedTokenForGas: selectedTokenForGas;
+  onClose: () => void;
+  updateGasToken: (tokenData: selectedTokenForGasType) => any;
+  selectedTokenForGas: selectedTokenForGasType;
 };
 
 const GasTokenSelectionDrawer = ({
@@ -25,6 +25,7 @@ const GasTokenSelectionDrawer = ({
   selectedTokenForGas,
   onClose,
 }: gasTokenSelectionParams) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [gasData, setGasData] = useRecoilState(gasState);
   const drawer = useRef(null);
 
@@ -56,13 +57,14 @@ const GasTokenSelectionDrawer = ({
 
         <div className="mt-5 overflow-y-scroll h-[250px]">
           {gasData.map((token) => {
-            const tokenData: selectedTokenForGas = {
+            const tokenData: selectedTokenForGasType = {
               icon: token.tokenLogo,
               tokenName: token.tokenName,
               tokenSymbol: token.tokenSymbol,
               tokenAddress: token.tokenAddress,
               tokenGasValue: token.tokenGasValue,
             };
+
             return (
               <div
                 onClick={() => updateGasToken(tokenData)}

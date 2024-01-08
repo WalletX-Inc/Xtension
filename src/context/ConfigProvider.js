@@ -22,7 +22,7 @@ const ConfigProvider = ({ children }) => {
       SCW: initParams.SCWBalance,
     },
     isConnected: initParams.isConnected,
-    isInitialized:initParams.isInitialized,
+    isInitialized: initParams.isInitialized,
   };
 
   log("Context : ", providerValues, "info");
@@ -38,9 +38,11 @@ const ConfigProvider = ({ children }) => {
 
 export const useConfig = () => {
   const context = useContext(ConfigContext);
+
   if (context === undefined) {
     throw new Error("useConfig must be used within an ConfigProvider");
   }
+
   return context;
 };
 

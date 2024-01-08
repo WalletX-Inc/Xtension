@@ -7,8 +7,10 @@ const supportedChains = [
     nativeAsset: "ETH",
     chainUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
     coinUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
-    bundlerUrl: "https://bundler.biconomy.io/api/v2/1/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
-    paymasterUrl: "https://paymaster.biconomy.io/api/v1/1/4nUU0EmQ6.2c5c625b-dc68-4ad4-8d05-0e7a399590fd",
+    bundlerUrl:
+      "https://bundler.biconomy.io/api/v2/1/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
+    paymasterUrl:
+      "https://paymaster.biconomy.io/api/v1/1/4nUU0EmQ6.2c5c625b-dc68-4ad4-8d05-0e7a399590fd",
     isMainnet: true,
     isL2: false,
     isERC20GasPaymentSupported: true,
@@ -22,8 +24,10 @@ const supportedChains = [
     nativeAsset: "ETH",
     chainUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
     coinUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
-    bundlerUrl: "https://bundler.biconomy.io/api/v2/5/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
-    paymasterUrl: "https://paymaster.biconomy.io/api/v1/5/rjhoCQp58.3c5dc789-ff1e-445c-a60d-fb7b2ecc6bd9",
+    bundlerUrl:
+      "https://bundler.biconomy.io/api/v2/5/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
+    paymasterUrl:
+      "https://paymaster.biconomy.io/api/v1/5/rjhoCQp58.3c5dc789-ff1e-445c-a60d-fb7b2ecc6bd9",
     isMainnet: false,
     isL2: false,
     isERC20GasPaymentSupported: true,
@@ -33,12 +37,15 @@ const supportedChains = [
     name: "Polygon Mainnet",
     chainId: 137,
     rpc: "https://polygon-mainnet.infura.io/v3/de9db908d55647368373fdb42546104e",
-    wssRpc: "wss://polygon-mainnet.infura.io/ws/v3/de9db908d55647368373fdb42546104e",
+    wssRpc:
+      "wss://polygon-mainnet.infura.io/ws/v3/de9db908d55647368373fdb42546104e",
     nativeAsset: "MATIC",
     chainUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
     coinUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
-    bundlerUrl: "https://bundler.biconomy.io/api/v2/80001/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
-    paymasterUrl: "https://paymaster.biconomy.io/api/v1/80001/UYATlrlJ9.d1efbad1-1158-4156-ae07-324726431f69",
+    bundlerUrl:
+      "https://bundler.biconomy.io/api/v2/137/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
+    paymasterUrl:
+      "https://paymaster.biconomy.io/api/v1/137/UYATlrlJ9.d1efbad1-1158-4156-ae07-324726431f69",
     isMainnet: true,
     isL2: false,
     isERC20GasPaymentSupported: true,
@@ -48,12 +55,15 @@ const supportedChains = [
     name: "Polygon Mumbai",
     chainId: 80001,
     rpc: "https://polygon-mumbai.infura.io/v3/de9db908d55647368373fdb42546104e",
-    wssRpc: "wss://polygon-mumbai.infura.io/ws/v3/de9db908d55647368373fdb42546104e",
+    wssRpc:
+      "wss://polygon-mumbai.infura.io/ws/v3/de9db908d55647368373fdb42546104e",
     nativeAsset: "MATIC",
     chainUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
     coinUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
-    bundlerUrl: "https://bundler.biconomy.io/api/v2/80001/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
-    paymasterUrl: "https://paymaster.biconomy.io/api/v1/80001/UYATlrlJ9.d1efbad1-1158-4156-ae07-324726431f69",
+    bundlerUrl:
+      "https://bundler.biconomy.io/api/v2/80001/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44",
+    paymasterUrl:
+      "https://paymaster.biconomy.io/api/v1/80001/UYATlrlJ9.d1efbad1-1158-4156-ae07-324726431f69",
     isMainnet: false,
     isL2: false,
     isERC20GasPaymentSupported: true,
@@ -306,7 +316,8 @@ const supportedChains = [
     rpc: "https://goerli.base.org",
     wssRpc: "",
     nativeAsset: "ETH",
-    chainUri: "https://pbs.twimg.com/profile_images/1632431836096782338/W-9qsu1e_400x400.jpg",
+    chainUri:
+      "https://pbs.twimg.com/profile_images/1632431836096782338/W-9qsu1e_400x400.jpg",
     coinUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
     bundlerUrl: "",
     paymasterUrl: "",

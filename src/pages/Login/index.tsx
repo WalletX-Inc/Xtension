@@ -5,13 +5,8 @@ import { client } from "@passwordless-id/webauthn";
 import { v4 } from "uuid";
 
 import Button from "../../components/common/Button";
-import Input from "../../components/common/Input";
 import { useAuth } from "../../hooks/system-hooks/useAuth";
-import {
-  getItemFromStorage,
-  setItemInStorage,
-  generateSHA256Hash,
-} from "../../utils/helper";
+import { getItemFromStorage, log, setItemInStorage } from "../../utils/helper";
 import icon128 from "../../assets/icons/mainLogo.png";
 import Select from "../../components/common/Select";
 
@@ -34,41 +29,52 @@ function Login() {
         label: d?.name,
         value: d?.name,
       }));
+
       return resultedOption;
     }
+
     return [];
   }, [devicesFromStorage]);
 
   async function authenticateDevice() {
     if (deviceName) {
-      const filterDevice = allDevices.filter(
-        (d: any) => d.name === deviceName
-      )?.[0];
+      try {
+        const filterDevice = allDevices.filter(
+          (d: any) => d.name === deviceName,
+        )?.[0];
 
-      const challenge = v4();
+        const challenge = v4();
 
-      const authentication = await client.authenticate(
-        [filterDevice?.id],
-        challenge,
-        {
-          authenticatorType: "both",
-          userVerification: "required",
-          timeout: 60000,
+        const authentication = await client.authenticate(
+          [filterDevice?.id],
+          challenge,
+          {
+            authenticatorType: "both",
+            userVerification: "required",
+            timeout: 60000,
+          },
+        );
+
+        if (filterDevice?.address) {
+          setItemInStorage("smartAccount", filterDevice.address);
+        } else {
+          toast.error("Some error Occurred !");
         }
-      );
 
-      filterDevice?.address
-        ? setItemInStorage("smartAccount", filterDevice.address)
-        : toast.error("Some error Occurred !");
-
-      if (authentication.credentialId) {
-        login();
-        setItemInStorage("isLoggedIn", true);
-        toast.success("Login Successful !", {
-          icon: "🚀",
-          duration: 3000,
+        if (authentication.credentialId) {
+          login();
+          setItemInStorage("isLoggedIn", true);
+          toast.success("Login Successful !", {
+            icon: "🚀",
+            duration: 3000,
+          });
+          navigate(`/dashboard`);
+        }
+      } catch (err) {
+        log("Error at login - authenticateDevice()", err, "error");
+        toast.error("Something went wrong!", {
+          duration: 3000, // Duration in milliseconds
         });
-        navigate(`/dashboard`);
       }
     } else {
       toast.error("Please select an option !", {

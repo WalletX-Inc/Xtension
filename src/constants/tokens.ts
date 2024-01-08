@@ -1,14 +1,14 @@
 type Token = {
-    name: string;
-    symbol: string;
-    address: string;
-    decimals: number | string;
-    logoUri: string;
-}
+  name: string;
+  symbol: string;
+  address: string;
+  decimals: number | string;
+  logoUri: string;
+};
 
 type Tokens = {
-    [key: number]: Token[];
-}
+  [key: number]: Token[];
+};
 
 const tokens: Tokens = {
   1: [

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import GeneralWallets from "./TabContent/GeneralWallets";
 import SmartWallets from "./TabContent/SmartWallets";
 
-
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState("EOA");
 
@@ -33,7 +32,6 @@ const Tabs = () => {
         >
           SmartWallets
         </div>
-       
       </div>
       <div className="mt-4 w-full">
         {activeTab === "EOA" && <GeneralWallets />}

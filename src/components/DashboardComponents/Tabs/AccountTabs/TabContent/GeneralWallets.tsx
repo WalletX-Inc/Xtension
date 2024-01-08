@@ -3,9 +3,11 @@ import {
   generateAddressIcon,
   getShortDisplayString,
 } from "../../../../../utils/helper";
-import openPage from "../../../../../../src/assets/open.svg";
+import openPage from "../../../../../assets/open.svg";
+
 const GeneralWallets = () => {
   const { EOA, balance } = useConfig();
+
   return (
     <>
       <div

@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import TokenCardTransaction from "../TokenCardTransaction";
-import Tokens from "../../constants/tokens";
-import { generateSHA256Hash, getItemFromStorage } from "../../utils/helper";
-import { useConfig } from "../../context/ConfigProvider";
 import localforage from "localforage";
 import { Plus } from "react-feather";
+import TokenCardTransaction from "../TokenCardTransaction";
+import Tokens from "../../constants/tokens";
+import {
+  generateSHA256Hash,
+  getItemFromStorage,
+  log,
+} from "../../utils/helper";
+import { useConfig } from "../../context/ConfigProvider";
 import ImportToken from "../Modals/ImportToken";
 
 type Token = {
@@ -48,22 +52,25 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
   const getTokenDataForKey = async (key: string) => {
     try {
       const data = await localforage.getItem(
-        generateSHA256Hash(key.toString())
+        generateSHA256Hash(key.toString()),
       );
+
       setTokenListFromIndexedDB(data);
       return data || [];
     } catch (error) {
-      console.error("Error getting token data:", error);
+      log("Error getting token data:", error, "error");
       return [];
     }
   };
 
   useEffect(() => {
     const tokenList = Tokens[chainId] || [];
+
     setTokens(tokenList);
 
     async function fetchData() {
       const retrievedData = await getTokenDataForKey(chainId);
+
       setTokenListFromIndexedDB(retrievedData);
     }
 
@@ -84,7 +91,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
                 tokenDecimal={token.decimals}
                 userAddress={SCW || smartAccountAddress}
                 isSelected={false}
-                clickedTokenData={() => {}}
+                clickedTokenData={() => null}
                 index={0}
               />
             </>
@@ -100,7 +107,7 @@ const TokenList = ({ isImportTokenDrawerAvaliable }: tokenListParams) => {
                 tokenDecimal={token.tokenDecimal}
                 userAddress={""}
                 isSelected={false}
-                clickedTokenData={() => {}}
+                clickedTokenData={() => null}
                 index={0}
               />
             </>

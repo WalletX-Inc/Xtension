@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useRecoilState } from "recoil";
@@ -17,7 +18,7 @@ const AddAddresses = () => {
   const [sendToAddresses, setSendToAddresses] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
-    null
+    null,
   );
   const [cardAddress, setCardAddress] = useState<string>("");
   const [isCardSelected, setIsCardSelected] = useState<boolean>(false);
@@ -56,6 +57,7 @@ const AddAddresses = () => {
     } else {
       setSelectedCardIndex(index);
     }
+
     setEnteredAddresses("");
   };
 
@@ -67,49 +69,9 @@ const AddAddresses = () => {
     }
   };
 
-  const pasteAddresses = async () => {
-    try {
-      setSendToAddresses("");
-      handleCardClick(null);
-      const address:string = await navigator.clipboard.readText();
-      setEnteredAddresses(address);
-      setIsValid(isEthereumAddress(address));
-    } catch (error) {
-      log("Copy failed due to: ", error, "error");
-    }
-  };
-
-  const generateAddressCard = (enteredAddresses: string) => (
-    <AddressesCard
-      name="Shakti"
-      addresses={enteredAddresses}
-      isSelected={selectedCardIndex === 1}
-      getClickedAddress={receivedAddress}
-      onClick={() => {
-        handleCardClick(1);
-        setIsCardSelected(true);
-
-        if (isEthereumAddress(enteredAddresses)) {
-          setSendToAddresses(enteredAddresses);
-        }
-        handelProceed(enteredAddresses);
-      }}
-    />
-  );
-
-  const handleInputChange = (e: any) => {
-    const inputValue = e.target.value;
-    setEnteredAddresses(inputValue);
-    setCardAddress(inputValue);
-  };
-
-  const handleFocus = () => {
-    setSendToAddresses("");
-    handleCardClick(null);
-  };
-
-  const handelProceed = (address: string) => {
+  const handleProceed = (address: string) => {
     const uuid = crypto.randomUUID();
+
     setTransferData((prevAddresses) => [
       ...prevAddresses,
       {
@@ -127,6 +89,50 @@ const AddAddresses = () => {
     ]);
     log("Transfer Data : ", transferData, "info");
     navigate("/dashboard/transaction/add-tokens");
+  };
+
+  const pasteAddresses = async () => {
+    try {
+      setSendToAddresses("");
+      handleCardClick(null);
+      const address: string = await navigator.clipboard.readText();
+
+      setEnteredAddresses(address);
+      setIsValid(isEthereumAddress(address));
+    } catch (error) {
+      log("Copy failed due to: ", error, "error");
+    }
+  };
+
+  const generateAddressCard = (_enteredAddresses: string) => (
+    <AddressesCard
+      name="Shakti"
+      addresses={_enteredAddresses}
+      isSelected={selectedCardIndex === 1}
+      getClickedAddress={receivedAddress}
+      onClick={() => {
+        handleCardClick(1);
+        setIsCardSelected(true);
+
+        if (isEthereumAddress(_enteredAddresses)) {
+          setSendToAddresses(_enteredAddresses);
+        }
+
+        handleProceed(_enteredAddresses);
+      }}
+    />
+  );
+
+  const handleInputChange = (e: any) => {
+    const inputValue = e.target.value;
+
+    setEnteredAddresses(inputValue);
+    setCardAddress(inputValue);
+  };
+
+  const handleFocus = () => {
+    setSendToAddresses("");
+    handleCardClick(null);
   };
 
   useEffect(() => {
@@ -200,7 +206,8 @@ const AddAddresses = () => {
                     if (isEthereumAddress(address.address)) {
                       setSendToAddresses(address.address);
                     }
-                    handelProceed(address.address);
+
+                    handleProceed(address.address);
                   }}
                 />
               ))}
