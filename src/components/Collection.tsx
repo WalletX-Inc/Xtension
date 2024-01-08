@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import downArrow from "../../../../../assets/angleDown.svg";
+import downArrow from "../assets/angleDown.svg";
 import { SingleNftModal } from "./SingleNftModal";
 
 type nftdata = {

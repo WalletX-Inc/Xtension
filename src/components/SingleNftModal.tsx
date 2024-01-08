@@ -1,6 +1,6 @@
 import React from "react";
-import copy from "../../../../../assets/copy (1).svg";
-import close from "../../../../../assets/NftDiscoveryPage/close.svg";
+import copy from "../assets/copy (1).svg";
+import close from "../assets/NftDiscoveryPage/close.svg";
 import toast from "react-hot-toast";
 import { getShortDisplayString } from "../utils/helper";
 
